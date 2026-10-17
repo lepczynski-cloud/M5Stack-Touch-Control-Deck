@@ -1,0 +1,10 @@
+.pio/
+.pio-venv/
+.idea/
+.vscode/
+cmake-build-*/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+Thumbs.db
