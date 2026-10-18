@@ -1,4 +1,5 @@
 # M5Stack Touch Control Deck
+![M5Stack Touch Control Deck - wireless touchscreen controller for Windows](images/m5stack-touch-control-deck.jpg)
 
 A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack CoreS3 SE works as a Bluetooth Low Energy keyboard and media controller, so the main features do not require a companion application on the computer.
 

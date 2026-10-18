@@ -1,4 +1,5 @@
 # M5Stack Touch Control Deck
+![M5Stack Touch Control Deck - bezprzewodowy panel dotykowy do sterowania komputerem](images/m5stack-touch-control-deck.jpg)
 
 Dotykowy i bezprzewodowy panel sterowania dla komputerów z Windows 10 i Windows 11. Projekt wykorzystuje M5Stack CoreS3 SE jako klawiaturę Bluetooth Low Energy oraz kontroler multimediów, dlatego podstawowe funkcje działają bez instalowania dodatkowego programu na komputerze.
 
