@@ -8,3 +8,5 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+.web-build-venv/
+web/firmware/*.factory.bin

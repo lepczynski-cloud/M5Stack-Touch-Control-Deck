@@ -1,9 +1,10 @@
 # M5Stack Touch Control Deck
-![M5Stack Touch Control Deck - wireless touchscreen controller for Windows](images/m5stack-touch-control-deck.jpg)
+**Web installer and project site:** [m5stack-deck.lepczynski.it](https://m5stack-deck.lepczynski.it/) (EN/PL; firmware is automatically compiled by Cloudflare Pages on deployment; setup: [web/README.md](web/README.md)).
 
 A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack CoreS3 SE works as a Bluetooth Low Energy keyboard and media controller, so the main features do not require a companion application on the computer.
 
 This project extends the idea from [ESP32 PC Control Deck](https://github.com/lepczynski-cloud/ESP32-PC-Control-Deck). The earlier device is shown in this [YouTube video](https://www.youtube.com/watch?v=16eqHU4j9Fk).
+**New M5Stack build video:** [Watch the complete build on YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
 
 The device interface and source-code comments are in Polish. This English guide explains installation, configuration and the main customization points.
 

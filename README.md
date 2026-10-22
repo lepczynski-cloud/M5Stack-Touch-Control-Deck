@@ -1,11 +1,13 @@
 # M5Stack Touch Control Deck
-![M5Stack Touch Control Deck - bezprzewodowy panel dotykowy do sterowania komputerem](images/m5stack-touch-control-deck.jpg)
+**Instalator WWW i strona projektu:** [m5stack-deck.lepczynski.it](https://m5stack-deck.lepczynski.it/) (PL/EN; automatyczna kompilacja firmware w Cloudflare Pages, instrukcja: [web/README.md](web/README.md)).
 
 Dotykowy i bezprzewodowy panel sterowania dla komputerów z Windows 10 i Windows 11. Projekt wykorzystuje M5Stack CoreS3 SE jako klawiaturę Bluetooth Low Energy oraz kontroler multimediów, dlatego podstawowe funkcje działają bez instalowania dodatkowego programu na komputerze.
 
 Projekt rozwija pomysł z repozytorium [ESP32 PC Control Deck](https://github.com/lepczynski-cloud/ESP32-PC-Control-Deck). Wcześniejszą konstrukcję można zobaczyć na [filmie w YouTube](https://www.youtube.com/watch?v=16eqHU4j9Fk).
 
 Dokumentacja po angielsku: [README_EN.md](README_EN.md).
+
+**Film pokazujący budowę nowej wersji:** [M5Stack Touch Control Deck na YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
 
 ## Najważniejsze funkcje
 
