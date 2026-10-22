@@ -122,7 +122,7 @@ def main() -> int:
     print(f"Firmware version: {version}")
     print(f"Firmware size: {size:,} bytes")
     print(f"SHA-256: {checksum}")
-    print("The build is ready for Cloudflare Pages to deploy from the web/ directory.")
+    print("The firmware image and manifest are ready for static website deployment.")
     return 0
 
 

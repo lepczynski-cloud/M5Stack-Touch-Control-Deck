@@ -22,7 +22,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo SUCCESS. For local tests only. Cloudflare builds and deploys firmware automatically:
+echo SUCCESS. For local tests only. The connected deployment builds firmware automatically:
 echo   web\firmware\manifest.json
 echo   web\firmware\m5stack-touch-control-deck.factory.bin
 echo No manual commit of the generated .bin is needed.

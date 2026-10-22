@@ -126,3 +126,13 @@ Nie usuwaj katalogu źródłowego ani ustawień zapisanych w urządzeniu.
 ## Ekran nie przechodzi automatycznie w czuwanie
 
 To prawidłowe zachowanie przy aktywnym połączeniu Bluetooth. Automatyczne odliczanie działa tylko wtedy, gdy BLE jest rozłączone. Sprawdź również ustawienie czuwania i czas bezczynności w portalu.
+
+## Instalator WWW nie widzi urządzenia
+
+- Otwórz [stronę instalatora](https://m5stack-touch-control-deck.lepczynski.it/) w zgodnej przeglądarce komputerowej obsługującej Web Serial (np. Chrome lub Edge), przez HTTPS.
+- Użyj przewodu USB-C z transmisją danych, nie tylko do ładowania.
+- Zamknij inne programy korzystające z portu COM.
+- Wybierz port USB CoreS3 SE, nie wirtualny port Bluetooth.
+- Jeśli port nie jest wykrywany, spróbuj sprzętowego trybu wgrywania przyciskiem RST i ponownie wybierz port.
+- Instalator jest przeznaczony wyłącznie dla M5Stack CoreS3 SE.
+- Jeśli na stronie nie ma gotowego firmware, skorzystaj z lokalnego skryptu Windows opisanego w [INSTALLATION.md](INSTALLATION.md).

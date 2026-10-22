@@ -1,13 +1,26 @@
 # M5Stack Touch Control Deck
-**Instalator WWW i strona projektu:** [m5stack-deck.lepczynski.it](https://m5stack-deck.lepczynski.it/) (PL/EN; automatyczna kompilacja firmware w Cloudflare Pages, instrukcja: [web/README.md](web/README.md)).
+
+![M5Stack Touch Control Deck - bezprzewodowy panel dotykowy do sterowania komputerem](images/m5stack-touch-control-deck.jpg)
+
+**Strona projektu i instalator online (PL/EN):** [M5Stack-Touch-Control-Deck.lepczynski.it](https://m5stack-touch-control-deck.lepczynski.it/)
 
 Dotykowy i bezprzewodowy panel sterowania dla komputerów z Windows 10 i Windows 11. Projekt wykorzystuje M5Stack CoreS3 SE jako klawiaturę Bluetooth Low Energy oraz kontroler multimediów, dlatego podstawowe funkcje działają bez instalowania dodatkowego programu na komputerze.
 
-Projekt rozwija pomysł z repozytorium [ESP32 PC Control Deck](https://github.com/lepczynski-cloud/ESP32-PC-Control-Deck). Wcześniejszą konstrukcję można zobaczyć na [filmie w YouTube](https://www.youtube.com/watch?v=16eqHU4j9Fk).
+## Dwa sposoby wgrania oprogramowania
+
+**1. Bez kompilowania, bezpośrednio z przeglądarki (najprościej).** Otwórz [instalator WWW](https://m5stack-touch-control-deck.lepczynski.it/), podłącz **M5Stack CoreS3 SE** przewodem USB-C obsługującym dane, wybierz **Wgraj firmware** i wskaż port USB urządzenia. Strona instaluje najnowszą **opublikowaną i skompilowaną wersję firmware**, bez instalowania Pythona, PlatformIO czy IDE. Wymagana jest zgodna przeglądarka komputerowa (np. Chrome lub Edge) i HTTPS. Instalacja może usunąć poprzednie ustawienia urządzenia. **Nie używaj instalatora z innymi modelami ESP32.**
+
+**2. Z kodu źródłowego, z możliwością własnych zmian.** Pobierz to repozytorium, a w systemie Windows uruchom `tools\upload_windows.bat` po podłączeniu urządzenia przez USB-C. Skrypt przygotuje środowisko, skompiluje firmware i wgra go na płytkę. Tę metodę wybierz, jeśli chcesz modyfikować funkcje, wygląd lub skróty. Szczegółowe instrukcje: [docs/INSTALLATION.md](docs/INSTALLATION.md).
+
+Po wgraniu programu sparuj **M5 Control Deck** przez Bluetooth w Windows 10/11. Użytkownik nie musi instalować żadnego programu do codziennego korzystania z urządzenia.
+
+**Dokładny opis budowy i działania (po polsku):** [artykuł na forum Forbot](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/).
+
+**Film z budowy i demonstracją:** [M5Stack Touch Control Deck na YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
 
 Dokumentacja po angielsku: [README_EN.md](README_EN.md).
 
-**Film pokazujący budowę nowej wersji:** [M5Stack Touch Control Deck na YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
+Projekt rozwija pomysł z repozytorium [ESP32 PC Control Deck](https://github.com/lepczynski-cloud/ESP32-PC-Control-Deck). Wcześniejszą konstrukcję można zobaczyć na [filmie w YouTube](https://www.youtube.com/watch?v=16eqHU4j9Fk).
 
 ## Najważniejsze funkcje
 
@@ -105,9 +118,9 @@ Kafelek **Wycinek** uruchamia narzędzie pozwalające zaznaczyć fragment ekranu
 - stan Scroll Unit,
 - wersja firmware.
 
-## Szybkie wgranie w Windows
+## Wgrywanie ze źródeł w Windows (alternatywa dla instalatora WWW)
 
-Wymagany jest Python 3.9 lub nowszy oraz dostęp do Internetu podczas pierwszego uruchomienia.
+Ta metoda pozwala samodzielnie skompilować kod lub wprowadzać własne zmiany. Jeśli chcesz tylko zainstalować gotowy firmware, skorzystaj z instalatora online opisanego na początku README. Do kompilacji źródeł wymagany jest Python 3.9 lub nowszy oraz dostęp do Internetu podczas pierwszego uruchomienia.
 
 1. Podłącz CoreS3 SE przewodem USB-C obsługującym dane.
 2. Uruchom:
@@ -198,10 +211,15 @@ Szczegóły modyfikacji: [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md).
 ├── include/                 konfiguracja i deklaracje modułów
 ├── src/                     kod firmware
 ├── docs/                    instalacja, modyfikacje i diagnostyka
-├── tools/                   skrypty dla Windows
+├── tools/                   skrypty wgrywania i pakowania firmware
+├── web/                     opcjonalna strona WWW i instalator przeglądarkowy
+├── images/                  zdjęcia projektu (w tym zdjęcie na górze README)
+├── wrangler.toml            konfiguracja opcjonalnego hostingu strony WWW
 ├── README_EN.md             pełna instrukcja po angielsku
 └── platformio.ini           konfiguracja PlatformIO
 ```
+
+Katalog `web/` nie jest potrzebny do lokalnej kompilacji firmware ani do działania urządzenia po wgraniu programu. Zawiera wyłącznie kod publicznej strony projektu i instalatora. Szczegóły: [web/README.md](web/README.md).
 
 Kod firmware pozostaje podzielony na niewielkie moduły, ponieważ ułatwia to modyfikowanie interfejsu, Bluetooth, sieci i zasilania bez naruszania pozostałych części projektu.
 

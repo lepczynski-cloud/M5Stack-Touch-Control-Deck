@@ -1,10 +1,26 @@
 # M5Stack Touch Control Deck
-**Web installer and project site:** [m5stack-deck.lepczynski.it](https://m5stack-deck.lepczynski.it/) (EN/PL; firmware is automatically compiled by Cloudflare Pages on deployment; setup: [web/README.md](web/README.md)).
 
-A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack CoreS3 SE works as a Bluetooth Low Energy keyboard and media controller, so the main features do not require a companion application on the computer.
+![M5Stack Touch Control Deck - wireless touchscreen controller for Windows](images/m5stack-touch-control-deck.jpg)
+
+**Project website & browser installer (EN/PL):** [M5Stack-Touch-Control-Deck.lepczynski.it](https://m5stack-touch-control-deck.lepczynski.it/)
+
+A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack CoreS3 SE acts as a Bluetooth Low Energy keyboard and media controller, so everyday features do not require a companion application on the computer.
+
+## Two ways to install the firmware
+
+**1. Directly from your browser, no local compilation (recommended).** Visit the [web installer](https://m5stack-touch-control-deck.lepczynski.it/), connect **M5Stack CoreS3 SE** using a data-capable USB-C cable, choose **Install firmware**, and select the device's USB port. The site flashes the latest **published, precompiled firmware**. You don't need to install Python, PlatformIO, or an IDE. Use a compatible desktop browser (for example Chrome or Edge) over HTTPS. Installing firmware may erase previous device settings. **Do not flash another ESP32 board using this installer.**
+
+**2. Build and upload from source, with full customization.** Download the repository, connect the device via USB-C, and run `tools\upload_windows.bat` on Windows. The script installs its toolchain, compiles the source, and uploads the firmware. Use this method if you want to modify behavior, icons, or shortcuts. More details: [docs/INSTALLATION.md](docs/INSTALLATION.md).
+
+After flashing, pair **M5 Control Deck** through Bluetooth in Windows 10/11. No companion software is needed for everyday PC control.
+
+**Detailed build tutorial (in Polish):** [Forbot forum article](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/). You can translate the page in your browser.
+
+**Full build video:** [M5Stack Touch Control Deck on YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
+
+Polish documentation: [README.md](README.md).
 
 This project extends the idea from [ESP32 PC Control Deck](https://github.com/lepczynski-cloud/ESP32-PC-Control-Deck). The earlier device is shown in this [YouTube video](https://www.youtube.com/watch?v=16eqHU4j9Fk).
-**New M5Stack build video:** [Watch the complete build on YouTube](https://www.youtube.com/watch?v=Jz1xCBi-Q1o).
 
 The device interface and source-code comments are in Polish. This English guide explains installation, configuration and the main customization points.
 
@@ -83,9 +99,9 @@ Brightness, home Wi-Fi, configuration access point and the second timezone.
 
 Bluetooth state, new pairing, local portal details, Scroll Unit status and firmware version.
 
-## Quick upload on Windows
+## Windows source upload (alternative to the web installer)
 
-Python 3.9 or newer and Internet access are required for the first run.
+Use this option to compile the source or make your own changes. For a ready-to-use installation, choose the browser installer described above. This source-based method needs Python 3.9 or newer and Internet access on the first run.
 
 1. Connect the CoreS3 SE with a data-capable USB-C cable.
 2. Run:
@@ -163,6 +179,10 @@ Detailed customization examples are in [docs/CUSTOMIZATION.md](docs/CUSTOMIZATIO
 - The PC must be unlocked for `Win + R` website launching.
 - BLE HID cannot read CPU, RAM, GPU or temperatures. Those values require a separate Windows companion application.
 - One active Bluetooth bond is stored at a time.
+
+## Project website
+
+The `web/` directory contains the optional bilingual project website and browser flasher. It is not required to compile the firmware locally or run the device. See [web/README.md](web/README.md).
 
 ## License
 

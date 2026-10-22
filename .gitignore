@@ -10,3 +10,6 @@ __pycache__/
 Thumbs.db
 .web-build-venv/
 web/firmware/*.factory.bin
+
+# Copy of the original project photo, created only for published website builds.
+web/assets/m5stack-touch-control-deck.jpg

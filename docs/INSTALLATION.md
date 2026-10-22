@@ -1,13 +1,23 @@
-# Instalacja i wgrywanie w Windows
+# Instalacja / Installation
 
-## Wymagania
+**Najprostsza metoda:** [instalator internetowy PL/EN](https://m5stack-touch-control-deck.lepczynski.it/) umożliwia wgranie najnowszego opublikowanego firmware bez Pythona i kompilacji na komputerze użytkownika. Podłącz **M5Stack CoreS3 SE** przez USB-C z transmisją danych, kliknij **Wgraj firmware / Install firmware** i wybierz port w obsługiwanej przeglądarce komputerowej (np. Chrome lub Edge). Wgrywanie może usunąć zapisane ustawienia urządzenia.
+
+**Metoda dla osób modyfikujących kod:** skompiluj źródła i wgraj je za pomocą opisanych poniżej narzędzi Windows. Pozwala to zmieniać funkcje i konfigurację urządzenia. Do codziennej pracy po wgraniu żaden dodatkowy program Windows nie jest wymagany.
+
+Pełny poradnik budowy: [Forbot (po polsku)](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/).
+
+---
+
+## Wgrywanie ze źródeł w Windows
+
+### Wymagania
 
 - Windows 10 lub Windows 11,
 - Python 3.9 lub nowszy,
 - przewód USB-C obsługujący transmisję danych,
 - dostęp do Internetu podczas pierwszego budowania.
 
-## Najprostsze wgranie
+### Wgrywanie przy pomocy skryptu
 
 Podłącz CoreS3 SE i uruchom z głównego katalogu projektu:
 
@@ -28,7 +38,7 @@ Skrypt:
 
 Przy pierwszym uruchomieniu pobieranie narzędzi może potrwać kilka minut.
 
-## Ręczne wskazanie portu
+### Ręczne wskazanie portu
 
 Gdy komputer pokazuje kilka portów, podaj właściwy port CoreS3 SE:
 
@@ -38,7 +48,7 @@ tools\upload_windows.bat COM7
 
 Nie wybieraj portu opisanego jako `Standardowy port szeregowy przez link Bluetooth`.
 
-## Wejście w tryb wgrywania
+### Wejście w tryb wgrywania
 
 Jeżeli skrypt nie widzi CoreS3 SE:
 
@@ -49,13 +59,13 @@ Jeżeli skrypt nie widzi CoreS3 SE:
 
 Przycisk Power nie zastępuje przycisku RST.
 
-## Sama kompilacja
+### Sama kompilacja
 
 ```bat
 tools\build_windows.bat
 ```
 
-## Monitor portu szeregowego
+### Monitor portu szeregowego
 
 Automatyczne wykrycie portu:
 
@@ -71,13 +81,13 @@ tools\monitor_windows.bat COM7
 
 Prędkość monitora wynosi 115200 bit/s. Monitor zakończ skrótem `Ctrl + C`.
 
-## CLion lub VS Code z PlatformIO
+### CLion lub VS Code z PlatformIO
 
 Repozytorium jest standardowym projektem PlatformIO. Otwórz katalog projektu i wybierz środowisko `cores3_se`. Cel `Upload` kompiluje i wgrywa firmware.
 
 Plik `tools/ensure_platformio_deps.py` jest uruchamiany przed budowaniem i sprawdza zależność `intelhex`, dlatego ten sam mechanizm działa również przy kompilacji bez skryptu BAT.
 
-## Katalogi robocze
+### Katalogi robocze
 
 PlatformIO i środowiska programistyczne mogą utworzyć między innymi:
 

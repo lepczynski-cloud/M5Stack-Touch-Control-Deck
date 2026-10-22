@@ -8,11 +8,10 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="M5Stack Touch Control Deck | Web installer">
   <meta property="og:description" content="Build a wireless Windows control deck without soldering. Flash M5Stack CoreS3 SE from your browser.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/main/images/m5stack-touch-control-deck.jpg">
-  <meta property="og:url" content="https://m5stack-deck.lepczynski.it/">
-  <link rel="canonical" href="https://m5stack-deck.lepczynski.it/">
+  <meta property="og:image" content="https://m5stack-touch-control-deck.lepczynski.it/assets/m5stack-touch-control-deck.jpg">
+  <meta property="og:url" content="https://m5stack-touch-control-deck.lepczynski.it/">
+  <link rel="canonical" href="https://m5stack-touch-control-deck.lepczynski.it/">
   <title>M5Stack Touch Control Deck | Install from your browser</title>
-  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -65,7 +64,7 @@
         <div class="visual-halo" aria-hidden="true"></div>
         <div class="photo-frame">
           <div class="photo-head"><span class="tiny-indicator"></span><span>DESK SETUP / 001</span><span>CORE S3 SE</span></div>
-          <img id="productPhoto" loading="eager" decoding="async" src="https://raw.githubusercontent.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/main/images/m5stack-touch-control-deck.jpg" alt="Finished M5Stack Touch Control Deck in a 3D-printed desktop stand">
+          <img id="productPhoto" loading="eager" decoding="async" src="./assets/m5stack-touch-control-deck.jpg" alt="Finished M5Stack Touch Control Deck in a 3D-printed desktop stand">
           <div class="photo-fallback" id="photoFallback" hidden><span class="fallback-icon">▦</span><span data-i18n="photoFallback">See the finished device on GitHub</span></div>
           <div class="photo-foot"><span class="photo-marker"></span><span data-i18n="photoCaption">REAL BUILD · 3D PRINTED ENCLOSURE</span><span>01 / 01</span></div>
         </div>
@@ -108,7 +107,7 @@
                 <div slot="unsupported" class="unsupported"><span data-i18n="unsupported">Your browser does not support this installer. Open this site in a compatible desktop browser such as Chrome or Edge.</span></div>
               </esp-web-install-button>
             </div>
-            <div id="firmwareMissing" hidden class="firmware-missing"><p data-i18n="statusMissing">The flash image has not been published yet. The site is ready; the project owner needs to generate and upload the firmware binary once.</p><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/blob/main/docs/INSTALLATION.md" target="_blank" rel="noopener noreferrer" data-i18n="fallbackInstall">Use the Windows upload guide ↗</a></div>
+            <div id="firmwareMissing" hidden class="firmware-missing"><p data-i18n="statusMissing">Firmware is currently unavailable. The published build may have failed; please try again later or use the source installation guide.</p><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/blob/main/docs/INSTALLATION.md" target="_blank" rel="noopener noreferrer" data-i18n="fallbackInstall">Use the Windows upload guide ↗</a></div>
             <p class="installer-footer"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></svg><span data-i18n="installerFooter">Installation runs locally in your browser over USB. No account required.</span></p>
           </div>
         </div>

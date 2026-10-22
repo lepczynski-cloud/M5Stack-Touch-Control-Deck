@@ -176,7 +176,17 @@ function loadVideo() {
 function setupImageFallback() {
   const photo = document.getElementById("productPhoto");
   const fallback = document.getElementById("photoFallback");
-  photo.addEventListener("error", () => {photo.hidden = true; fallback.hidden = false;});
+  const useFallbackPhoto = () => {
+    if (!photo.dataset.fallbackAttempted) {
+      photo.dataset.fallbackAttempted = "1";
+      photo.src = "https://raw.githubusercontent.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/main/images/m5stack-touch-control-deck.jpg";
+      return;
+    }
+    photo.hidden = true;
+    fallback.hidden = false;
+  };
+  photo.addEventListener("error", useFallbackPhoto);
+  if (photo.complete && photo.naturalWidth === 0) useFallbackPhoto();
 }
 
 function init() {

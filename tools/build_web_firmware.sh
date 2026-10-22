@@ -1,13 +1,12 @@
 #!/bin/sh
-# Build firmware automatically during each Cloudflare Pages deployment.
-# Cloudflare config: build command = sh tools/build_web_firmware.sh
-#                   output directory = web
+# Build the verified firmware and prepare the optional static website for deployment.
+# Does not modify the device firmware source.
 set -eu
 
 cd "$(dirname "$0")/.."
 
 if ! command -v python3 >/dev/null 2>&1; then
-    echo "ERROR: Python 3 is required by the Cloudflare build." >&2
+    echo "ERROR: Python 3 is required by the build environment." >&2
     exit 1
 fi
 
@@ -21,8 +20,15 @@ printf '%s\n' '[2/4] Installing pinned PlatformIO and esptool dependencies...'
 "$VENV/bin/python" -m pip install --disable-pip-version-check \
     'platformio==6.2.0' 'intelhex==2.3.0'
 
-# Never publish an old local image after a failed build.
+# Never publish stale firmware if the new build fails.
 rm -f web/firmware/m5stack-touch-control-deck.factory.bin
+
+# Reuse the photo already included in the repository without duplicating it in source control.
+if [ -f images/m5stack-touch-control-deck.jpg ]; then
+    cp images/m5stack-touch-control-deck.jpg web/assets/m5stack-touch-control-deck.jpg
+else
+    echo 'WARNING: images/m5stack-touch-control-deck.jpg is missing; the website will try the public GitHub URL.' >&2
+fi
 
 printf '%s\n' '[3/4] Building M5Stack CoreS3 SE firmware...'
 "$VENV/bin/python" -m platformio run -e cores3_se
@@ -35,4 +41,4 @@ test -s web/firmware/m5stack-touch-control-deck.factory.bin || {
     exit 1
 }
 
-echo 'SUCCESS: Cloudflare can now deploy the web/ directory with the firmware.'
+echo 'SUCCESS: web/ contains the current firmware and website ready for deployment.'

@@ -1,0 +1,6 @@
+# Optional web deployment configuration. Not used when compiling the M5Stack firmware.
+name = "m5stack-touch-control-deck"
+compatibility_date = "2026-10-22"
+
+[assets]
+directory = "./web"
