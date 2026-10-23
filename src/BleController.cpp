@@ -85,23 +85,38 @@ bool BleController::runGnomeCommand(const String& command) {
     return true;
 }
 
-bool BleController::openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs) {
-    if (!ready() || query.isEmpty()) return false;
-
-    // Cmd+Spacja otwiera Spotlight niezaleznie od aktywnej aplikacji.
-    // Nie otwieramy osobno Safari ani nie wysylamy Cmd+L: opoznienie
-    // przelaczania aplikacji potrafilo wpisac URL do edytora tekstu.
-    keyboard_.releaseAll();
-    delay(70);
-    if (!chord({KEY_LEFT_GUI, static_cast<uint8_t>(' ')}, 100)) return false;
-    delay(MAC_SPOTLIGHT_FOCUS_MS);
+bool BleController::openMacLauncherOnly() {
     if (!ready()) return false;
 
+    // Wysylamy rzeczywista sekwencje klawisza i modyfikatora: najpierw
+    // naciskamy Cmd, potem spacje, a nastepnie zwalniamy je osobno.
+    // Skrót moze byc przemapowany w ustawieniach macOS (Spotlight).
+    keyboard_.releaseAll();
+    delay(75);
+    keyboard_.press(KEY_LEFT_GUI);
+    delay(65);
+    keyboard_.press(static_cast<uint8_t>(' '));
+    delay(170);
+    keyboard_.release(static_cast<uint8_t>(' '));
+    delay(65);
+    keyboard_.release(KEY_LEFT_GUI);
+    delay(MAC_SPOTLIGHT_FOCUS_MS);
+    return ready();
+}
+
+bool BleController::finishMacLauncherQuery(const String& query, uint32_t resultsDelayMs) {
+    if (!ready() || query.isEmpty()) return false;
     keyboard_.print(query);
     delay(resultsDelayMs);
     if (!ready()) return false;
     keyboard_.write(KEY_RETURN);
     return true;
+}
+
+bool BleController::openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs) {
+    // Z samego BLE HID nie mozemy sprawdzic fokusu hosta. Interfejs
+    // wymaga jednorazowego potwierdzenia Spotlight przed uzyciem tej metody.
+    return openMacLauncherOnly() && finishMacLauncherQuery(query, resultsDelayMs);
 }
 
 bool BleController::openMacApp(const String& appName) {

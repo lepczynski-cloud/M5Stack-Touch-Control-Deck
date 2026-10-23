@@ -19,6 +19,10 @@ public:
     static bool isSafeBrowserUrl(const String& url);
     // Konfigurowalny zestaw skrotow. Linux oznacza srodowisko GNOME.
 
+    // Pre-flight dla macOS: rozdziela Cmd+Spacja od wpisywania tekstu.
+    // Interfejs moze zapytac uzytkownika, czy Spotlight ma fokus.
+    bool openMacLauncherOnly();
+    bool finishMacLauncherQuery(const String& query, uint32_t resultsDelayMs = 850);
     bool openUrl(const String& url);
 
     bool mediaPrevious();

@@ -56,18 +56,30 @@ To zamierzone: po wykryciu nowego powiązania BLE wybierz **Windows**, **macOS**
 
 Jeśli zmieniłeś komputer i nowy system nie został wykryty, użyj **Nowe parowanie Bluetooth**, usuń stary wpis `M5 Control Deck` na poprzednim komputerze i sparuj urządzenie ponownie.
 
-## macOS: skróty lub otwieranie URL nie działają
+## macOS: tekst trafia do edytora zamiast uruchomić aplikację
 
-- Na ekranie Połączenia wybierz **macOS**, nie Windows.
-- Od wersji **0.2.1** adresy są wpisywane bezpośrednio do **Spotlight** (`Cmd+Space → URL → Enter`), co powinno otworzyć je w domyślnej przeglądarce (Chrome, Safari itp.). Nie otwieramy już Safari i nie wysyłamy `Cmd+L`.
-- macOS może mieć inne skróty Spotlight, inne układy klawiatury i ustawienia dostępności. Sprawdź standardowe skróty w Ustawieniach systemowych.
-- Kafelek **Finder** uruchamia Findera przez Spotlight. Kafelek **Pulpit** korzysta z `Cmd+F3` zamiast Mission Control (`Ctrl+↑`). Jeżeli nie działa, sprawdź skrót Show Desktop w Ustawieniach systemowych → Klawiatura → Skróty klawiszowe → Mission Control.
-- Jeżeli kliknięcie przycisku aplikacji wpisuje URL do edytora albo słychać dźwięk błędu, sprawdź **ręcznie** czy na Macu `Cmd+Space` uruchamia Spotlight (może go przechwytywać np. Raycast lub niestandardowy skrót). Urządzenie BLE HID nie otrzymuje informacji zwrotnej o fokusie i nie może całkowicie zapobiec wpisaniu tekstu w niewłaściwym oknie, gdy Spotlight się nie otworzy.
-- Aby sprawdzić wybór przeglądarki: **Ustawienia systemowe → Biurko i Dock → Domyślna przeglądarka internetowa**. Uruchom ręcznie `Cmd+Space`, wpisz pełny adres `https://example.com/` i naciśnij Enter. Jeśli Spotlight nie otwiera tego adresu w wybranej przeglądarce, firmware również nie może wymusić innego zachowania.
-- Dla Findera przetestuj ręcznie `Cmd+Space`, wpisanie `Finder` i Enter. Gdy Spotlight nie znajduje Findera, sprawdź jego indeksowanie lub ustawienia wyszukiwania.
-- Kafelek **Monitor** służy do otwierania **Monitora aktywności (Activity Monitor)**. Sprawdź ręcznie `Cmd+Space`, wpisz `Activity Monitor` i naciśnij Enter. Jeżeli Mac nie wyświetla tej aplikacji w wynikach, sprawdź indeks Spotlight i wyszukiwanie aplikacji. Nie jest to kafelek pokazujący pulpit.
-- Dla układów klawiatury innych niż US sprawdź wpisywanie znaków `:`, `/`, `?` z zewnętrznej klawiatury HID.
-- Poprzedni profil macOS został sprawdzony na fizycznym Macu. Zmiany w wersji 0.2.1 przeszły testy logiki HID, ale poprawione funkcje URL, Finder i Pulpit wymagają potwierdzenia po aktualizacji firmware. Biblioteka BLE może zachowywać się inaczej w zależności od wersji macOS i ustawień hosta.
+W wersji **0.2.1** zdarzało się, że po naciśnięciu kafelka program wpisywał URL lub `Activity Monitor` do aktywnego dokumentu. Był to wynik wysyłania tekstu po `Cmd+Space`, mimo że Spotlight się nie otworzył. BLE HID nie dostarcza informacji o tym, jakie okno jest aktywne.
+
+**W wersji 0.2.2:**
+
+1. Na ekranie **Połączenia** wybierz **macOS** (ponowny wybór ponawia test).
+2. Otwórz TextEdit na komputerze, żeby zauważyć ewentualny brak działania skrótu.
+3. Naciśnij przycisk aplikacji, Finder albo Monitor aktywności na M5Stacku.
+4. Panel wyśle **wyłącznie Cmd+Spacja**, a następnie zapyta: **Czy otwarto Spotlight?**
+5. Jeżeli na Macu widać Spotlight, wybierz **TAK**, aby wysłać wybrane polecenie. Urządzenie zapamięta potwierdzenie i następne akcje będzie wykonywać bez tego pytania.
+6. Jeżeli Spotlight się NIE pojawił, wybierz **NIE**. Wtedy urządzenie **nie wyśle żadnego tekstu do aktywnego edytora**.
+
+Jeżeli Spotlight się nie otwiera, przetestuj **ręcznie** skrót `Cmd+Spacja` na klawiaturze Maca, a potem sprawdź **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** oraz ewentualne konflikty z innym launcherem. W lokalnym portalu AP można zaznaczyć opcję wymuszenia ponownego testu.
+
+Po poprawnym uruchomieniu Spotlight możesz sprawdzić ręcznie `Activity Monitor`, `Finder` i pełny URL. Wpisany URL powinien otworzyć się w domyślnej przeglądarce wybranej w **System Settings → Desktop & Dock**. Skrót **Pulpit** (`Cmd+F3`) wymaga poprawnej konfiguracji **Mission Control / Show Desktop**. Biblioteka HID może różnie działać z układem klawiatury Maca, zwłaszcza przy `:`, `/` i innych znakach specjalnych.
+
+**Ograniczenie:** jednorazowe potwierdzenie nie zapewnia wykrywania fokusu przez BLE. Jeśli później przestawisz skrót lub launcher, uruchom test ponownie. Aby zawsze otwierać strony na Macu niezależnie od fokusu, potrzebna byłaby opcjonalna aplikacja pomocnicza. Poprzedni projekt ESP32 PC Control Deck korzystał z programu Python na hoście, więc jego uruchamianie stron nie jest bezpośrednio porównywalne z BLE HID.
+
+## Instalator WWW resetuje Wi-Fi i konfigurację po aktualizacji
+
+**Tak działał poprzedni instalator.** Zapisywał scalony obraz firmware od `0x0` zawierający również obszar NVS. Kasowanie całej pamięci ESP Web Tools (`Erase device`) również usuwa ustawienia.
+
+Od v0.2.2 wybierz na stronie **Update firmware / Aktualizuj firmware**, który zapisuje wyłącznie obraz aplikacji od `0x10000`, i **nie wybieraj `Erase device`** w dialogu ESP Web Tools. W ten sposób NVS może zostać zachowany, jeśli układ partycji się nie zmienił. **Factory install / Instalacja fabryczna** w dalszym ciągu celowo usuwa ustawienia. Nie da się odzyskać już skasowanej konfiguracji z samego firmware.
 
 ## Linux: niektóre kafelki nie działają
 

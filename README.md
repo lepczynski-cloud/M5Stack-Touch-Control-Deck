@@ -6,11 +6,11 @@
 
 Dotykowy, bezprzewodowy panel sterowania oparty na **M5Stack CoreS3 SE**, działający jako klawiatura Bluetooth HID i kontroler multimediów. Dostępne są profile skrótów dla **Windows 10/11, macOS i Linux (GNOME/Ubuntu)**. Po nowym parowaniu panel poprosi o wybór systemu. Do codziennego sterowania nie potrzebujesz aplikacji działającej na komputerze.
 
-**Status:** Windows jest sprawdzoną wersją bazową, a profil macOS był testowany na rzeczywistym Macu. W v0.2.1 poprawiono otwieranie URL w domyślnej przeglądarce oraz akcje Finder i Pulpit. Konkretne skróty macOS nadal zależą od ustawień użytkownika; profil Linux GNOME wymaga testów na docelowym komputerze.
+**Status:** Windows jest sprawdzoną wersją bazową. W macOS wystąpiła regresja w wersji 0.2.1: niedziałający skrót Spotlight powodował wpisywanie tekstu do aktywnego edytora. **v0.2.2 dodaje test i potwierdzenie Spotlight przed wysłaniem zapytania**, ale samo uruchamianie adresów i aplikacji nadal zależy od ustawień macOS. Linux GNOME wymaga testów na docelowym komputerze.
 
 ## Dwa sposoby wgrania oprogramowania
 
-**1. Bez kompilowania, bezpośrednio z przeglądarki (najprościej).** Otwórz [instalator WWW](https://m5stack-touch-control-deck.lepczynski.it/), podłącz **M5Stack CoreS3 SE** przewodem USB-C obsługującym dane, wybierz **Wgraj firmware** i wskaż port USB urządzenia. Strona instaluje najnowszą **opublikowaną i skompilowaną wersję firmware**, bez instalowania Pythona, PlatformIO czy IDE. Wymagana jest zgodna przeglądarka komputerowa (np. Chrome lub Edge) i HTTPS. Instalacja może usunąć poprzednie ustawienia urządzenia. **Nie używaj instalatora z innymi modelami ESP32.**
+**1. Bezpośrednio przez przeglądarkę, bez lokalnej kompilacji (zalecane).** Otwórz [instalator WWW](https://m5stack-touch-control-deck.lepczynski.it/), podłącz **M5Stack CoreS3 SE** przez USB-C i wybierz port w Chrome lub Edge. W instalatorze masz dwa tryby: **Aktualizuj** zapisuje tylko aplikację i może zachować Wi-Fi, kafelki i inne ustawienia, **pod warunkiem że NIE wybierzesz „Erase device”** oraz nie zmienił się układ partycji. **Instalacja fabryczna** zapisuje pełny obraz i **usuwa konfigurację NVS**. Nie potrzebujesz Pythona ani PlatformIO. **Nie używaj instalatora z innymi modelami ESP32.**
 
 **2. Z kodu źródłowego, z możliwością własnych zmian.** Pobierz to repozytorium, a w systemie Windows uruchom `tools\upload_windows.bat` po podłączeniu urządzenia przez USB-C. Skrypt przygotuje środowisko, skompiluje firmware i wgra go na płytkę. Tę metodę wybierz, jeśli chcesz modyfikować funkcje, wygląd lub skróty. Szczegółowe instrukcje: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
@@ -45,7 +45,7 @@ Dostępne są trzy profile klawiatury BLE HID: **Windows 10/11**, **macOS** i **
 
 System możesz zmienić w każdej chwili na ekranie **Połączenia** albo w portalu AP (`http://192.168.4.1`). Zmiana systemu nie wymaga ponownej kompilacji ani ponownego parowania.
 
-**Ważne ograniczenia:** na macOS pełny URL jest wpisywany bezpośrednio do Spotlight, które otwiera go w domyślnej przeglądarce, np. Chrome. Wymaga to działającego skrótu `Cmd+Space` i prawidłowego mapowania układu klawiatury HID. Firmware nie ma informacji zwrotnej o tym, która aplikacja ma fokus; jeżeli Spotlight jest wyłączony albo skrót przechwyci inne narzędzie, nie można zagwarantować otwarcia URL. `Cmd+F3` (Pulpit) zależy od ustawień macOS. Profil Linux zakłada GNOME (np. Ubuntu) oraz polecenia `xdg-open`, `nautilus` i opcjonalnie `gnome-system-monitor`. Inne środowiska i skróty użytkownika mogą wymagać dostosowania.
+**Ważne ograniczenia:** macOS wykorzystuje `Cmd+Space` (Spotlight), aby otworzyć URL w domyślnej przeglądarce albo uruchomić aplikację. Przy **pierwszej próbie** po wyborze profilu urządzenie wysyła sam skrót, a na własnym ekranie pyta **„Czy otwarto Spotlight?”**. Jeśli nie, wybierz **NIE**: program nie wpisze tekstu do aktywnego edytora. Sprawdź na Macu **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** i czy ręczne `Cmd+Space` działa. Wybór **TAK** zezwala na wysłanie bieżącego zapytania i kolejne próby bez pytania. Nie jest to weryfikacja fokusu przez BLE i ustawienia/launcher mogą zmienić się później. `Cmd+F3` (Pulpit) też zależy od ustawień macOS. Profil Linux wymaga GNOME/Ubuntu z `xdg-open`, `nautilus` i `gnome-system-monitor`.
 
 ## Sprzęt użyty w tym projekcie
 
@@ -83,7 +83,7 @@ Układ 2 x 3:
 |---|---|---|
 | Canva | Admin Toolkit | Botland |
 
-Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Cmd+Space → URL → Enter (domyślna przeglądarka)** na macOS albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
+Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Cmd+Space → URL → Enter** na macOS (po pierwszym potwierdzeniu Spotlight) albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
 
 ### Multimedia
 
@@ -207,7 +207,7 @@ Szczegóły modyfikacji: [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md).
 
 - Windows 10/11 jest sprawdzoną platformą bazową. Profile macOS i Linux GNOME są nowe i mogą wymagać korekty ustawień skrótów oraz testów na konkretnej wersji systemu.
 - Wprowadzanie URL zakłada układ klawiatury zgodny z ASCII, w szczególności **Polski programisty** na Windows; niestandardowe układy mogą inaczej interpretować znaki.
-- Na macOS URL jest otwierany przez Spotlight w **domyślnej przeglądarce**. W przypadku konfliktu `Cmd+Space` (np. z innym launcherem) przyciski mogą nie działać poprawnie. Na GNOME wymagane jest `xdg-open` i `Alt+F2`.
+- Na macOS `Cmd+Space` musi uruchamiać Spotlight. W **v0.2.2** przed pierwszym wysłaniem adresu/nazwy aplikacji zostaniesz poproszony o potwierdzenie, czy Spotlight rzeczywiście się otworzył. Nie potwierdzaj, jeśli widzisz edytor; inaczej mógłbyś wpisać w niego tekst. Po zmianie skrótu na Macu uruchom ponowny test, wybierając macOS na ekranie Połączenia lub zaznaczając odpowiednią opcję w portalu AP. Na GNOME wymagane jest `xdg-open` i `Alt+F2`.
 - Komputer powinien być odblokowany, aby zadziałały operacje otwierania adresów i aplikacji.
 - BLE HID nie udostępnia CPU, RAM, GPU ani temperatur. Telemetria wymaga osobnej usługi na komputerze.
 - Urządzenie przechowuje jedno bieżące powiązanie Bluetooth.

@@ -6,11 +6,11 @@
 
 A wireless touchscreen controller based on **M5Stack CoreS3 SE**. It acts as a Bluetooth HID keyboard and media controller, with manually selectable shortcut profiles for **Windows 10/11, macOS and Linux (GNOME/Ubuntu)**. After new Bluetooth pairing, the device asks which operating system to control; no companion app is required on the host.
 
-**Compatibility note:** Windows is the established baseline and macOS has been tested on a real Mac. Version 0.2.1 improves default-browser links, Finder and Show Desktop. Some macOS shortcuts depend on your keyboard settings; the Linux GNOME profile still needs testing on your target machine.
+**Compatibility note:** Windows is the established baseline. macOS testing revealed a regression in v0.2.1: when the Spotlight shortcut failed, queries were typed into the active app. **v0.2.2 requires confirmation that Spotlight opened before sending the first query**. macOS shortcuts remain dependent on host settings; Linux GNOME still needs validation on your machine.
 
 ## Two ways to install the firmware
 
-**1. Directly from your browser, no local compilation (recommended).** Visit the [web installer](https://m5stack-touch-control-deck.lepczynski.it/), connect **M5Stack CoreS3 SE** using a data-capable USB-C cable, choose **Install firmware**, and select the device's USB port. The site flashes the latest **published, precompiled firmware**. You don't need to install Python, PlatformIO, or an IDE. Use a compatible desktop browser (for example Chrome or Edge) over HTTPS. Installing firmware may erase previous device settings. **Do not flash another ESP32 board using this installer.**
+**1. Directly from your browser, no local compilation (recommended).** Visit the [web installer](https://m5stack-touch-control-deck.lepczynski.it/), connect **M5Stack CoreS3 SE** with a USB-C data cable, then select the serial port in Chrome or Edge. Choose **Firmware update** for an existing device: it flashes only the application and can preserve settings **if you do NOT select "Erase device"** and the partition layout is unchanged. Choose **Factory install** for initial setup/reset: it flashes the whole image and **erases NVS settings**, including Wi-Fi and custom app buttons. No Python or PlatformIO needed. **Do not use this installer with other ESP32 models.**
 
 **2. Build and upload from source, with full customization.** Download the repository, connect the device via USB-C, and run `tools\upload_windows.bat` on Windows. The script installs its toolchain, compiles the source, and uploads the firmware. Use this method if you want to modify behavior, icons, or shortcuts. More details: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
@@ -46,7 +46,7 @@ Three BLE HID keyboard profiles are available: **Windows 10/11**, **macOS** and 
 
 Change the profile any time on the **Connections** touchscreen or in the local AP portal (`http://192.168.4.1`). No reflashing or Bluetooth re-pairing is needed to change profiles.
 
-**Limitations:** macOS sends each complete URL directly to **Spotlight**, which can open it in the system default browser (for example Chrome). This requires working `Cmd+Space` and compatible HID keyboard layout; the deck cannot detect keyboard focus or guarantee success if another launcher intercepts Spotlight. `Cmd+F3` (Show Desktop) depends on macOS keyboard shortcut settings. Linux targets **GNOME/Ubuntu** and uses `xdg-open`, `nautilus`, and `gnome-system-monitor` where available.
+**Limitations:** macOS uses **Spotlight** (`Cmd+Space`) to open URLs in the default browser or launch applications. Before the **first query**, the deck sends only the shortcut and asks **"Did Spotlight open?"** on its own display (the on-device UI is in Polish: **NIE / TAK**). Select **NIE** if it did not; the deck will NOT type into your active editor. Check **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** and try the shortcut manually. Selecting **TAK** permits the query and later attempts without prompting. This is a manual confirmation, **not** remote focus detection; changing host shortcuts later can still break the sequence. `Cmd+F3` (Show Desktop) depends on macOS settings. Linux targets **GNOME/Ubuntu** with `xdg-open`, `nautilus` and `gnome-system-monitor`.
 
 ## Hardware used in this build
 
@@ -78,7 +78,7 @@ Shows Poland time, a second timezone and the date. A blue background indicates a
 
 ### Applications
 
-The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it types the URL **directly in Spotlight to open the default browser**; on GNOME it uses **Alt+F2 → xdg-open**.
+The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it uses **Cmd+Space** and types the URL only after the first Spotlight confirmation; on GNOME it uses **Alt+F2 → xdg-open**.
 
 Names and URLs can be changed in the local portal or `include/UserConfig.h`. Use `http://` or `https://` URLs with safe ASCII characters and percent-encode spaces as `%20`.
 
@@ -183,7 +183,7 @@ Detailed customization examples are in [docs/CUSTOMIZATION.md](docs/CUSTOMIZATIO
 
 ## Current limitations
 
-- Windows 10/11 is the established baseline. macOS has been tested on a real Mac; the v0.2.1 URL, Finder and Show Desktop changes still need on-device retesting. Linux GNOME requires host-specific verification.
+- Windows 10/11 is the established baseline. macOS has been tested on a real Mac but version 0.2.1 was observed to type queries into the active editor; v0.2.2 adds a first-use Spotlight check and still requires device testing. Linux GNOME requires host-specific verification.
 - Typing URLs relies on compatible ASCII key mappings (Polish Programmer works for the original Windows setup); other keyboard layouts may need changes.
 - macOS website launching uses Spotlight to open the **default browser**; GNOME requires `xdg-open` and a working Alt+F2 command launcher.
 - The host should be unlocked for opening URLs and launching applications.

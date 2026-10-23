@@ -21,7 +21,8 @@ printf '%s\n' '[2/4] Installing pinned PlatformIO and esptool dependencies...'
     'platformio==6.2.0' 'intelhex==2.3.0'
 
 # Never publish stale firmware if the new build fails.
-rm -f web/firmware/m5stack-touch-control-deck.factory.bin
+rm -f web/firmware/m5stack-touch-control-deck.factory.bin web/firmware/m5stack-touch-control-deck.update.bin
+rm -f web/firmware/manifest-update.json
 
 # Reuse the photo already included in the repository without duplicating it in source control.
 if [ -f images/m5stack-touch-control-deck.jpg ]; then
@@ -36,6 +37,10 @@ printf '%s\n' '[3/4] Building M5Stack CoreS3 SE firmware...'
 printf '%s\n' '[4/4] Merging bootloader, partitions and firmware for ESP Web Tools...'
 "$VENV/bin/python" tools/package_web_firmware.py
 
+test -s web/firmware/m5stack-touch-control-deck.update.bin || {
+    echo 'ERROR: The app-only firmware update image is missing.' >&2
+    exit 1
+}
 test -s web/firmware/m5stack-touch-control-deck.factory.bin || {
     echo 'ERROR: The firmware installer image is missing.' >&2
     exit 1

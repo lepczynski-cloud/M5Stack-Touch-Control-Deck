@@ -2,8 +2,10 @@
  * Full M5Stack build video: https://www.youtube.com/watch?v=Jz1xCBi-Q1o
  */
 const YOUTUBE_VIDEO_ID = "Jz1xCBi-Q1o";
-const FW_PATH = "./firmware/m5stack-touch-control-deck.factory.bin";
-const MANIFEST_PATH = "./firmware/manifest.json";
+const INSTALL_OPTIONS = [
+  {manifest: "./firmware/manifest-update.json", image: "m5stack-touch-control-deck.update.bin", offset: 65536},
+  {manifest: "./firmware/manifest.json", image: "m5stack-touch-control-deck.factory.bin", offset: 0}
+];
 
 const translations = {
   en: {
@@ -25,14 +27,15 @@ const translations = {
     featConfigTitle: "Local configuration", featConfigDesc: "Change shortcuts profile, app buttons, brightness and time zones through the device’s local configuration portal.",
     kickerInstall: "WEB FLASHER", installTitle: "From browser to device.", installIntro: "No local compilation for visitors. Just the correct board, a USB data cable and a compatible desktop browser.",
     step1Title: "Connect your device", step1Desc: "Plug your M5Stack CoreS3 SE into your computer with a USB-C data cable. The battery and Scroll Unit are optional.",
-    step2Title: "Install in the browser", step2Desc: "Use a compatible desktop browser over HTTPS, click Install, and select your device's USB serial port.",
+    step2Title: "Install in the browser", step2Desc: "For an existing deck choose Update; for a new or reset device choose Factory install. Select the USB port and never select Erase device if you want to preserve settings.",
     step3Title: "Pair and choose your OS", step3Desc: "Pair “M5 Control Deck” over Bluetooth, then select Windows, macOS or Linux GNOME on the touchscreen.",
-    noteTitle: "Before you start", noteText: "Only for M5Stack CoreS3 SE. Installing may erase stored settings. Windows is the tested baseline. macOS has been tested on a real Mac; check your Spotlight and Show Desktop shortcuts. Linux GNOME still needs validation on your setup.",
+    noteTitle: "Before you start", noteText: "For CoreS3 SE only. Choose Update and decline Erase device to keep your NVS settings. Factory install resets them. macOS URL and app launching require an enabled Cmd+Space Spotlight shortcut; the deck checks this before typing.",
     installerLabel: "DEVICE INSTALLER", installerDevice: "M5Stack CoreS3 SE", installerSpec: "ESP32-S3 · 16 MB flash · USB-C", statusChecking: "Checking firmware availability…",
     statusReady: "Firmware ready to install", statusMissing: "Firmware is unavailable in this deployment. Please try again later or see the GitHub installation instructions.",
     statusUnavailable: "Firmware package unavailable", statusUnsupported: "Browser installation unavailable", fallbackInstall: "Use the Windows upload guide ↗", flashButton: "Install firmware",
     unsupported: "Your browser does not support this installer. Open this site in a compatible desktop browser such as Chrome or Edge.",
-    installerFooter: "Installation runs locally in your browser over USB. No account required.",
+    updateTitle: "Already installed? Update firmware", updateDesc: "Only the application image is written. To preserve your configuration, NEVER select 'Erase device' in ESP Web Tools. Use the same M5Stack partition layout.", flashUpdateButton: "Update firmware (keep settings)", factoryTitle: "First installation or factory reset", factoryWarning: "Warning: factory installation overwrites the settings area and removes Wi-Fi credentials, customized shortcuts and device settings. Only choose it when you want a reset.", flashFactoryButton: "Factory install (erase settings)",
+    installerFooter: "Flashing runs through USB in your browser. Always review any erase warning before proceeding.",
     kickerVideo: "BUILD & DEMO", videoTitle: "See how it comes together.", videoIntro: "A closer look at the hardware, 3D-printed case, firmware upload and the finished control deck in action.",
     videoPlaceholder: "Build video", videoPlaceholderDesc: "The full YouTube video will be embedded here.", videoChannel: "Visit my YouTube channel ↗", videoInside: "IN THE VIDEO",
     videoSideTitle: "A project you can actually build.", videoBullet1: "Assembling the M5Stack modules without soldering", videoBullet2: "Fitting a 3D-printed desk enclosure",
@@ -62,14 +65,15 @@ const translations = {
     featConfigTitle: "Lokalna konfiguracja", featConfigDesc: "Zmieniaj system hosta, kafelki, jasność i strefy czasowe w lokalnym panelu WWW urządzenia.",
     kickerInstall: "INSTALATOR WWW", installTitle: "Z przeglądarki na urządzenie.", installIntro: "Bez kompilowania po stronie użytkownika. Wystarczy odpowiedni moduł, przewód USB z transmisją danych i zgodna przeglądarka na komputerze.",
     step1Title: "Podłącz urządzenie", step1Desc: "Podłącz M5Stack CoreS3 SE do komputera przewodem USB-C z transmisją danych. Akumulator i pokrętło są opcjonalne.",
-    step2Title: "Wgraj przez przeglądarkę", step2Desc: "Otwórz stronę przez HTTPS w zgodnej przeglądarce komputerowej, kliknij Instaluj i wybierz port USB urządzenia.",
+    step2Title: "Wgraj przez przeglądarkę", step2Desc: "Na używanym panelu wybierz Aktualizuj, a na nowym Instalacja fabryczna. Wskaż port USB i NIE wybieraj Erase device, jeśli chcesz zachować ustawienia.",
     step3Title: "Sparuj i wybierz system", step3Desc: "Sparuj „M5 Control Deck” przez Bluetooth, a następnie na ekranie wybierz Windows, macOS lub Linux GNOME.",
-    noteTitle: "Zanim zaczniesz", noteText: "Tylko dla M5Stack CoreS3 SE. Wgrywanie może usunąć ustawienia. Windows to sprawdzona wersja bazowa. macOS był testowany na Macu; sprawdź ustawienia Spotlight i Pulpitu. Linux GNOME wymaga testów na Twojej konfiguracji.",
+    noteTitle: "Zanim zaczniesz", noteText: "Tylko dla CoreS3 SE. Wybierz Aktualizuj i odrzuć Erase device, aby zachować ustawienia NVS. Instalacja fabryczna je resetuje. Na macOS uruchamianie stron i aplikacji wymaga działającego Cmd+Spacja (Spotlight), co urządzenie sprawdza przed wpisaniem tekstu.",
     installerLabel: "INSTALATOR URZĄDZENIA", installerDevice: "M5Stack CoreS3 SE", installerSpec: "ESP32-S3 · 16 MB flash · USB-C", statusChecking: "Sprawdzam dostępność firmware…",
     statusReady: "Firmware gotowy do wgrania", statusMissing: "Firmware nie jest dostępny w tym wdrożeniu. Spróbuj ponownie później lub skorzystaj z instrukcji na GitHubie.",
     statusUnavailable: "Brak gotowego firmware", statusUnsupported: "Przeglądarka nie obsługuje instalatora", fallbackInstall: "Instrukcja wgrywania przez Windows ↗", flashButton: "Wgraj firmware",
     unsupported: "Twoja przeglądarka nie obsługuje instalatora. Otwórz stronę na komputerze w zgodnej przeglądarce, np. Chrome lub Edge.",
-    installerFooter: "Wgrywanie odbywa się lokalnie przez USB, bez zakładania konta.",
+    updateTitle: "Masz już urządzenie? Aktualizuj firmware", updateDesc: "Wgrywana jest wyłącznie aplikacja. Aby zachować konfigurację, NIE wybieraj opcji 'Erase device' w ESP Web Tools. Układ partycji M5Stack musi pozostać bez zmian.", flashUpdateButton: "Aktualizuj (zachowaj ustawienia)", factoryTitle: "Pierwsza instalacja lub reset", factoryWarning: "Uwaga: instalacja fabryczna nadpisuje obszar ustawień, usuwa dane Wi-Fi, własne skróty i konfigurację. Wybierz ją tylko wtedy, gdy chcesz zacząć od zera.", flashFactoryButton: "Instalacja fabryczna (kasuje ustawienia)",
+    installerFooter: "Wgrywanie odbywa się przez USB w przeglądarce. Sprawdź każdą prośbę o skasowanie pamięci przed potwierdzeniem.",
     kickerVideo: "BUDOWA I DEMO", videoTitle: "Zobacz projekt w praktyce.", videoIntro: "Montaż modułów, obudowa 3D, wgrywanie kodu i działanie gotowego panelu.",
     videoPlaceholder: "Film z budowy", videoPlaceholderDesc: "W tym miejscu pojawi się pełny film z YouTube.", videoChannel: "Odwiedź mój kanał YouTube ↗", videoInside: "W FILMIE",
     videoSideTitle: "Projekt, który możesz odtworzyć.", videoBullet1: "Łączenie modułów M5Stack bez lutowania", videoBullet2: "Montaż obudowy wydrukowanej w 3D",
@@ -128,21 +132,25 @@ async function checkFirmware() {
   firmwareState = "checking";
   renderFirmwareStatus();
   try {
-    const manifestResponse = await fetch(MANIFEST_PATH, {cache: "no-store"});
-    if (!manifestResponse.ok) throw new Error("Missing firmware manifest");
-    const manifest = await manifestResponse.json();
+    let publishedVersion = null;
+    for (const option of INSTALL_OPTIONS) {
+      const manifestResponse = await fetch(option.manifest, {cache: "no-store"});
+      if (!manifestResponse.ok) throw new Error("Missing firmware manifest");
+      const manifest = await manifestResponse.json();
+      if (!/^\d+\.\d+\.\d+$/.test(manifest.version || "")) throw new Error("Invalid version");
+      if (publishedVersion && manifest.version !== publishedVersion) throw new Error("Mismatched installer versions");
+      publishedVersion = manifest.version;
+      const build = manifest.builds?.find(b => b.chipFamily === "ESP32-S3");
+      if (!build || build.parts?.length !== 1 || build.parts[0].offset !== option.offset || build.parts[0].path !== option.image || !manifest.new_install_prompt_erase) {
+        throw new Error("Firmware manifest does not match the board");
+      }
+      const response = await fetch(`./firmware/${option.image}`, {method: "HEAD", cache: "no-store"});
+      const contentType = (response.headers.get("content-type") || "").toLowerCase();
+      const size = Number(response.headers.get("content-length") || 0);
+      if (!response.ok || contentType.includes("text/html") || (size > 0 && size < 65536)) throw new Error("Firmware image is missing or invalid");
+    }
     const versionLabel = document.querySelector(".installer-version");
-    if (versionLabel && /^\d+\.\d+\.\d+$/.test(manifest.version || "")) {
-      versionLabel.textContent = `v${manifest.version}`;
-    }
-    const build = manifest.builds?.find(b => b.chipFamily === "ESP32-S3");
-    if (!build || build.parts?.length !== 1 || build.parts[0].offset !== 0 || build.parts[0].path !== "m5stack-touch-control-deck.factory.bin") {
-      throw new Error("Firmware manifest does not match the board");
-    }
-    const response = await fetch(FW_PATH, {method: "HEAD", cache: "no-store"});
-    const contentType = (response.headers.get("content-type") || "").toLowerCase();
-    const size = Number(response.headers.get("content-length") || 0);
-    if (!response.ok || contentType.includes("text/html") || (size > 0 && size < 65536)) throw new Error("Firmware image is missing or invalid");
+    if (versionLabel) versionLabel.textContent = `v${publishedVersion}`;
     if (!("serial" in navigator)) {
       firmwareState = "unsupported";
       wrapper.hidden = false;

@@ -300,6 +300,10 @@ void NetworkPortal::handleSave() {
         errors += "Wybierz poprawny system: Windows, macOS lub Linux GNOME.<br>";
     }
 
+    // Uzytkownik moze powtorzyc test Spotlight po zmianie skrotow macOS.
+    if (server_.hasArg("mac_retest_spotlight")) config.macSpotlightVerified = false;
+    if (previousConfig.hostOs != config.hostOs) config.macSpotlightVerified = false;
+
     config.standbyEnabled = server_.hasArg("standby_enabled");
     config.standbyTimeoutMinutes = static_cast<uint16_t>(
         constrain(static_cast<int>(server_.arg("standby_minutes").toInt()), 1, 60)
@@ -478,7 +482,7 @@ String NetworkPortal::buildPortalHtml() const {
         html += hostOsName(os);
         html += F("</option>");
     }
-    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: adres URL wpisywany do Spotlight i otwierany w domyslnej przegladarce (np. Chrome).</small></section>");
+    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: wymagany skrot Spotlight (domyslnie Cmd+Spacja). Przed pierwszym wpisaniem adresu M5Stack poprosi o sprawdzenie, czy Spotlight jest rzeczywiscie otwarty. Sama klawiatura BLE nie otrzymuje informacji o fokusie.</small><label class='check'><input type='checkbox' name='mac_retest_spotlight' value='1'>Wymus ponowny test skrotu Spotlight przy nastepnej akcji</label></section>");
 
     html += F("<section class='card'><h2>Sieć i ekran</h2>");
     html += F("<label class='check'><input type='checkbox' name='wifi_enabled' value='1'");

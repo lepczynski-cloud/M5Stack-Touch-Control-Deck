@@ -1,0 +1,16 @@
+{
+  "name": "M5Stack Touch Control Deck - Firmware Update",
+  "version": "0.2.2",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "m5stack-touch-control-deck.update.bin",
+          "offset": 65536
+        }
+      ]
+    }
+  ]
+}

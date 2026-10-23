@@ -11,6 +11,7 @@ import json
 import os
 import re
 import subprocess
+import shutil
 import sys
 from pathlib import Path
 
@@ -18,6 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / ".pio" / "build" / "cores3_se"
 OUTPUT = ROOT / "web" / "firmware" / "m5stack-touch-control-deck.factory.bin"
 MANIFEST = ROOT / "web" / "firmware" / "manifest.json"
+UPDATE_OUTPUT = ROOT / "web" / "firmware" / "m5stack-touch-control-deck.update.bin"
+UPDATE_MANIFEST = ROOT / "web" / "firmware" / "manifest-update.json"
 
 
 def pio_homes() -> list[Path]:
@@ -107,20 +110,43 @@ def main() -> int:
         raise ValueError(f"Unexpected merged firmware size: {size}")
     validate_image("Merged factory image", OUTPUT, b"\xe9")
 
+    # Do aktualizacji zapisujemy WYLACZNIE aplikacje od 0x10000. Merged
+    # factory image od 0x0 zawiera padding 0xFF przecinajacy partycje NVS
+    # (np. 0x9000..0xE000) i podczas zapisu niszczy konfiguracje.
+    shutil.copyfile(app, UPDATE_OUTPUT)
+    update_size = UPDATE_OUTPUT.stat().st_size
+    if not 128 * 1024 < update_size < 8 * 1024 * 1024:
+        UPDATE_OUTPUT.unlink(missing_ok=True)
+        raise ValueError(f"Unexpected update image size: {update_size}")
+    validate_image("Application-only update", UPDATE_OUTPUT, b"\xe9")
+
     version = firmware_version()
-    manifest = {
-        "name": "M5Stack Touch Control Deck",
+    factory_manifest = {
+        "name": "M5Stack Touch Control Deck - Factory Installation",
         "version": version,
         "new_install_prompt_erase": True,
         "builds": [{"chipFamily": "ESP32-S3", "parts": [
             {"path": OUTPUT.name, "offset": 0}
         ]}]
     }
-    MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    update_manifest = {
+        "name": "M5Stack Touch Control Deck - Firmware Update",
+        "version": version,
+        # Uwaga: narzedzie nadal pozwala wybrac "Erase device".
+        # Trzeba odrzucic te opcje w dialogu, by nie kasowac NVS.
+        "new_install_prompt_erase": True,
+        "builds": [{"chipFamily": "ESP32-S3", "parts": [
+            {"path": UPDATE_OUTPUT.name, "offset": 0x10000}
+        ]}]
+    }
+    MANIFEST.write_text(json.dumps(factory_manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    UPDATE_MANIFEST.write_text(json.dumps(update_manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     checksum = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()
     print(f"READY: {OUTPUT.relative_to(ROOT)}")
     print(f"Firmware version: {version}")
-    print(f"Firmware size: {size:,} bytes")
+    print(f"Factory image size: {size:,} bytes")
+    print(f"Application-only update size: {update_size:,} bytes")
+    print("Update offset: 0x10000 (NVS must NOT be erased in ESP Web Tools)")
     print(f"SHA-256: {checksum}")
     print("The firmware image and manifest are ready for static website deployment.")
     return 0
