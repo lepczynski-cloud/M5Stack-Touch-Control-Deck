@@ -300,9 +300,15 @@ void NetworkPortal::handleSave() {
         errors += "Wybierz poprawny system: Windows, macOS lub Linux GNOME.<br>";
     }
 
-    // Uzytkownik moze powtorzyc test Spotlight po zmianie skrotow macOS.
-    if (server_.hasArg("mac_retest_spotlight")) config.macSpotlightVerified = false;
-    if (previousConfig.hostOs != config.hostOs) config.macSpotlightVerified = false;
+    // BLE HID nie raportuje aplikacji domyslnej hosta. Uzytkownik
+    // wybiera przegladarke dla macOS w lokalnym panelu AP.
+    const String selectedBrowser = server_.arg("mac_browser");
+    if (selectedBrowser == "0" || selectedBrowser == "1" || selectedBrowser == "2" ||
+        selectedBrowser == "3" || selectedBrowser == "4") {
+        config.macBrowser = static_cast<MacBrowser>(selectedBrowser.toInt());
+    } else {
+        errors += "Wybierz obsługiwaną przeglądarkę macOS.<br>";
+    }
 
     config.standbyEnabled = server_.hasArg("standby_enabled");
     config.standbyTimeoutMinutes = static_cast<uint16_t>(
@@ -482,7 +488,19 @@ String NetworkPortal::buildPortalHtml() const {
         html += hostOsName(os);
         html += F("</option>");
     }
-    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: wymagany skrot Spotlight (domyslnie Cmd+Spacja). Przed pierwszym wpisaniem adresu M5Stack poprosi o sprawdzenie, czy Spotlight jest rzeczywiscie otwarty. Sama klawiatura BLE nie otrzymuje informacji o fokusie.</small><label class='check'><input type='checkbox' name='mac_retest_spotlight' value='1'>Wymus ponowny test skrotu Spotlight przy nastepnej akcji</label></section>");
+    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu. macOS: wlacz Cmd+Spacja dla Spotlight. Nie ma juz dodatkowego pytania na ekranie urzadzenia.</small>");
+    html += F("<label for='mac_browser'>Przeglądarka używana na macOS</label><select id='mac_browser' name='mac_browser'>");
+    for (uint8_t index = 0; index <= static_cast<uint8_t>(MacBrowser::Edge); ++index) {
+        const MacBrowser browser = static_cast<MacBrowser>(index);
+        html += F("<option value='");
+        html += String(index);
+        html += F("'");
+        if (config.macBrowser == browser) html += F(" selected");
+        html += F(">");
+        html += macBrowserName(browser);
+        html += F("</option>");
+    }
+    html += F("</select><small>Na macOS 26 Tahoe M5Stack uruchamia wybrana przegladarke przez Spotlight (Aplikacje), a nastepnie wpisuje URL do paska adresu. Nie wybiera plikow z wynikow wyszukiwania. BLE nie potrafi wykryc domyslnej przegladarki; ustaw tutaj te sama, co w macOS. Zmiana wymaga zapisu i restartu urzadzenia.</small></section>");
 
     html += F("<section class='card'><h2>Sieć i ekran</h2>");
     html += F("<label class='check'><input type='checkbox' name='wifi_enabled' value='1'");

@@ -15,14 +15,11 @@ public:
     bool isConnected() const;
     void setHostOS(HostOS host);
     HostOS hostOS() const;
+    void setMacBrowser(MacBrowser browser);
     String bondedPeerIdentity() const;
     static bool isSafeBrowserUrl(const String& url);
     // Konfigurowalny zestaw skrotow. Linux oznacza srodowisko GNOME.
 
-    // Pre-flight dla macOS: rozdziela Cmd+Spacja od wpisywania tekstu.
-    // Interfejs moze zapytac uzytkownika, czy Spotlight ma fokus.
-    bool openMacLauncherOnly();
-    bool finishMacLauncherQuery(const String& query, uint32_t resultsDelayMs = 850);
     bool openUrl(const String& url);
 
     bool mediaPrevious();
@@ -45,10 +42,13 @@ private:
     BleKeyboard keyboard_;
     uint32_t lastBatteryUpdateMillis_ = 0;
     HostOS hostOs_ = HostOS::Windows;
+    MacBrowser macBrowser_ = MacBrowser::Chrome;
 
     bool runGnomeCommand(const String& command);
     bool openMacApp(const String& appName);
+    bool openMacLauncherOnly();
     bool openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs);
+    bool openMacBrowser();
 
     bool ready() const;
     bool chord(std::initializer_list<uint8_t> keys, uint32_t holdMs = 70);

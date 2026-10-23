@@ -9,8 +9,10 @@ namespace {
 constexpr uint16_t MAC_HID_KEY_DELAY_MS = 20;
 constexpr uint16_t DEFAULT_HID_KEY_DELAY_MS = 12;
 constexpr uint32_t MAC_SPOTLIGHT_FOCUS_MS = 650;
-constexpr uint32_t MAC_SPOTLIGHT_RESULTS_MS = 800;
 constexpr uint32_t MAC_APP_RESULTS_MS = 1100;
+constexpr uint32_t MAC_BROWSER_RESULTS_MS = 1000;
+constexpr uint32_t MAC_BROWSER_ACTIVATION_MS = 2200;
+constexpr uint32_t MAC_ADDRESS_BAR_FOCUS_MS = 220;
 }
 
 BleController::BleController()
@@ -46,6 +48,10 @@ void BleController::setHostOS(HostOS host) {
 
 HostOS BleController::hostOS() const {
     return hostOs_;
+}
+
+void BleController::setMacBrowser(MacBrowser browser) {
+    macBrowser_ = browser;
 }
 
 String BleController::bondedPeerIdentity() const {
@@ -104,8 +110,8 @@ bool BleController::openMacLauncherOnly() {
     return ready();
 }
 
-bool BleController::finishMacLauncherQuery(const String& query, uint32_t resultsDelayMs) {
-    if (!ready() || query.isEmpty()) return false;
+bool BleController::openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs) {
+    if (!openMacLauncherOnly() || query.isEmpty()) return false;
     keyboard_.print(query);
     delay(resultsDelayMs);
     if (!ready()) return false;
@@ -113,24 +119,44 @@ bool BleController::finishMacLauncherQuery(const String& query, uint32_t results
     return true;
 }
 
-bool BleController::openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs) {
-    // Z samego BLE HID nie mozemy sprawdzic fokusu hosta. Interfejs
-    // wymaga jednorazowego potwierdzenia Spotlight przed uzyciem tej metody.
-    return openMacLauncherOnly() && finishMacLauncherQuery(query, resultsDelayMs);
+bool BleController::openMacApp(const String& appName) {
+    // Pozostawiamy metode potwierdzona na Macu: zwykle Spotlight dla
+    // Findera i Monitora aktywnosci.
+    return openMacSpotlightQuery(appName, MAC_APP_RESULTS_MS);
 }
 
-bool BleController::openMacApp(const String& appName) {
-    // Spotlight uruchamia Finder i Monitor aktywnosci bez dodatkowego programu.
-    return openMacSpotlightQuery(appName, MAC_APP_RESULTS_MS);
+bool BleController::openMacBrowser() {
+    if (!openMacLauncherOnly()) return false;
+    // macOS Tahoe: Cmd+1 ogranicza wyniki Spotlight do aplikacji.
+    // Dzięki temu plik z nazwa ChatGPT nie moze zostac wybrany jako URL.
+    if (!chord({KEY_LEFT_GUI, static_cast<uint8_t>('1')})) return false;
+    delay(220);
+    if (!ready()) return false;
+    keyboard_.print(String(macBrowserName(macBrowser_)));
+    delay(MAC_BROWSER_RESULTS_MS);
+    if (!ready()) return false;
+    keyboard_.write(KEY_RETURN);
+    delay(MAC_BROWSER_ACTIVATION_MS);
+    return ready();
 }
 
 bool BleController::openUrl(const String& url) {
     if (!ready() || !isSafeBrowserUrl(url)) return false;
 
     if (hostOs_ == HostOS::MacOS) {
-        // macOS otwiera wpisany w Spotlight URL w przegladarce domyslnej
-        // (np. Chrome). Nie trzeba uruchamiac Safari i czekac na jego fokus.
-        return openMacSpotlightQuery(url, MAC_SPOTLIGHT_RESULTS_MS);
+        // Nie zatwierdzamy URL jako wyniku wyszukiwania Spotlight: na
+        // macOS Tahoe "ChatGPT" moze otworzyc dokument o tej nazwie.
+        // Najpierw otwieramy wskazana przez uzytkownika przegladarke
+        // w Spotlight (filtr Aplikacje), a potem jej pasek adresu.
+        if (!openMacBrowser()) return false;
+        if (!chord({KEY_LEFT_GUI, static_cast<uint8_t>('l')})) return false;
+        delay(MAC_ADDRESS_BAR_FOCUS_MS);
+        if (!ready()) return false;
+        keyboard_.print(url);
+        delay(UserDefaults::URL_SUBMIT_DELAY_MS);
+        if (!ready()) return false;
+        keyboard_.write(KEY_RETURN);
+        return true;
     }
 
     if (hostOs_ == HostOS::LinuxGnome) {
@@ -208,9 +234,11 @@ bool BleController::openSnippingTool() {
 
 bool BleController::showDesktop() {
     if (hostOs_ == HostOS::MacOS) {
-        // Cmd+F3: Pokaz biurko (nie Ctrl+strzalka w gore = Mission Control).
-        // Wymaga wlaczonego skrotu Show Desktop w ustawieniach macOS.
-        return chord({KEY_LEFT_GUI, KEY_F3});
+        // F11 na zewnetrznej klawiaturze HID: "Show Desktop" w macOS.
+        // Na wbudowanej klawiaturze MacBooka Apple opisuje go jako Fn+F11.
+        // Jezeli uzytkownik zmienil przypisanie, powinien ustawic F11 w
+        // System Settings > Keyboard > Keyboard Shortcuts > Mission Control.
+        return chord({KEY_F11});
     }
     if (hostOs_ == HostOS::LinuxGnome) {
         // GNOME Activities, zamiast Super+D, ktore nie jest uniwersalne.

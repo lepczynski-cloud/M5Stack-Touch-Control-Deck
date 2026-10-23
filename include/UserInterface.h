@@ -88,8 +88,6 @@ private:
 
     bool pairingConfirmationVisible_ = false;
     bool hostOsPromptVisible_ = false;
-    bool macSpotlightPromptVisible_ = false;
-    String pendingMacQuery_;
 
     String pendingHostPeerId_;
     bool powerMenuVisible_ = false;
@@ -142,8 +140,6 @@ private:
     void handleSettingsTap(int16_t x, int16_t y);
     void handleConnectionsTap(int16_t x, int16_t y);
     void handleHostOsPromptTap(int16_t x, int16_t y);
-    void handleMacSpotlightPromptTap(int16_t x, int16_t y);
-    bool requestMacSpotlightCheck(const String& query);
 
     void selectHostOS(HostOS os);
     void handlePairingConfirmationTap(int16_t x, int16_t y);
@@ -164,7 +160,6 @@ private:
     void drawConnectionsScreen();
     void drawPairingConfirmation();
     void drawHostOSPrompt();
-    void drawMacSpotlightPrompt();
 
     void drawPowerMenu();
     void drawStandbyPrompt();

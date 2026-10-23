@@ -6,7 +6,7 @@
 
 Dotykowy, bezprzewodowy panel sterowania oparty na **M5Stack CoreS3 SE**, działający jako klawiatura Bluetooth HID i kontroler multimediów. Dostępne są profile skrótów dla **Windows 10/11, macOS i Linux (GNOME/Ubuntu)**. Po nowym parowaniu panel poprosi o wybór systemu. Do codziennego sterowania nie potrzebujesz aplikacji działającej na komputerze.
 
-**Status:** Windows jest sprawdzoną wersją bazową. W macOS wystąpiła regresja w wersji 0.2.1: niedziałający skrót Spotlight powodował wpisywanie tekstu do aktywnego edytora. **v0.2.2 dodaje test i potwierdzenie Spotlight przed wysłaniem zapytania**, ale samo uruchamianie adresów i aplikacji nadal zależy od ustawień macOS. Linux GNOME wymaga testów na docelowym komputerze.
+**Status:** Windows pozostaje sprawdzoną wersją bazową. Testy na macOS Tahoe potwierdziły działanie Monitora aktywności, Findera, zmiany aplikacji, zrzutów ekranu i blokowania Maca. **v0.2.3** usuwa pytanie o Spotlight, otwiera adresy w wybranej przeglądarce (ustawianej w panelu AP) i wysyła `F11` dla funkcji Pulpit. Te dwie poprawki wymagają jeszcze potwierdzenia na fizycznym Macu. Linux GNOME zależy od ustawień hosta.
 
 ## Dwa sposoby wgrania oprogramowania
 
@@ -45,7 +45,7 @@ Dostępne są trzy profile klawiatury BLE HID: **Windows 10/11**, **macOS** i **
 
 System możesz zmienić w każdej chwili na ekranie **Połączenia** albo w portalu AP (`http://192.168.4.1`). Zmiana systemu nie wymaga ponownej kompilacji ani ponownego parowania.
 
-**Ważne ograniczenia:** macOS wykorzystuje `Cmd+Space` (Spotlight), aby otworzyć URL w domyślnej przeglądarce albo uruchomić aplikację. Przy **pierwszej próbie** po wyborze profilu urządzenie wysyła sam skrót, a na własnym ekranie pyta **„Czy otwarto Spotlight?”**. Jeśli nie, wybierz **NIE**: program nie wpisze tekstu do aktywnego edytora. Sprawdź na Macu **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** i czy ręczne `Cmd+Space` działa. Wybór **TAK** zezwala na wysłanie bieżącego zapytania i kolejne próby bez pytania. Nie jest to weryfikacja fokusu przez BLE i ustawienia/launcher mogą zmienić się później. `Cmd+F3` (Pulpit) też zależy od ustawień macOS. Profil Linux wymaga GNOME/Ubuntu z `xdg-open`, `nautilus` i `gnome-system-monitor`.
+**Ważne ograniczenia:** na macOS skrót `Cmd+Spacja` musi otwierać Spotlight. URL jest wpisywany **dopiero po uruchomieniu wskazanej przeglądarki** (Chrome/Safari/Firefox/Brave/Edge). Nie można automatycznie wykryć przeglądarki domyślnej przez BLE HID: wybierz ją w lokalnym panelu WWW AP (`http://192.168.4.1`, domyślnie Google Chrome). Nie ma już pytania o Spotlight na ekranie M5Stacka. Przy braku działającego skrótu urządzenie nie jest w stanie samodzielnie zweryfikować fokusu. Przycisk Pulpit wysyła `F11`; gdy nie działa, przypisz **F11** do "Show Desktop" w ustawieniach skrótów Mission Control. Linux wymaga GNOME/Ubuntu z `xdg-open`, `nautilus` i `gnome-system-monitor`. Szczegóły: [Troubleshooting](docs/TROUBLESHOOTING.md).
 
 ## Sprzęt użyty w tym projekcie
 
@@ -83,7 +83,7 @@ Układ 2 x 3:
 |---|---|---|
 | Canva | Admin Toolkit | Botland |
 
-Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Cmd+Space → URL → Enter** na macOS (po pierwszym potwierdzeniu Spotlight) albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
+Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Cmd+Space → wybrana przeglądarka → Cmd+L → URL → Enter** na macOS albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
 
 ### Multimedia
 
@@ -103,11 +103,11 @@ Jeżeli podłączono Scroll Unit, obrót zmienia głośność, a kliknięcie ste
 | Monitor systemu | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
 | Blokada ekranu | Win+L | Ctrl+Cmd+Q | Super+L |
 | Zrzut/wycinek | Win+Shift+S | Shift+Cmd+5 | Print Screen |
-| Pulpit / widok okien | Win+D | Cmd+F3 (Pulpit) | Super (Activities) |
+| Pulpit / widok okien | Win+D | F11 (Pulpit, wymagany skrót Mission Control) | Super (Activities) |
 | Pliki | Win+E | Spotlight → Finder | Alt+F2 → nautilus |
 | Zmiana okna/aplikacji | Alt+Tab | Cmd+Tab | Super+Tab |
 
-Etykiety na ekranie automatycznie dostosowują się do wybranego profilu. Na macOS przycisk „Pulpit” wysyła **Cmd+F3 (Show Desktop)**, a „Finder” uruchamia aplikację przez Spotlight. Jeśli `Cmd+F3` nie działa, sprawdź System Settings → Keyboard → Keyboard Shortcuts → Mission Control. W GNOME przycisk używa **Activities**, ponieważ skróty pulpitów różnią się między środowiskami Linux.
+Etykiety na ekranie automatycznie dostosowują się do wybranego profilu. Na macOS przycisk „Pulpit” wysyła **F11 (Show Desktop)**. Jeżeli nie reaguje, ustaw skrót F11 w **System Settings → Keyboard → Keyboard Shortcuts → Mission Control → Show Desktop**. „Finder” nadal uruchamiany jest przez Spotlight. W GNOME przycisk używa **Activities**, ponieważ skróty pulpitów różnią się między środowiskami Linux.
 
 ### Ustawienia
 
@@ -177,7 +177,7 @@ Login: admin
 Hasło panelu: admin123
 ```
 
-AP można również włączyć ręcznie na ekranie **Ustawienia**, także podczas połączenia z domowym Wi-Fi. Portal umożliwia zmianę **systemu hosta (Windows / macOS / Linux GNOME)**, sieci Wi-Fi, jasności, drugiej strefy czasowej, czasu bezczynności, danych AP, danych logowania oraz nazw i adresów sześciu kafelków. Zapis przez portal powoduje restart urządzenia.
+AP można również włączyć ręcznie na ekranie **Ustawienia**, także podczas połączenia z domowym Wi-Fi. Portal umożliwia zmianę **systemu hosta (Windows / macOS / Linux GNOME) i przeglądarki macOS (Chrome / Safari / Firefox / Brave / Edge)**, sieci Wi-Fi, jasności, drugiej strefy czasowej, czasu bezczynności, danych AP, danych logowania oraz nazw i adresów sześciu kafelków. Zapis przez portal powoduje restart urządzenia.
 
 Po pierwszym uruchomieniu warto zmienić domyślne hasło AP i hasło panelu. Portal działa lokalnie przez HTTP, dlatego po zakończeniu konfiguracji najlepiej wyłączyć punkt AP.
 
@@ -207,7 +207,7 @@ Szczegóły modyfikacji: [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md).
 
 - Windows 10/11 jest sprawdzoną platformą bazową. Profile macOS i Linux GNOME są nowe i mogą wymagać korekty ustawień skrótów oraz testów na konkretnej wersji systemu.
 - Wprowadzanie URL zakłada układ klawiatury zgodny z ASCII, w szczególności **Polski programisty** na Windows; niestandardowe układy mogą inaczej interpretować znaki.
-- Na macOS `Cmd+Space` musi uruchamiać Spotlight. W **v0.2.2** przed pierwszym wysłaniem adresu/nazwy aplikacji zostaniesz poproszony o potwierdzenie, czy Spotlight rzeczywiście się otworzył. Nie potwierdzaj, jeśli widzisz edytor; inaczej mógłbyś wpisać w niego tekst. Po zmianie skrótu na Macu uruchom ponowny test, wybierając macOS na ekranie Połączenia lub zaznaczając odpowiednią opcję w portalu AP. Na GNOME wymagane jest `xdg-open` i `Alt+F2`.
+- Na macOS `Cmd+Space` musi uruchamiać Spotlight. W **v0.2.3** nie ma pytania potwierdzającego. Jeśli Spotlight się nie otwiera, sprawdź skróty w ustawieniach Maca. Przeglądarkę dla kafelków wybierasz w portalu AP; BLE HID nie odczytuje automatycznie przeglądarki domyślnej. `F11` musi być przypisany do Show Desktop. Na GNOME wymagane jest `xdg-open` i `Alt+F2`.
 - Komputer powinien być odblokowany, aby zadziałały operacje otwierania adresów i aplikacji.
 - BLE HID nie udostępnia CPU, RAM, GPU ani temperatur. Telemetria wymaga osobnej usługi na komputerze.
 - Urządzenie przechowuje jedno bieżące powiązanie Bluetooth.

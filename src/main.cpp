@@ -96,6 +96,7 @@ void setup() {
 
     showBootStep("Klawiatura Bluetooth", 168);
     bleController.setHostOS(configManager.data().hostOs);
+    bleController.setMacBrowser(configManager.data().macBrowser);
     bleController.begin(initialBatteryLevel());
     showBootStep("Klawiatura Bluetooth", 168, true);
 

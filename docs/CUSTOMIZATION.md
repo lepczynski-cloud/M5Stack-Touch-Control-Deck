@@ -15,7 +15,7 @@ Można tam zmienić:
 - login i hasło portalu,
 - jasność ekranu,
 - drugą strefę czasową,
-- domyślny system hosta `HOST_OS` (Windows=0, macOS=1, Linux GNOME=2),
+- domyślny system hosta `HOST_OS` (Windows=0, macOS=1, Linux GNOME=2) i przeglądarkę `MAC_BROWSER` dla macOS,
 - nazwy i adresy sześciu kafelków,
 - kierunek działania Scroll Unit,
 - czas automatycznego czuwania.
@@ -28,7 +28,7 @@ Domyślne nazwy i adresy znajdują się w tablicach `APP_LABELS` i `APP_URLS` w 
 
 Ikony są przypisane do pozycji kafelków w metodzie `drawAppsScreen()` w `src/UserInterface.cpp`. Ich kształty rysuje metoda `drawIcon()`.
 
-Otwieranie adresów zależy od wybranego systemu: `Win+R` na Windows, Spotlight z pełnym URL (domyślna przeglądarka) na macOS, `Alt+F2` z `xdg-open` w GNOME. Dopuszczalne są adresy `http://` i `https://` z bezpiecznymi znakami ASCII; spacje i niestandardowe znaki koduj procentowo (np. `%20`).
+Otwieranie adresów zależy od wybranego systemu: `Win+R` na Windows, Spotlight → wybrana przeglądarka → `Cmd+L` → URL na macOS, `Alt+F2` z `xdg-open` w GNOME. Dopuszczalne są adresy `http://` i `https://` z bezpiecznymi znakami ASCII; spacje i niestandardowe znaki koduj procentowo (np. `%20`).
 
 ## Zmiana skrótu dla systemu hosta
 
@@ -52,7 +52,7 @@ bool BleController::openWindowsSettings() {
 
 Firmware przechowuje wybrany `HostOS` i identyfikator ostatnio zaakceptowanego powiązania BLE (`pairedHostId`) w NVS (`src/ConfigManager.cpp`). Jeśli biblioteka NimBLE zgłosi nowe powiązanie, `src/UserInterface.cpp` pokazuje ekran wyboru systemu; zwykły reconnect nie wyświetla go ponownie. Profil można także wybrać na ekranie **Połączenia** lub w portalu WWW AP. Automatyczne rozpoznawanie systemu hosta nie jest dostępne w BLE HID.
 
-**Linux oznacza GNOME/Ubuntu**, a nie dowolny menedżer pulpitu. `Alt+F2`, `gnome-system-monitor`, `nautilus` i `xdg-open` są zależne od instalacji. Na macOS otwieranie URL korzysta z Spotlight i domyślnej przeglądarki. Skrót `Cmd+F3` pokazuje pulpit, a Finder uruchamiany jest przez Spotlight. Skróty można zmieniać w ustawieniach macOS; urządzenie nie otrzymuje potwierdzenia przejęcia fokusu.
+**Linux oznacza GNOME/Ubuntu**, a nie dowolny menedżer pulpitu. `Alt+F2`, `gnome-system-monitor`, `nautilus` i `xdg-open` są zależne od instalacji. Na macOS otwieranie URL korzysta ze Spotlight w trybie aplikacji i przeglądarki wybranej w lokalnym portalu WWW; BLE HID nie wykrywa przeglądarki domyślnej. Skrót `F11` wywołuje pulpit, jeżeli macOS ma do niego przypisaną funkcję Show Desktop. Finder uruchamiany jest przez Spotlight. Skróty można zmieniać w ustawieniach macOS; urządzenie nie otrzymuje potwierdzenia przejęcia fokusu.
 
 ## Dodanie nowego ekranu
 

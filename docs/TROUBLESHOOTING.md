@@ -56,24 +56,44 @@ To zamierzone: po wykryciu nowego powiązania BLE wybierz **Windows**, **macOS**
 
 Jeśli zmieniłeś komputer i nowy system nie został wykryty, użyj **Nowe parowanie Bluetooth**, usuń stary wpis `M5 Control Deck` na poprzednim komputerze i sparuj urządzenie ponownie.
 
-## macOS: tekst trafia do edytora zamiast uruchomić aplikację
+## macOS Tahoe: Spotlight nie otwiera się po dotknięciu kafelka
 
-W wersji **0.2.1** zdarzało się, że po naciśnięciu kafelka program wpisywał URL lub `Activity Monitor` do aktywnego dokumentu. Był to wynik wysyłania tekstu po `Cmd+Space`, mimo że Spotlight się nie otworzył. BLE HID nie dostarcza informacji o tym, jakie okno jest aktywne.
+Firmware **v0.2.3 nie wyświetla już na M5Stacku pytania „Czy otwarto Spotlight?”**.
 
-**W wersji 0.2.2:**
+1. Na klawiaturze MacBooka naciśnij **`⌘ + Spacja`**. Sprawdź, czy Spotlight się otwiera.
+2. Jeśli nie, przejdź do **Ustawienia systemowe → Klawiatura → Skróty klawiszowe → Spotlight** i sprawdź, czy włączono **„Pokaż wyszukiwanie Spotlight”** ze skrótem **`⌘ + Spacja`**.
+3. Jeśli kombinacja działa na MacBooku, ale nie z M5Stacka, sprawdź mapowanie klawisza Command dla zewnętrznej klawiatury Bluetooth i konflikty z innymi launcherami.
 
-1. Na ekranie **Połączenia** wybierz **macOS** (ponowny wybór ponawia test).
-2. Otwórz TextEdit na komputerze, żeby zauważyć ewentualny brak działania skrótu.
-3. Naciśnij przycisk aplikacji, Finder albo Monitor aktywności na M5Stacku.
-4. Panel wyśle **wyłącznie Cmd+Spacja**, a następnie zapyta: **Czy otwarto Spotlight?**
-5. Jeżeli na Macu widać Spotlight, wybierz **TAK**, aby wysłać wybrane polecenie. Urządzenie zapamięta potwierdzenie i następne akcje będzie wykonywać bez tego pytania.
-6. Jeżeli Spotlight się NIE pojawił, wybierz **NIE**. Wtedy urządzenie **nie wyśle żadnego tekstu do aktywnego edytora**.
+Klawiatura BLE HID nie widzi aktywnego okna na Macu. Jeśli Spotlight nie otworzy się prawidłowo, niektóre wpisywane teksty nadal mogą trafić do aktywnej aplikacji. Zmiana w v0.2.3 nie jest automatycznym wykrywaniem fokusu.
 
-Jeżeli Spotlight się nie otwiera, przetestuj **ręcznie** skrót `Cmd+Spacja` na klawiaturze Maca, a potem sprawdź **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** oraz ewentualne konflikty z innym launcherem. W lokalnym portalu AP można zaznaczyć opcję wymuszenia ponownego testu.
+## macOS: ChatGPT otwiera dokument zamiast strony WWW
 
-Po poprawnym uruchomieniu Spotlight możesz sprawdzić ręcznie `Activity Monitor`, `Finder` i pełny URL. Wpisany URL powinien otworzyć się w domyślnej przeglądarce wybranej w **System Settings → Desktop & Dock**. Skrót **Pulpit** (`Cmd+F3`) wymaga poprawnej konfiguracji **Mission Control / Show Desktop**. Biblioteka HID może różnie działać z układem klawiatury Maca, zwłaszcza przy `:`, `/` i innych znakach specjalnych.
+Spotlight w macOS Tahoe może ustawić plik o nazwie „ChatGPT” wyżej niż wynik internetowy. Dlatego v0.2.3 **nie zatwierdza już adresu URL jako wyniku wyszukiwania Spotlight**.
 
-**Ograniczenie:** jednorazowe potwierdzenie nie zapewnia wykrywania fokusu przez BLE. Jeśli później przestawisz skrót lub launcher, uruchom test ponownie. Aby zawsze otwierać strony na Macu niezależnie od fokusu, potrzebna byłaby opcjonalna aplikacja pomocnicza. Poprzedni projekt ESP32 PC Control Deck korzystał z programu Python na hoście, więc jego uruchamianie stron nie jest bezpośrednio porównywalne z BLE HID.
+Zamiast tego otwiera wybraną przeglądarkę jako aplikację (w Spotlight używa trybu **Aplikacje / Cmd+1**), a następnie przechodzi do paska adresu kombinacją `Cmd+L`, wpisuje URL i zatwierdza Enter.
+
+1. Otwórz punkt dostępowy **M5-Control-Deck** i przejdź na `http://192.168.4.1`.
+2. W sekcji **System komputera (Bluetooth HID)** wybierz **macOS** i przeglądarkę, której chcesz używać: **Google Chrome** (domyślnie), Safari, Firefox, Brave lub Microsoft Edge.
+3. Zapisz ustawienia i poczekaj na restart M5Stacka.
+4. Sprawdź kafelek ChatGPT przy otwartym TextEdit oraz gdy przeglądarka jest już uruchomiona.
+
+**Ważne:** urządzenie **nie potrafi automatycznie odczytać domyślnej przeglądarki macOS** przez Bluetooth HID. Najlepiej wybrać w portalu tę samą przeglądarkę, która jest ustawiona jako domyślna w **Ustawienia systemowe → Biurko i Dock**. Zmiana wyboru przeglądarki jest zapisywana w NVS i nie powinna znikać po prawidłowej aktualizacji firmware przez WWW.
+
+Jeśli aplikacja jest uruchamiana bardzo wolno, możesz potrzebować większego opóźnienia `MAC_BROWSER_ACTIVATION_MS` w `src/BleController.cpp`. W tej wersji jest to **2200 ms**. Działanie powinno być potwierdzone na konkretnym Macu: BLE HID nie zgłasza momentu przejęcia fokusu przez przeglądarkę.
+
+## macOS: przycisk Pulpit nie pokazuje biurka
+
+Poprzedni skrót `Cmd+F3` nie działał w testowanej konfiguracji macOS Tahoe. Od v0.2.3 M5Stack wysyła **`F11`** jako klawisz zewnętrznej klawiatury HID.
+
+1. Na MacBooku sprawdź **`Fn + F11`**, które Apple dokumentuje jako „Pokaż biurko”.
+2. Jeśli na M5Stacku F11 nie reaguje, otwórz **Ustawienia systemowe → Klawiatura → Skróty klawiszowe → Mission Control**.
+3. Włącz **Pokaż biurko / Show Desktop** i przypisz do tej akcji **F11** (klawisz funkcyjny zewnętrznej klawiatury).
+
+Nie każda konfiguracja interpretuje `F11` identycznie. Jeśli macOS lub inna aplikacja przechwytuje ten klawisz, przycisk może nie zadziałać. Wtedy trzeba sprawdzić konflikt skrótów na Macu.
+
+## macOS: Finder, Monitor aktywności i pozostałe akcje
+
+Zachowano działającą sekwencję uruchamiania Findera i Activity Monitor przez Spotlight oraz skróty `Cmd+Tab`, `Shift+Cmd+5` i `Ctrl+Cmd+Q`. Zmiany dotyczą wyłącznie URL, potwierdzenia Spotlight oraz przycisku Pulpit.
 
 ## Instalator WWW resetuje Wi-Fi i konfigurację po aktualizacji
 

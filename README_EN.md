@@ -6,7 +6,7 @@
 
 A wireless touchscreen controller based on **M5Stack CoreS3 SE**. It acts as a Bluetooth HID keyboard and media controller, with manually selectable shortcut profiles for **Windows 10/11, macOS and Linux (GNOME/Ubuntu)**. After new Bluetooth pairing, the device asks which operating system to control; no companion app is required on the host.
 
-**Compatibility note:** Windows is the established baseline. macOS testing revealed a regression in v0.2.1: when the Spotlight shortcut failed, queries were typed into the active app. **v0.2.2 requires confirmation that Spotlight opened before sending the first query**. macOS shortcuts remain dependent on host settings; Linux GNOME still needs validation on your machine.
+**Compatibility note:** Windows is the established baseline. Real-world testing on macOS Tahoe confirmed Activity Monitor, Finder, app switching, screenshots and screen locking. **v0.2.3** removes the Spotlight confirmation, launches URLs through a browser chosen in the local AP portal, and sends `F11` for Show Desktop. The new browser and desktop actions still require real-device verification; Linux GNOME is environment-dependent.
 
 ## Two ways to install the firmware
 
@@ -46,7 +46,7 @@ Three BLE HID keyboard profiles are available: **Windows 10/11**, **macOS** and 
 
 Change the profile any time on the **Connections** touchscreen or in the local AP portal (`http://192.168.4.1`). No reflashing or Bluetooth re-pairing is needed to change profiles.
 
-**Limitations:** macOS uses **Spotlight** (`Cmd+Space`) to open URLs in the default browser or launch applications. Before the **first query**, the deck sends only the shortcut and asks **"Did Spotlight open?"** on its own display (the on-device UI is in Polish: **NIE / TAK**). Select **NIE** if it did not; the deck will NOT type into your active editor. Check **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** and try the shortcut manually. Selecting **TAK** permits the query and later attempts without prompting. This is a manual confirmation, **not** remote focus detection; changing host shortcuts later can still break the sequence. `Cmd+F3` (Show Desktop) depends on macOS settings. Linux targets **GNOME/Ubuntu** with `xdg-open`, `nautilus` and `gnome-system-monitor`.
+**Limitations:** macOS requires `Cmd+Space` to open Spotlight. The deck now starts the **selected browser app** (Chrome/Safari/Firefox/Brave/Edge) before entering a URL via `Cmd+L`. Bluetooth HID cannot detect the Mac's default browser; select your preferred one in the local AP portal at `http://192.168.4.1` (Google Chrome by default). The device no longer asks whether Spotlight opened. If the Spotlight shortcut is disabled, there is no reliable HID feedback about which window has focus. For Show Desktop, the deck sends `F11`; assign `F11` in **System Settings → Keyboard → Keyboard Shortcuts → Mission Control → Show Desktop** if required. GNOME Linux uses `xdg-open`, `nautilus` and `gnome-system-monitor`. See [troubleshooting](docs/TROUBLESHOOTING.md).
 
 ## Hardware used in this build
 
@@ -78,7 +78,7 @@ Shows Poland time, a second timezone and the date. A blue background indicates a
 
 ### Applications
 
-The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it uses **Cmd+Space** and types the URL only after the first Spotlight confirmation; on GNOME it uses **Alt+F2 → xdg-open**.
+The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it uses **Cmd+Space** to launch the configured browser and then **Cmd+L** to enter the URL; on GNOME it uses **Alt+F2 → xdg-open**.
 
 Names and URLs can be changed in the local portal or `include/UserConfig.h`. Use `http://` or `https://` URLs with safe ASCII characters and percent-encode spaces as `%20`.
 
@@ -93,11 +93,11 @@ Previous track, Play/Pause, next track, mute, volume down and volume up. When th
 | System monitor | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
 | Lock screen | Win+L | Ctrl+Cmd+Q | Super+L |
 | Screenshot | Win+Shift+S | Shift+Cmd+5 | Print Screen |
-| Desktop / overview | Win+D | Cmd+F3 (Show Desktop) | Super (Activities) |
+| Desktop / overview | Win+D | F11 (Show Desktop, configurable) | Super (Activities) |
 | Files | Win+E | Spotlight → Finder | Alt+F2 → nautilus |
 | Switch applications | Alt+Tab | Cmd+Tab | Super+Tab |
 
-Labels change when you select a host OS. macOS uses `Cmd+F3` for Show Desktop (requires the corresponding macOS keyboard shortcut), and GNOME uses Activities rather than a universal Show Desktop shortcut.
+Labels change when you select a host OS. macOS uses `F11` for Show Desktop (assign this under the Mission Control keyboard shortcuts if needed), and GNOME uses Activities rather than a universal Show Desktop shortcut.
 
 ### Settings
 
@@ -160,7 +160,7 @@ Username: admin
 Panel password: admin123
 ```
 
-The AP can also be enabled manually from the Settings page. The portal changes the **target operating system (Windows, macOS or Linux GNOME)**, Wi-Fi credentials, brightness, the second timezone, standby settings, AP credentials, portal credentials, and all six app labels and URLs. Saving the form reboots the device.
+The AP can also be enabled manually from the Settings page. The portal changes the **target operating system (Windows, macOS or Linux GNOME)**, **macOS browser preference** (Chrome, Safari, Firefox, Brave or Edge), Wi-Fi credentials, brightness, the second timezone, standby settings, AP credentials, portal credentials, and all six app labels and URLs. Saving the form reboots the device.
 
 Change the default passwords after the first setup. The portal uses local HTTP, so disable the AP when configuration is complete.
 
@@ -183,9 +183,9 @@ Detailed customization examples are in [docs/CUSTOMIZATION.md](docs/CUSTOMIZATIO
 
 ## Current limitations
 
-- Windows 10/11 is the established baseline. macOS has been tested on a real Mac but version 0.2.1 was observed to type queries into the active editor; v0.2.2 adds a first-use Spotlight check and still requires device testing. Linux GNOME requires host-specific verification.
+- Windows 10/11 is the established baseline. macOS Tahoe testing confirmed Activity Monitor, Finder, app switching, screenshots and locking. The v0.2.3 browser-launch and Show Desktop changes still require on-device verification. Linux GNOME requires host-specific verification.
 - Typing URLs relies on compatible ASCII key mappings (Polish Programmer works for the original Windows setup); other keyboard layouts may need changes.
-- macOS website launching uses Spotlight to open the **default browser**; GNOME requires `xdg-open` and a working Alt+F2 command launcher.
+- macOS launches URLs via the browser selected in the **local AP portal**, not by choosing Spotlight search results. The default browser cannot be queried through BLE HID; set the same browser manually. GNOME requires `xdg-open` and a working Alt+F2 command launcher.
 - The host should be unlocked for opening URLs and launching applications.
 - BLE HID cannot read CPU, RAM, GPU or temperatures; telemetry would require a separate host application.
 - One active Bluetooth bond is stored at a time.

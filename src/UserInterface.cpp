@@ -170,7 +170,7 @@ void UserInterface::processPowerButton() {
     noteActivity();
     standbyPromptVisible_ = false;
     pairingConfirmationVisible_ = false;
-    if (hostOsPromptVisible_ || macSpotlightPromptVisible_) return; // Pytania maja pierwszenstwo.
+    if (hostOsPromptVisible_) return; // Wybor systemu ma pierwszenstwo.
     powerMenuVisible_ = !powerMenuVisible_;
     dirty_ = true;
 }
@@ -257,11 +257,6 @@ void UserInterface::processTouch() {
         if (cleanTap) {
             handlePairingConfirmationTap(touchLastX_, touchLastY_);
         }
-        return;
-    }
-
-    if (macSpotlightPromptVisible_) {
-        if (cleanTap) handleMacSpotlightPromptTap(touchLastX_, touchLastY_);
         return;
     }
 
@@ -525,7 +520,7 @@ void UserInterface::noteActivity() {
 }
 
 bool UserInterface::overlayVisible() const {
-    return hostOsPromptVisible_ || pairingConfirmationVisible_ || macSpotlightPromptVisible_ || powerMenuVisible_ || standbyPromptVisible_;
+    return hostOsPromptVisible_ || pairingConfirmationVisible_ || powerMenuVisible_ || standbyPromptVisible_;
 }
 
 void UserInterface::cancelStandbyPrompt() {
@@ -654,15 +649,6 @@ void UserInterface::handleAppsTap(int16_t x, int16_t y) {
     }
 
     const String url = configManager_.data().apps[index].url;
-    if (configManager_.data().hostOs == HostOS::MacOS &&
-        !configManager_.data().macSpotlightVerified) {
-        if (!BleController::isSafeBrowserUrl(url)) {
-            showToast("Niepoprawny adres URL");
-            return;
-        }
-        requestMacSpotlightCheck(url);
-        return;
-    }
     if (bleController_.openUrl(url)) {
         showToast("Otwieram: " + configManager_.data().apps[index].label);
     }
@@ -693,13 +679,6 @@ void UserInterface::handleMediaTap(int16_t x, int16_t y) {
 void UserInterface::handleWindowsTap(int16_t x, int16_t y) {
     const int index = tileIndexAt(x, y);
     if (index < 0 || !requireBluetooth()) {
-        return;
-    }
-
-    if (configManager_.data().hostOs == HostOS::MacOS &&
-        !configManager_.data().macSpotlightVerified &&
-        (index == 0 || index == 4)) {
-        requestMacSpotlightCheck(index == 0 ? String("Activity Monitor") : String("Finder"));
         return;
     }
 
@@ -770,8 +749,6 @@ void UserInterface::handleSettingsTap(int16_t x, int16_t y) {
 
 void UserInterface::selectHostOS(HostOS os) {
     auto& config = configManager_.data();
-    // Powrot do macOS lub zmiana komputera wymaga ponownego testu fokusu.
-    if (os == HostOS::MacOS || config.hostOs != os) config.macSpotlightVerified = false;
     config.hostOs = os;
     // Osobny wybór podczas parowania oznacza zgode na ten konkretny host.
     const String peer = !pendingHostPeerId_.isEmpty()
@@ -783,42 +760,6 @@ void UserInterface::selectHostOS(HostOS os) {
     pendingHostPeerId_ = "";
     showToast(String("System: ") + hostOsName(os), 1600);
     dirty_ = true;
-}
-
-bool UserInterface::requestMacSpotlightCheck(const String& query) {
-    if (!bleController_.isConnected() || query.isEmpty()) return false;
-    if (!bleController_.openMacLauncherOnly()) return false;
-    pendingMacQuery_ = query;
-    macSpotlightPromptVisible_ = true;
-    powerMenuVisible_ = false;
-    standbyPromptVisible_ = false;
-    pairingConfirmationVisible_ = false;
-    dirty_ = true;
-    return true;
-}
-
-void UserInterface::handleMacSpotlightPromptTap(int16_t x, int16_t y) {
-    if (y < 148 || y > 203) return;
-    if (x >= 20 && x <= 149) {
-        // NIE: nie wpisujemy niczego do aktywnej aplikacji komputera.
-        macSpotlightPromptVisible_ = false;
-        pendingMacQuery_ = "";
-        showToast("Sprawdz skrot Spotlight na Macu", 2300);
-        return;
-    }
-    if (x >= 170 && x <= 299) {
-        // TAK: dopiero po wzrokowym potwierdzeniu wysylamy znaki.
-        const String query = pendingMacQuery_;
-        pendingMacQuery_ = "";
-        macSpotlightPromptVisible_ = false;
-        if (bleController_.finishMacLauncherQuery(query)) {
-            configManager_.data().macSpotlightVerified = true;
-            configManager_.save();
-            showToast("Spotlight potwierdzony");
-        } else {
-            showToast("Bluetooth rozlaczony");
-        }
-    }
 }
 
 void UserInterface::handleHostOsPromptTap(int16_t x, int16_t y) {
@@ -926,8 +867,6 @@ void UserInterface::draw() {
 
     if (hostOsPromptVisible_) {
         drawHostOSPrompt();
-    } else if (macSpotlightPromptVisible_) {
-        drawMacSpotlightPrompt();
     } else if (powerMenuVisible_) {
         drawPowerMenu();
     } else if (standbyPromptVisible_) {
@@ -1290,28 +1229,6 @@ void UserInterface::drawHostOSPrompt() {
     M5.Display.setTextColor(color(155, 175, 201), background);
     M5.Display.drawString("Mozesz pozniej zmienic w Polaczeniach", 160, 197);
     M5.Display.drawString("lub w lokalnym panelu WWW.", 160, 210);
-}
-
-void UserInterface::drawMacSpotlightPrompt() {
-    const uint16_t background = color(10, 17, 29);
-    const uint16_t panel = color(23, 35, 56);
-    M5.Display.fillScreen(background);
-    drawStatusBar("Test Spotlight");
-    M5.Display.fillRoundRect(12, 34, 296, 189, 14, panel);
-    M5.Display.setTextDatum(middle_center);
-    M5.Display.setTextColor(TFT_WHITE, panel);
-    M5.Display.setTextFont(2);
-    M5.Display.drawString("Czy otwarto Spotlight?", 160, 62);
-    M5.Display.setTextFont(1);
-    M5.Display.drawString("Sprawdz ekran Maca po Cmd+Spacja.", 160, 91);
-    M5.Display.drawString("NIE = nie wpisuj tekstu do edytora", 160, 110);
-    M5.Display.drawString("TAK = wykonaj akcje i zapamietaj", 160, 125);
-    M5.Display.fillRoundRect(20, 152, 129, 46, 9, color(85, 93, 111));
-    M5.Display.fillRoundRect(170, 152, 129, 46, 9, color(31, 130, 92));
-    M5.Display.setTextColor(TFT_WHITE);
-    M5.Display.setTextFont(2);
-    M5.Display.drawString("NIE", 84, 174);
-    M5.Display.drawString("TAK", 235, 174);
 }
 
 void UserInterface::drawPairingConfirmation() {
