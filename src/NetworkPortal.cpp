@@ -478,7 +478,7 @@ String NetworkPortal::buildPortalHtml() const {
         html += hostOsName(os);
         html += F("</option>");
     }
-    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: otwieranie adresow w Safari.</small></section>");
+    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: adres URL wpisywany do Spotlight i otwierany w domyslnej przegladarce (np. Chrome).</small></section>");
 
     html += F("<section class='card'><h2>Sieć i ekran</h2>");
     html += F("<label class='check'><input type='checkbox' name='wifi_enabled' value='1'");

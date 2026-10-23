@@ -6,7 +6,7 @@
 
 Dotykowy, bezprzewodowy panel sterowania oparty na **M5Stack CoreS3 SE**, działający jako klawiatura Bluetooth HID i kontroler multimediów. Dostępne są profile skrótów dla **Windows 10/11, macOS i Linux (GNOME/Ubuntu)**. Po nowym parowaniu panel poprosi o wybór systemu. Do codziennego sterowania nie potrzebujesz aplikacji działającej na komputerze.
 
-**Status:** Windows jest sprawdzoną wersją bazową. Nowe profile macOS i Linux GNOME wymagają jeszcze testów na fizycznym sprzęcie; funkcje zależne od konfiguracji systemu mogą wymagać dostosowania.
+**Status:** Windows jest sprawdzoną wersją bazową, a profil macOS był testowany na rzeczywistym Macu. W v0.2.1 poprawiono otwieranie URL w domyślnej przeglądarce oraz akcje Finder i Pulpit. Konkretne skróty macOS nadal zależą od ustawień użytkownika; profil Linux GNOME wymaga testów na docelowym komputerze.
 
 ## Dwa sposoby wgrania oprogramowania
 
@@ -45,7 +45,7 @@ Dostępne są trzy profile klawiatury BLE HID: **Windows 10/11**, **macOS** i **
 
 System możesz zmienić w każdej chwili na ekranie **Połączenia** albo w portalu AP (`http://192.168.4.1`). Zmiana systemu nie wymaga ponownej kompilacji ani ponownego parowania.
 
-**Ważne ograniczenia:** profil macOS otwiera strony przez Safari uruchamiane przez Spotlight. Profil Linux zakłada GNOME (np. Ubuntu) oraz dostępność polecenia `xdg-open`, menedżera plików `nautilus` i opcjonalnie `gnome-system-monitor`. Inne środowiska Linux, inne skróty użytkownika lub przestawione skróty Spotlight mogą działać inaczej. Wersje macOS/Linux są nowe i nie były jeszcze zweryfikowane na wszystkich systemach i urządzeniach.
+**Ważne ograniczenia:** na macOS pełny URL jest wpisywany bezpośrednio do Spotlight, które otwiera go w domyślnej przeglądarce, np. Chrome. Wymaga to działającego skrótu `Cmd+Space` i prawidłowego mapowania układu klawiatury HID. Firmware nie ma informacji zwrotnej o tym, która aplikacja ma fokus; jeżeli Spotlight jest wyłączony albo skrót przechwyci inne narzędzie, nie można zagwarantować otwarcia URL. `Cmd+F3` (Pulpit) zależy od ustawień macOS. Profil Linux zakłada GNOME (np. Ubuntu) oraz polecenia `xdg-open`, `nautilus` i opcjonalnie `gnome-system-monitor`. Inne środowiska i skróty użytkownika mogą wymagać dostosowania.
 
 ## Sprzęt użyty w tym projekcie
 
@@ -83,7 +83,7 @@ Układ 2 x 3:
 |---|---|---|
 | Canva | Admin Toolkit | Botland |
 
-Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Spotlight → Safari → Cmd+L** na macOS albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
+Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Cmd+Space → URL → Enter (domyślna przeglądarka)** na macOS albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
 
 ### Multimedia
 
@@ -103,11 +103,11 @@ Jeżeli podłączono Scroll Unit, obrót zmienia głośność, a kliknięcie ste
 | Monitor systemu | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
 | Blokada ekranu | Win+L | Ctrl+Cmd+Q | Super+L |
 | Zrzut/wycinek | Win+Shift+S | Shift+Cmd+5 | Print Screen |
-| Pulpit / widok okien | Win+D | Ctrl+↑ (Mission Control) | Super (Activities) |
-| Pliki | Win+E | Option+Cmd+Space (Finder Search) | Alt+F2 → nautilus |
+| Pulpit / widok okien | Win+D | Cmd+F3 (Pulpit) | Super (Activities) |
+| Pliki | Win+E | Spotlight → Finder | Alt+F2 → nautilus |
 | Zmiana okna/aplikacji | Alt+Tab | Cmd+Tab | Super+Tab |
 
-Etykiety na ekranie automatycznie dostosowują się do wybranego profilu. Na macOS funkcja „Pulpit” otwiera **Mission Control**, a w GNOME **Activities**, bo nie istnieje jeden niezawodny skrót „pokaż pulpit” wspólny dla wszystkich konfiguracji.
+Etykiety na ekranie automatycznie dostosowują się do wybranego profilu. Na macOS przycisk „Pulpit” wysyła **Cmd+F3 (Show Desktop)**, a „Finder” uruchamia aplikację przez Spotlight. Jeśli `Cmd+F3` nie działa, sprawdź System Settings → Keyboard → Keyboard Shortcuts → Mission Control. W GNOME przycisk używa **Activities**, ponieważ skróty pulpitów różnią się między środowiskami Linux.
 
 ### Ustawienia
 
@@ -207,7 +207,7 @@ Szczegóły modyfikacji: [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md).
 
 - Windows 10/11 jest sprawdzoną platformą bazową. Profile macOS i Linux GNOME są nowe i mogą wymagać korekty ustawień skrótów oraz testów na konkretnej wersji systemu.
 - Wprowadzanie URL zakłada układ klawiatury zgodny z ASCII, w szczególności **Polski programisty** na Windows; niestandardowe układy mogą inaczej interpretować znaki.
-- Na macOS do otwierania stron używany jest **Safari**; na GNOME wymagane jest `xdg-open` oraz obsługa `Alt+F2`.
+- Na macOS URL jest otwierany przez Spotlight w **domyślnej przeglądarce**. W przypadku konfliktu `Cmd+Space` (np. z innym launcherem) przyciski mogą nie działać poprawnie. Na GNOME wymagane jest `xdg-open` i `Alt+F2`.
 - Komputer powinien być odblokowany, aby zadziałały operacje otwierania adresów i aplikacji.
 - BLE HID nie udostępnia CPU, RAM, GPU ani temperatur. Telemetria wymaga osobnej usługi na komputerze.
 - Urządzenie przechowuje jedno bieżące powiązanie Bluetooth.

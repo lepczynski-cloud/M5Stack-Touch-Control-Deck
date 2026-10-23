@@ -6,7 +6,7 @@
 
 A wireless touchscreen controller based on **M5Stack CoreS3 SE**. It acts as a Bluetooth HID keyboard and media controller, with manually selectable shortcut profiles for **Windows 10/11, macOS and Linux (GNOME/Ubuntu)**. After new Bluetooth pairing, the device asks which operating system to control; no companion app is required on the host.
 
-**Compatibility note:** Windows is the existing tested baseline. The new macOS and Linux profiles need real-device validation on the relevant hosts; shortcuts can vary with desktop and keyboard settings.
+**Compatibility note:** Windows is the established baseline and macOS has been tested on a real Mac. Version 0.2.1 improves default-browser links, Finder and Show Desktop. Some macOS shortcuts depend on your keyboard settings; the Linux GNOME profile still needs testing on your target machine.
 
 ## Two ways to install the firmware
 
@@ -46,7 +46,7 @@ Three BLE HID keyboard profiles are available: **Windows 10/11**, **macOS** and 
 
 Change the profile any time on the **Connections** touchscreen or in the local AP portal (`http://192.168.4.1`). No reflashing or Bluetooth re-pairing is needed to change profiles.
 
-**Limitations:** The macOS browser shortcut opens **Safari via Spotlight**, not an automatically detected default browser. Linux targets **GNOME/Ubuntu** and uses `xdg-open`, `nautilus`, and (for system monitoring) `gnome-system-monitor` where installed. Other desktop environments, custom hotkeys and different keyboard layouts may require modifications. macOS and Linux operation is pending full hardware verification.
+**Limitations:** macOS sends each complete URL directly to **Spotlight**, which can open it in the system default browser (for example Chrome). This requires working `Cmd+Space` and compatible HID keyboard layout; the deck cannot detect keyboard focus or guarantee success if another launcher intercepts Spotlight. `Cmd+F3` (Show Desktop) depends on macOS keyboard shortcut settings. Linux targets **GNOME/Ubuntu** and uses `xdg-open`, `nautilus`, and `gnome-system-monitor` where available.
 
 ## Hardware used in this build
 
@@ -78,7 +78,7 @@ Shows Poland time, a second timezone and the date. A blue background indicates a
 
 ### Applications
 
-The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it opens **Safari using Spotlight**, then types the URL with **Cmd+L**; on GNOME it uses **Alt+F2 → xdg-open**.
+The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it types the URL **directly in Spotlight to open the default browser**; on GNOME it uses **Alt+F2 → xdg-open**.
 
 Names and URLs can be changed in the local portal or `include/UserConfig.h`. Use `http://` or `https://` URLs with safe ASCII characters and percent-encode spaces as `%20`.
 
@@ -93,11 +93,11 @@ Previous track, Play/Pause, next track, mute, volume down and volume up. When th
 | System monitor | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
 | Lock screen | Win+L | Ctrl+Cmd+Q | Super+L |
 | Screenshot | Win+Shift+S | Shift+Cmd+5 | Print Screen |
-| Desktop / overview | Win+D | Ctrl+↑ (Mission Control) | Super (Activities) |
-| Files | Win+E | Option+Cmd+Space (Finder Search) | Alt+F2 → nautilus |
+| Desktop / overview | Win+D | Cmd+F3 (Show Desktop) | Super (Activities) |
+| Files | Win+E | Spotlight → Finder | Alt+F2 → nautilus |
 | Switch applications | Alt+Tab | Cmd+Tab | Super+Tab |
 
-Labels change when you select a host OS. macOS uses Mission Control, and GNOME uses Activities instead of assuming a universal Show Desktop shortcut.
+Labels change when you select a host OS. macOS uses `Cmd+F3` for Show Desktop (requires the corresponding macOS keyboard shortcut), and GNOME uses Activities rather than a universal Show Desktop shortcut.
 
 ### Settings
 
@@ -183,9 +183,9 @@ Detailed customization examples are in [docs/CUSTOMIZATION.md](docs/CUSTOMIZATIO
 
 ## Current limitations
 
-- Windows 10/11 is the previously tested baseline. macOS and Linux GNOME profiles require real hardware verification and may differ on customized hosts.
+- Windows 10/11 is the established baseline. macOS has been tested on a real Mac; the v0.2.1 URL, Finder and Show Desktop changes still need on-device retesting. Linux GNOME requires host-specific verification.
 - Typing URLs relies on compatible ASCII key mappings (Polish Programmer works for the original Windows setup); other keyboard layouts may need changes.
-- macOS website launching deliberately opens Safari; GNOME requires `xdg-open` and a working Alt+F2 command launcher.
+- macOS website launching uses Spotlight to open the **default browser**; GNOME requires `xdg-open` and a working Alt+F2 command launcher.
 - The host should be unlocked for opening URLs and launching applications.
 - BLE HID cannot read CPU, RAM, GPU or temperatures; telemetry would require a separate host application.
 - One active Bluetooth bond is stored at a time.

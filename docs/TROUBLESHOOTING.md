@@ -59,10 +59,15 @@ Jeśli zmieniłeś komputer i nowy system nie został wykryty, użyj **Nowe paro
 ## macOS: skróty lub otwieranie URL nie działają
 
 - Na ekranie Połączenia wybierz **macOS**, nie Windows.
-- Do otwierania adresów firmware korzysta z **Cmd+Space → Safari → Cmd+L**; Spotlight i Safari muszą być dostępne.
+- Od wersji **0.2.1** adresy są wpisywane bezpośrednio do **Spotlight** (`Cmd+Space → URL → Enter`), co powinno otworzyć je w domyślnej przeglądarce (Chrome, Safari itp.). Nie otwieramy już Safari i nie wysyłamy `Cmd+L`.
 - macOS może mieć inne skróty Spotlight, inne układy klawiatury i ustawienia dostępności. Sprawdź standardowe skróty w Ustawieniach systemowych.
-- **Opcja Pliki otwiera okno wyszukiwania Findera**, a widok Pulpit odpowiada Mission Control.
-- Wsparcie macOS wymaga dodatkowych testów na fizycznym komputerze; biblioteka BLE dla macOS ma ograniczenia zgodności.
+- Kafelek **Finder** uruchamia Findera przez Spotlight. Kafelek **Pulpit** korzysta z `Cmd+F3` zamiast Mission Control (`Ctrl+↑`). Jeżeli nie działa, sprawdź skrót Show Desktop w Ustawieniach systemowych → Klawiatura → Skróty klawiszowe → Mission Control.
+- Jeżeli kliknięcie przycisku aplikacji wpisuje URL do edytora albo słychać dźwięk błędu, sprawdź **ręcznie** czy na Macu `Cmd+Space` uruchamia Spotlight (może go przechwytywać np. Raycast lub niestandardowy skrót). Urządzenie BLE HID nie otrzymuje informacji zwrotnej o fokusie i nie może całkowicie zapobiec wpisaniu tekstu w niewłaściwym oknie, gdy Spotlight się nie otworzy.
+- Aby sprawdzić wybór przeglądarki: **Ustawienia systemowe → Biurko i Dock → Domyślna przeglądarka internetowa**. Uruchom ręcznie `Cmd+Space`, wpisz pełny adres `https://example.com/` i naciśnij Enter. Jeśli Spotlight nie otwiera tego adresu w wybranej przeglądarce, firmware również nie może wymusić innego zachowania.
+- Dla Findera przetestuj ręcznie `Cmd+Space`, wpisanie `Finder` i Enter. Gdy Spotlight nie znajduje Findera, sprawdź jego indeksowanie lub ustawienia wyszukiwania.
+- Kafelek **Monitor** służy do otwierania **Monitora aktywności (Activity Monitor)**. Sprawdź ręcznie `Cmd+Space`, wpisz `Activity Monitor` i naciśnij Enter. Jeżeli Mac nie wyświetla tej aplikacji w wynikach, sprawdź indeks Spotlight i wyszukiwanie aplikacji. Nie jest to kafelek pokazujący pulpit.
+- Dla układów klawiatury innych niż US sprawdź wpisywanie znaków `:`, `/`, `?` z zewnętrznej klawiatury HID.
+- Poprzedni profil macOS został sprawdzony na fizycznym Macu. Zmiany w wersji 0.2.1 przeszły testy logiki HID, ale poprawione funkcje URL, Finder i Pulpit wymagają potwierdzenia po aktualizacji firmware. Biblioteka BLE może zachowywać się inaczej w zależności od wersji macOS i ustawień hosta.
 
 ## Linux: niektóre kafelki nie działają
 

@@ -1102,7 +1102,7 @@ void UserInterface::drawWindowsScreen() {
         Icon::SwitchWindow
     };
     static const char* LABELS_WIN[6] = {"Menedzer", "Zablokuj", "Wycinek", "Pulpit", "Pliki", "Alt + Tab"};
-    static const char* LABELS_MAC[6] = {"Monitor", "Zablokuj", "Zrzut", "Mission Ctrl", "Finder", "Cmd + Tab"};
+    static const char* LABELS_MAC[6] = {"Monitor", "Zablokuj", "Zrzut", "Pulpit", "Finder", "Cmd + Tab"};
     static const char* LABELS_GNOME[6] = {"Monitor", "Zablokuj", "Zrzut", "Aktywnosc", "Pliki", "Super+Tab"};
     const HostOS os = configManager_.data().hostOs;
     const char* const* labels = os == HostOS::MacOS ? LABELS_MAC :

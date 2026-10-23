@@ -5,6 +5,14 @@
 
 #include "UserConfig.h"
 
+namespace {
+constexpr uint16_t MAC_HID_KEY_DELAY_MS = 20;
+constexpr uint16_t DEFAULT_HID_KEY_DELAY_MS = 12;
+constexpr uint32_t MAC_SPOTLIGHT_FOCUS_MS = 650;
+constexpr uint32_t MAC_SPOTLIGHT_RESULTS_MS = 800;
+constexpr uint32_t MAC_APP_RESULTS_MS = 1100;
+}
+
 BleController::BleController()
     : keyboard_(
           UserDefaults::BLE_DEVICE_NAME,
@@ -13,7 +21,7 @@ BleController::BleController()
       ) {}
 
 void BleController::begin(uint8_t initialBatteryLevel) {
-    keyboard_.setDelay(12);
+    keyboard_.setDelay(hostOs_ == HostOS::MacOS ? MAC_HID_KEY_DELAY_MS : DEFAULT_HID_KEY_DELAY_MS);
     keyboard_.setBatteryLevel(initialBatteryLevel);
     keyboard_.begin();
 }
@@ -32,6 +40,8 @@ bool BleController::isConnected() const {
 
 void BleController::setHostOS(HostOS host) {
     hostOs_ = host;
+    // Nieco wolniejsze wysylanie znakow na macOS pomaga przy zapytaniach Spotlight.
+    keyboard_.setDelay(hostOs_ == HostOS::MacOS ? MAC_HID_KEY_DELAY_MS : DEFAULT_HID_KEY_DELAY_MS);
 }
 
 HostOS BleController::hostOS() const {
@@ -75,32 +85,37 @@ bool BleController::runGnomeCommand(const String& command) {
     return true;
 }
 
-bool BleController::openMacApp(const String& appName) {
+bool BleController::openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs) {
+    if (!ready() || query.isEmpty()) return false;
+
+    // Cmd+Spacja otwiera Spotlight niezaleznie od aktywnej aplikacji.
+    // Nie otwieramy osobno Safari ani nie wysylamy Cmd+L: opoznienie
+    // przelaczania aplikacji potrafilo wpisac URL do edytora tekstu.
+    keyboard_.releaseAll();
+    delay(70);
+    if (!chord({KEY_LEFT_GUI, static_cast<uint8_t>(' ')}, 100)) return false;
+    delay(MAC_SPOTLIGHT_FOCUS_MS);
     if (!ready()) return false;
-    // Spotlight: Cmd+Space, nazwa systemowej aplikacji, Enter.
-    chord({KEY_LEFT_GUI, static_cast<uint8_t>(' ')});
-    delay(550);
-    keyboard_.print(appName);
-    delay(700);
+
+    keyboard_.print(query);
+    delay(resultsDelayMs);
+    if (!ready()) return false;
     keyboard_.write(KEY_RETURN);
     return true;
+}
+
+bool BleController::openMacApp(const String& appName) {
+    // Spotlight uruchamia Finder i Monitor aktywnosci bez dodatkowego programu.
+    return openMacSpotlightQuery(appName, MAC_APP_RESULTS_MS);
 }
 
 bool BleController::openUrl(const String& url) {
     if (!ready() || !isSafeBrowserUrl(url)) return false;
 
     if (hostOs_ == HostOS::MacOS) {
-        // Otwieramy Safari przez Spotlight, nastepnie Cmd+L i URL.
-        // Jest to przewidywalne bez aplikacji towarzyszacej; nie narzucamy
-        // obslugi domyslnej przegladarki, ktorej HID nie potrafi ustalic.
-        if (!openMacApp("Safari")) return false;
-        delay(1100);
-        chord({KEY_LEFT_GUI, static_cast<uint8_t>('l')});
-        delay(180);
-        keyboard_.print(url);
-        delay(UserDefaults::URL_SUBMIT_DELAY_MS);
-        keyboard_.write(KEY_RETURN);
-        return true;
+        // macOS otwiera wpisany w Spotlight URL w przegladarce domyslnej
+        // (np. Chrome). Nie trzeba uruchamiac Safari i czekac na jego fokus.
+        return openMacSpotlightQuery(url, MAC_SPOTLIGHT_RESULTS_MS);
     }
 
     if (hostOs_ == HostOS::LinuxGnome) {
@@ -178,8 +193,9 @@ bool BleController::openSnippingTool() {
 
 bool BleController::showDesktop() {
     if (hostOs_ == HostOS::MacOS) {
-        // macOS Mission Control, zamiast niepewnego HID Fn+F11.
-        return chord({KEY_LEFT_CTRL, KEY_UP_ARROW});
+        // Cmd+F3: Pokaz biurko (nie Ctrl+strzalka w gore = Mission Control).
+        // Wymaga wlaczonego skrotu Show Desktop w ustawieniach macOS.
+        return chord({KEY_LEFT_GUI, KEY_F3});
     }
     if (hostOs_ == HostOS::LinuxGnome) {
         // GNOME Activities, zamiast Super+D, ktore nie jest uniwersalne.
@@ -190,8 +206,9 @@ bool BleController::showDesktop() {
 
 bool BleController::openFileExplorer() {
     if (hostOs_ == HostOS::MacOS) {
-        // Option+Cmd+Space otwiera okno szukania w Finderze.
-        return chord({KEY_LEFT_ALT, KEY_LEFT_GUI, static_cast<uint8_t>(' ')});
+        // Spotlight znajduje Finder i aktywuje normalne okno plikow,
+        // niezaleznie od tego, ktora aplikacja jest teraz na pierwszym planie.
+        return openMacApp("Finder");
     }
     if (hostOs_ == HostOS::LinuxGnome) return runGnomeCommand("nautilus");
     return chord({KEY_LEFT_GUI, static_cast<uint8_t>('e')});

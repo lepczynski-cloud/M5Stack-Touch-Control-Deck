@@ -44,6 +44,7 @@ private:
 
     bool runGnomeCommand(const String& command);
     bool openMacApp(const String& appName);
+    bool openMacSpotlightQuery(const String& query, uint32_t resultsDelayMs);
 
     bool ready() const;
     bool chord(std::initializer_list<uint8_t> keys, uint32_t holdMs = 70);

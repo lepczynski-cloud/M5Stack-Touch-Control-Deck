@@ -88,7 +88,7 @@ inline constexpr uint32_t AP_IDLE_TIMEOUT_MS = 10UL * 60UL * 1000UL;
 // Czas oczekiwania na polaczenie z zapisanym Wi-Fi.
 inline constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS = 15UL * 1000UL;
 
-inline constexpr char FIRMWARE_VERSION[] = "0.2.0";
+inline constexpr char FIRMWARE_VERSION[] = "0.2.1";
 inline constexpr char PROJECT_NAME[] = "M5Stack Touch Control Deck";
 
 static_assert(sizeof(AP_PASSWORD) - 1 >= 8, "Domyslne haslo AP musi miec co najmniej 8 znakow.");
