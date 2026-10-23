@@ -15,6 +15,7 @@ Można tam zmienić:
 - login i hasło portalu,
 - jasność ekranu,
 - drugą strefę czasową,
+- domyślny system hosta `HOST_OS` (Windows=0, macOS=1, Linux GNOME=2),
 - nazwy i adresy sześciu kafelków,
 - kierunek działania Scroll Unit,
 - czas automatycznego czuwania.
@@ -27,22 +28,31 @@ Domyślne nazwy i adresy znajdują się w tablicach `APP_LABELS` i `APP_URLS` w 
 
 Ikony są przypisane do pozycji kafelków w metodzie `drawAppsScreen()` w `src/UserInterface.cpp`. Ich kształty rysuje metoda `drawIcon()`.
 
-Adresy są otwierane przez `Win + R`, dlatego powinny zawierać standardowe znaki ASCII i zaczynać się od `http://` albo `https://`.
+Otwieranie adresów zależy od wybranego systemu: `Win+R` na Windows, Spotlight + Safari na macOS, `Alt+F2` z `xdg-open` w GNOME. Dopuszczalne są adresy `http://` i `https://` z bezpiecznymi znakami ASCII; spacje i niestandardowe znaki koduj procentowo (np. `%20`).
 
-## Zmiana skrótu Windows
+## Zmiana skrótu dla systemu hosta
+
+Klasa `BleController` w `src/BleController.cpp` wybiera odpowiednią kombinację na podstawie `hostOs_` i wartości `HostOS::Windows`, `HostOS::MacOS` albo `HostOS::LinuxGnome`.
 
 1. Dodaj deklarację metody w `include/BleController.h`.
-2. Dodaj implementację w `src/BleController.cpp`.
-3. Przypisz metodę do kafelka w `handleWindowsTap()`.
-4. Zmień etykietę i ikonę w `drawWindowsScreen()`.
+2. Dodaj implementację uwzględniającą wybrany `hostOs_` w `src/BleController.cpp`.
+3. Przypisz metodę do kafelka w `handleWindowsTap()` (nazwa funkcji historyczna).
+4. W `drawWindowsScreen()` ustaw etykietę dla każdego profilu oddzielnie.
 
-Przykład otwierający Ustawienia Windows przez `Win + I`:
+Przykład skrótu Ustawienia Windows przez `Win + I`, dostępnego tylko gdy wybrano Windows:
 
 ```cpp
 bool BleController::openWindowsSettings() {
+    if (hostOs_ != HostOS::Windows) return false;
     return chord({KEY_LEFT_GUI, static_cast<uint8_t>('i')});
 }
 ```
+
+## Wybór systemu po nowym parowaniu
+
+Firmware przechowuje wybrany `HostOS` i identyfikator ostatnio zaakceptowanego powiązania BLE (`pairedHostId`) w NVS (`src/ConfigManager.cpp`). Jeśli biblioteka NimBLE zgłosi nowe powiązanie, `src/UserInterface.cpp` pokazuje ekran wyboru systemu; zwykły reconnect nie wyświetla go ponownie. Profil można także wybrać na ekranie **Połączenia** lub w portalu WWW AP. Automatyczne rozpoznawanie systemu hosta nie jest dostępne w BLE HID.
+
+**Linux oznacza GNOME/Ubuntu**, a nie dowolny menedżer pulpitu. `Alt+F2`, `gnome-system-monitor`, `nautilus` i `xdg-open` są zależne od instalacji. Na macOS otwieranie URL korzysta z aplikacji Safari i Spotlight.
 
 ## Dodanie nowego ekranu
 
@@ -99,4 +109,4 @@ STANDBY_COUNTDOWN_SECONDS
 
 ## Telemetria komputera
 
-Profil klawiatury BLE może wysyłać klawisze i polecenia multimedialne, ale nie odczytuje CPU, RAM, GPU ani temperatur. Rozszerzenie projektu o telemetrię wymaga osobnego programu działającego w Windows oraz dodatkowego kanału komunikacji, na przykład Wi-Fi albo USB.
+Profil klawiatury BLE może wysyłać klawisze i polecenia multimedialne, ale nie odczytuje CPU, RAM, GPU ani temperatur. Rozszerzenie projektu o telemetrię wymaga osobnego programu działającego na komputerze oraz dodatkowego kanału komunikacji, na przykład Wi-Fi albo USB.

@@ -6,11 +6,12 @@
 #include <WiFi.h>
 
 #include "ConfigManager.h"
+#include "BleController.h"
 #include "TimeManager.h"
 
 class NetworkPortal {
 public:
-    NetworkPortal(ConfigManager& configManager, TimeManager& timeManager);
+    NetworkPortal(ConfigManager& configManager, TimeManager& timeManager, BleController& bleController);
 
     void begin();
     void loop();
@@ -33,6 +34,7 @@ public:
 private:
     ConfigManager& configManager_;
     TimeManager& timeManager_;
+    BleController& bleController_;
     WebServer server_{80};
     DNSServer dnsServer_;
 

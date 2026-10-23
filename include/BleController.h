@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <NimBleKeyboard.h>
+#include "AppConfig.h"
 #include <initializer_list>
 
 class BleController {
@@ -12,6 +13,12 @@ public:
     void loop(uint8_t batteryLevel);
 
     bool isConnected() const;
+    void setHostOS(HostOS host);
+    HostOS hostOS() const;
+    String bondedPeerIdentity() const;
+    static bool isSafeBrowserUrl(const String& url);
+    // Konfigurowalny zestaw skrotow. Linux oznacza srodowisko GNOME.
+
     bool openUrl(const String& url);
 
     bool mediaPrevious();
@@ -33,6 +40,10 @@ public:
 private:
     BleKeyboard keyboard_;
     uint32_t lastBatteryUpdateMillis_ = 0;
+    HostOS hostOs_ = HostOS::Windows;
+
+    bool runGnomeCommand(const String& command);
+    bool openMacApp(const String& appName);
 
     bool ready() const;
     bool chord(std::initializer_list<uint8_t> keys, uint32_t holdMs = 70);

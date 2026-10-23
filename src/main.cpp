@@ -13,7 +13,7 @@
 ConfigManager configManager;
 TimeManager timeManager(configManager);
 BleController bleController;
-NetworkPortal networkPortal(configManager, timeManager);
+NetworkPortal networkPortal(configManager, timeManager, bleController);
 ScrollController scrollUnit;
 UserInterface userInterface(
     configManager,
@@ -95,6 +95,7 @@ void setup() {
     showBootStep("Wi-Fi i portal", 144, true);
 
     showBootStep("Klawiatura Bluetooth", 168);
+    bleController.setHostOS(configManager.data().hostOs);
     bleController.begin(initialBatteryLevel());
     showBootStep("Klawiatura Bluetooth", 168, true);
 

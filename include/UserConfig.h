@@ -23,7 +23,7 @@ inline constexpr char AP_PASSWORD[] = "m5control";
 inline constexpr char WEB_USERNAME[] = "admin";
 inline constexpr char WEB_PASSWORD[] = "admin123";
 
-// Nazwa widoczna w ustawieniach Bluetooth systemu Windows.
+// Nazwa widoczna w ustawieniach Bluetooth komputera.
 // Biblioteka BLE ogranicza nazwe urzadzenia do 15 znakow.
 inline constexpr char BLE_DEVICE_NAME[] = "M5 Control Deck";
 inline constexpr char BLE_MANUFACTURER[] = "Lepczynski";
@@ -32,6 +32,10 @@ inline constexpr char BLE_MANUFACTURER[] = "Lepczynski";
 // Mozna je zwiekszyc na wolniejszym komputerze.
 inline constexpr uint32_t RUN_DIALOG_DELAY_MS = 450;
 inline constexpr uint32_t URL_SUBMIT_DELAY_MS = 100;
+
+// Domyslny system dla dotychczasowych instalacji. Nowy host BLE zawsze
+// wymaga potwierdzenia systemu na ekranie albo przez lokalny panel WWW.
+inline constexpr uint8_t HOST_OS = 0;  // 0 Windows, 1 macOS, 2 Linux GNOME
 
 // Domyslna jasnosc ekranu w zakresie 20-255.
 inline constexpr uint8_t DISPLAY_BRIGHTNESS = 150;
@@ -84,7 +88,7 @@ inline constexpr uint32_t AP_IDLE_TIMEOUT_MS = 10UL * 60UL * 1000UL;
 // Czas oczekiwania na polaczenie z zapisanym Wi-Fi.
 inline constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS = 15UL * 1000UL;
 
-inline constexpr char FIRMWARE_VERSION[] = "0.1.0";
+inline constexpr char FIRMWARE_VERSION[] = "0.2.0";
 inline constexpr char PROJECT_NAME[] = "M5Stack Touch Control Deck";
 
 static_assert(sizeof(AP_PASSWORD) - 1 >= 8, "Domyslne haslo AP musi miec co najmniej 8 znakow.");

@@ -1,10 +1,12 @@
 # M5Stack Touch Control Deck
 
-![M5Stack Touch Control Deck - wireless touchscreen controller for Windows](images/m5stack-touch-control-deck.jpg)
+![M5Stack Touch Control Deck - wireless touchscreen controller for Windows, macOS and Linux](images/m5stack-touch-control-deck.jpg)
 
 **Project website & browser installer (EN/PL):** [M5Stack-Touch-Control-Deck.lepczynski.it](https://m5stack-touch-control-deck.lepczynski.it/)
 
-A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack CoreS3 SE acts as a Bluetooth Low Energy keyboard and media controller, so everyday features do not require a companion application on the computer.
+A wireless touchscreen controller based on **M5Stack CoreS3 SE**. It acts as a Bluetooth HID keyboard and media controller, with manually selectable shortcut profiles for **Windows 10/11, macOS and Linux (GNOME/Ubuntu)**. After new Bluetooth pairing, the device asks which operating system to control; no companion app is required on the host.
+
+**Compatibility note:** Windows is the existing tested baseline. The new macOS and Linux profiles need real-device validation on the relevant hosts; shortcuts can vary with desktop and keyboard settings.
 
 ## Two ways to install the firmware
 
@@ -12,7 +14,7 @@ A wireless touchscreen control deck for Windows 10 and Windows 11. The M5Stack C
 
 **2. Build and upload from source, with full customization.** Download the repository, connect the device via USB-C, and run `tools\upload_windows.bat` on Windows. The script installs its toolchain, compiles the source, and uploads the firmware. Use this method if you want to modify behavior, icons, or shortcuts. More details: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
-After flashing, pair **M5 Control Deck** through Bluetooth in Windows 10/11. No companion software is needed for everyday PC control.
+After flashing, pair **M5 Control Deck** over Bluetooth and select **Windows**, **macOS** or **Linux GNOME** on the touchscreen. You can change this later from **Connections** on the device or through its local AP portal at `http://192.168.4.1`. No companion software is required.
 
 **Detailed build tutorial (in Polish):** [Forbot forum article](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/). You can translate the page in your browser.
 
@@ -32,7 +34,7 @@ The device interface and source-code comments are in Polish. This English guide 
 - six configurable website shortcuts,
 - touchscreen media controls,
 - optional Scroll Unit support for volume and Play/Pause,
-- useful Windows 10/11 shortcuts,
+- OS-aware shortcuts for Windows, macOS or Linux GNOME,
 - local configuration portal hosted by the device,
 - Wi-Fi, Bluetooth and battery status icons,
 - animated startup, standby, wake and shutdown,
@@ -40,9 +42,11 @@ The device interface and source-code comments are in Polish. This English guide 
 
 ## Compatibility
 
-This first public release supports Windows 10 and Windows 11 only. Website shortcuts use `Win + R`, and the system page sends Windows-specific keyboard combinations.
+Three BLE HID keyboard profiles are available: **Windows 10/11**, **macOS** and **Linux GNOME/Ubuntu**. BLE HID does **not** reliably identify the host OS. When a **new Bluetooth bond** is detected, the device asks you to select the host OS. Your choice is stored in non-volatile memory, so reconnecting to the same computer **does not trigger the prompt again**.
 
-The device is a standard BLE HID keyboard. BLE HID does not provide a reliable host operating-system identifier, so this release uses one explicit shortcut set for Windows.
+Change the profile any time on the **Connections** touchscreen or in the local AP portal (`http://192.168.4.1`). No reflashing or Bluetooth re-pairing is needed to change profiles.
+
+**Limitations:** The macOS browser shortcut opens **Safari via Spotlight**, not an automatically detected default browser. Linux targets **GNOME/Ubuntu** and uses `xdg-open`, `nautilus`, and (for system monitoring) `gnome-system-monitor` where installed. Other desktop environments, custom hotkeys and different keyboard layouts may require modifications. macOS and Linux operation is pending full hardware verification.
 
 ## Hardware used in this build
 
@@ -74,22 +78,26 @@ Shows Poland time, a second timezone and the date. A blue background indicates a
 
 ### Applications
 
-The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. A tap sends `Win + R`, types the configured URL and presses Enter.
+The default 2 x 3 layout contains ChatGPT, Claude, Gemini, Canva, Admin Toolkit and Botland. On Windows the deck uses **Win+R**; on macOS it opens **Safari using Spotlight**, then types the URL with **Cmd+L**; on GNOME it uses **Alt+F2 → xdg-open**.
 
-Names and URLs can be changed in the local portal or in `include/UserConfig.h`.
+Names and URLs can be changed in the local portal or `include/UserConfig.h`. Use `http://` or `https://` URLs with safe ASCII characters and percent-encode spaces as `%20`.
 
 ### Media
 
 Previous track, Play/Pause, next track, mute, volume down and volume up. When the optional Scroll Unit is connected, rotation changes volume and a click sends Play/Pause.
 
-### Windows
+### System shortcuts
 
-- Task Manager: `Ctrl + Shift + Esc`
-- lock: `Win + L`
-- Snipping Tool selection: `Win + Shift + S`
-- show desktop: `Win + D`
-- File Explorer: `Win + E`
-- switch window: `Alt + Tab`
+| Action | Windows | macOS | Linux GNOME |
+|---|---|---|---|
+| System monitor | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
+| Lock screen | Win+L | Ctrl+Cmd+Q | Super+L |
+| Screenshot | Win+Shift+S | Shift+Cmd+5 | Print Screen |
+| Desktop / overview | Win+D | Ctrl+↑ (Mission Control) | Super (Activities) |
+| Files | Win+E | Option+Cmd+Space (Finder Search) | Alt+F2 → nautilus |
+| Switch applications | Alt+Tab | Cmd+Tab | Super+Tab |
+
+Labels change when you select a host OS. macOS uses Mission Control, and GNOME uses Activities instead of assuming a universal Show Desktop shortcut.
 
 ### Settings
 
@@ -97,7 +105,7 @@ Brightness, home Wi-Fi, configuration access point and the second timezone.
 
 ### Connections
 
-Bluetooth state, new pairing, local portal details, Scroll Unit status and firmware version.
+Bluetooth state, **Windows/macOS/Linux GNOME selector**, new pairing, local AP address and firmware version.
 
 ## Windows source upload (alternative to the web installer)
 
@@ -124,9 +132,10 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for details.
 
 ## Bluetooth pairing
 
-1. Open **Settings > Bluetooth & devices > Add device > Bluetooth** in Windows.
-2. Select **M5 Control Deck**.
-3. The Bluetooth icon on the deck turns green after the connection is established.
+1. On the host computer (Windows, macOS or GNOME Linux), open Bluetooth settings and pair **M5 Control Deck**.
+2. On a new pairing, the touchscreen asks you to choose **Windows**, **macOS** or **Linux**.
+3. The selected shortcut profile is saved and reused when reconnecting to the same host.
+4. Change the profile later from the **Connections** screen or the AP portal, with no reflashing. You can also choose through the portal while a new pairing prompt is visible.
 
 ### Switching computers
 
@@ -151,7 +160,7 @@ Username: admin
 Panel password: admin123
 ```
 
-The AP can also be enabled manually from the Settings page. The portal changes Wi-Fi credentials, brightness, the second timezone, standby settings, AP credentials, portal credentials, and all six application labels and URLs.
+The AP can also be enabled manually from the Settings page. The portal changes the **target operating system (Windows, macOS or Linux GNOME)**, Wi-Fi credentials, brightness, the second timezone, standby settings, AP credentials, portal credentials, and all six app labels and URLs. Saving the form reboots the device.
 
 Change the default passwords after the first setup. The portal uses local HTTP, so disable the AP when configuration is complete.
 
@@ -163,7 +172,7 @@ Values already saved in NVS override source defaults. Use **Factory reset** in t
 
 The source files use Polish comments. The most important modules are:
 
-- `src/BleController.cpp`: BLE keyboard, media keys, Windows shortcuts and URLs,
+- `src/BleController.cpp`: BLE HID keyboard, three host shortcut profiles, media keys and URLs,
 - `src/UserInterface.cpp`: pages, gestures, icons, standby and power menu,
 - `src/NetworkPortal.cpp`: Wi-Fi, AP and web configuration,
 - `src/TimeManager.cpp`: NTP, RTC and timezones,
@@ -174,10 +183,11 @@ Detailed customization examples are in [docs/CUSTOMIZATION.md](docs/CUSTOMIZATIO
 
 ## Current limitations
 
-- Windows 10 and Windows 11 only.
-- The expected keyboard layout is Polish Programmer.
-- The PC must be unlocked for `Win + R` website launching.
-- BLE HID cannot read CPU, RAM, GPU or temperatures. Those values require a separate Windows companion application.
+- Windows 10/11 is the previously tested baseline. macOS and Linux GNOME profiles require real hardware verification and may differ on customized hosts.
+- Typing URLs relies on compatible ASCII key mappings (Polish Programmer works for the original Windows setup); other keyboard layouts may need changes.
+- macOS website launching deliberately opens Safari; GNOME requires `xdg-open` and a working Alt+F2 command launcher.
+- The host should be unlocked for opening URLs and launching applications.
+- BLE HID cannot read CPU, RAM, GPU or temperatures; telemetry would require a separate host application.
 - One active Bluetooth bond is stored at a time.
 
 ## Project website

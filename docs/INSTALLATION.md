@@ -2,7 +2,7 @@
 
 **Najprostsza metoda:** [instalator internetowy PL/EN](https://m5stack-touch-control-deck.lepczynski.it/) umożliwia wgranie najnowszego opublikowanego firmware bez Pythona i kompilacji na komputerze użytkownika. Podłącz **M5Stack CoreS3 SE** przez USB-C z transmisją danych, kliknij **Wgraj firmware / Install firmware** i wybierz port w obsługiwanej przeglądarce komputerowej (np. Chrome lub Edge). Wgrywanie może usunąć zapisane ustawienia urządzenia.
 
-**Metoda dla osób modyfikujących kod:** skompiluj źródła i wgraj je za pomocą opisanych poniżej narzędzi Windows. Pozwala to zmieniać funkcje i konfigurację urządzenia. Do codziennej pracy po wgraniu żaden dodatkowy program Windows nie jest wymagany.
+**Wgrywanie i system sterowany to dwie różne rzeczy.** Skrypty do lokalnej kompilacji i wgrywania działają na Windows. Przez [instalator WWW](https://m5stack-touch-control-deck.lepczynski.it/) gotowy firmware można wgrać także z innego systemu z przeglądarką obsługującą Web Serial. Po instalacji profil skrótów wybiera się na M5Stacku: **Windows, macOS lub Linux GNOME**. Do sterowania komputerem nie jest wymagany dodatkowy program.
 
 Pełny poradnik budowy: [Forbot (po polsku)](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/).
 

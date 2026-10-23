@@ -11,8 +11,8 @@ const IPAddress AP_SUBNET(255, 255, 255, 0);
 constexpr uint32_t WIFI_RETRY_INTERVAL_MS = 30000UL;
 }
 
-NetworkPortal::NetworkPortal(ConfigManager& configManager, TimeManager& timeManager)
-    : configManager_(configManager), timeManager_(timeManager) {}
+NetworkPortal::NetworkPortal(ConfigManager& configManager, TimeManager& timeManager, BleController& bleController)
+    : configManager_(configManager), timeManager_(timeManager), bleController_(bleController) {}
 
 void NetworkPortal::begin() {
     WiFi.persistent(false);
@@ -289,6 +289,17 @@ void NetworkPortal::handleSave() {
         config.secondTimezoneIndex = static_cast<uint8_t>(timezoneIndex);
     }
 
+    // Uzytkownik recznie wybiera system; BLE HID nie wykrywa go automatycznie.
+    const String selectedOs = server_.arg("host_os");
+    if (selectedOs == "0" || selectedOs == "1" || selectedOs == "2") {
+        config.hostOs = static_cast<HostOS>(selectedOs.toInt());
+        // Gdy aktualny host jest sparowany, wybor WWW zatwierdza rowniez bond.
+        const String bondedPeer = bleController_.bondedPeerIdentity();
+        if (!bondedPeer.isEmpty()) config.pairedHostId = bondedPeer;
+    } else {
+        errors += "Wybierz poprawny system: Windows, macOS lub Linux GNOME.<br>";
+    }
+
     config.standbyEnabled = server_.hasArg("standby_enabled");
     config.standbyTimeoutMinutes = static_cast<uint16_t>(
         constrain(static_cast<int>(server_.arg("standby_minutes").toInt()), 1, 60)
@@ -332,7 +343,7 @@ void NetworkPortal::handleSave() {
             if (isAllowedUrl(url)) {
                 config.apps[index].url = url;
             } else {
-                errors += "Adres dla kafelka " + String(index + 1) + " musi zaczynać się od http:// lub https://.<br>";
+                errors += "Adres dla kafelka " + String(index + 1) + " musi zaczynać się od http:// lub https:// i zawierać tylko bezpieczne znaki ASCII (spacje koduj jako %20).<br>";
             }
         }
     }
@@ -369,6 +380,7 @@ void NetworkPortal::handleStatus() {
     }
 
     String json = "{";
+    json += "\"host_os\":\"" + String(hostOsName(configManager_.data().hostOs)) + "\",";
     json += "\"wifi_enabled\":" + String(configManager_.data().wifiEnabled ? "true" : "false") + ",";
     json += "\"wifi_connected\":" + String(isWifiConnected() ? "true" : "false") + ",";
     json += "\"wifi_ssid\":\"" + jsonEscape(wifiSsid()) + "\",";
@@ -454,6 +466,19 @@ String NetworkPortal::buildPortalHtml() const {
     html += F("</div></section>");
 
     html += F("<form method='post' action='/save'><div class='grid'>");
+    html += F("<section class='card wide'><h2>System komputera (Bluetooth HID)</h2>");
+    html += F("<label for='host_os'>Wybrany system operacyjny</label><select id='host_os' name='host_os'>");
+    for (uint8_t index = 0; index <= static_cast<uint8_t>(HostOS::LinuxGnome); ++index) {
+        const HostOS os = static_cast<HostOS>(index);
+        html += F("<option value='");
+        html += String(index);
+        html += F("'");
+        if (config.hostOs == os) html += F(" selected");
+        html += F(">");
+        html += hostOsName(os);
+        html += F("</option>");
+    }
+    html += F("</select><small>Po nowym sparowaniu urzadzenie zapyta o system. Mozesz go zmienic tutaj lub na ekranie Polaczenia. Linux: profil GNOME/Ubuntu; inne pulpity moga miec inne skroty. macOS: otwieranie adresow w Safari.</small></section>");
 
     html += F("<section class='card'><h2>Sieć i ekran</h2>");
     html += F("<label class='check'><input type='checkbox' name='wifi_enabled' value='1'");
@@ -584,18 +609,6 @@ String NetworkPortal::safeFormValue(const String& input, size_t maxLength) {
 }
 
 bool NetworkPortal::isAllowedUrl(const String& url) {
-    if (!(url.startsWith("https://") || url.startsWith("http://"))) {
-        return false;
-    }
-
-    // BLE Keyboard korzysta z mapy standardowych znakow ASCII. Odrzucamy
-    // spacje, znaki sterujace i tekst spoza ASCII, aby wpisywanie przez
-    // Win+R bylo przewidywalne na ukladzie Polski programisty.
-    for (size_t index = 0; index < url.length(); ++index) {
-        const uint8_t character = static_cast<uint8_t>(url[index]);
-        if (character < 0x21 || character > 0x7E) {
-            return false;
-        }
-    }
-    return true;
+    // Ta sama walidacja co przy wysylaniu adresu jako klawiszy HID.
+    return BleController::isSafeBrowserUrl(url);
 }

@@ -87,6 +87,8 @@ private:
     uint32_t lastEncoderClickMillis_ = 0;
 
     bool pairingConfirmationVisible_ = false;
+    bool hostOsPromptVisible_ = false;
+    String pendingHostPeerId_;
     bool powerMenuVisible_ = false;
     bool standbyPromptVisible_ = false;
     bool standby_ = false;
@@ -136,6 +138,8 @@ private:
     void handleWindowsTap(int16_t x, int16_t y);
     void handleSettingsTap(int16_t x, int16_t y);
     void handleConnectionsTap(int16_t x, int16_t y);
+    void handleHostOsPromptTap(int16_t x, int16_t y);
+    void selectHostOS(HostOS os);
     void handlePairingConfirmationTap(int16_t x, int16_t y);
     void handlePowerMenuTap(int16_t x, int16_t y);
     void handleStandbyPromptTap(int16_t x, int16_t y);
@@ -153,6 +157,7 @@ private:
     void drawSettingsScreen();
     void drawConnectionsScreen();
     void drawPairingConfirmation();
+    void drawHostOSPrompt();
     void drawPowerMenu();
     void drawStandbyPrompt();
     void drawToast();

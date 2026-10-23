@@ -4,7 +4,9 @@
 
 **Strona projektu i instalator online (PL/EN):** [M5Stack-Touch-Control-Deck.lepczynski.it](https://m5stack-touch-control-deck.lepczynski.it/)
 
-Dotykowy i bezprzewodowy panel sterowania dla komputerów z Windows 10 i Windows 11. Projekt wykorzystuje M5Stack CoreS3 SE jako klawiaturę Bluetooth Low Energy oraz kontroler multimediów, dlatego podstawowe funkcje działają bez instalowania dodatkowego programu na komputerze.
+Dotykowy, bezprzewodowy panel sterowania oparty na **M5Stack CoreS3 SE**, działający jako klawiatura Bluetooth HID i kontroler multimediów. Dostępne są profile skrótów dla **Windows 10/11, macOS i Linux (GNOME/Ubuntu)**. Po nowym parowaniu panel poprosi o wybór systemu. Do codziennego sterowania nie potrzebujesz aplikacji działającej na komputerze.
+
+**Status:** Windows jest sprawdzoną wersją bazową. Nowe profile macOS i Linux GNOME wymagają jeszcze testów na fizycznym sprzęcie; funkcje zależne od konfiguracji systemu mogą wymagać dostosowania.
 
 ## Dwa sposoby wgrania oprogramowania
 
@@ -12,7 +14,7 @@ Dotykowy i bezprzewodowy panel sterowania dla komputerów z Windows 10 i Windows
 
 **2. Z kodu źródłowego, z możliwością własnych zmian.** Pobierz to repozytorium, a w systemie Windows uruchom `tools\upload_windows.bat` po podłączeniu urządzenia przez USB-C. Skrypt przygotuje środowisko, skompiluje firmware i wgra go na płytkę. Tę metodę wybierz, jeśli chcesz modyfikować funkcje, wygląd lub skróty. Szczegółowe instrukcje: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
-Po wgraniu programu sparuj **M5 Control Deck** przez Bluetooth w Windows 10/11. Użytkownik nie musi instalować żadnego programu do codziennego korzystania z urządzenia.
+Po wgraniu sparuj **M5 Control Deck** przez Bluetooth z komputerem, a na urządzeniu wybierz **Windows**, **macOS** albo **Linux GNOME**. Zmiana jest później dostępna na ekranie **Połączenia** i w lokalnym panelu konfiguracji pod `http://192.168.4.1`. Bez aplikacji towarzyszącej na komputerze.
 
 **Dokładny opis budowy i działania (po polsku):** [artykuł na forum Forbot](https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/).
 
@@ -30,7 +32,7 @@ Projekt rozwija pomysł z repozytorium [ESP32 PC Control Deck](https://github.co
 - sześć konfigurowanych kafelków stron WWW,
 - sterowanie multimediami z ekranu dotykowego,
 - opcjonalny Scroll Unit: obrót reguluje głośność, a kliknięcie wysyła Play/Pauza,
-- najczęściej używane skróty Windows 10/11,
+- skróty systemowe dobrane do Windows, macOS lub Linux GNOME,
 - lokalny portal konfiguracyjny dostępny przez własny punkt AP,
 - ikony stanu Wi-Fi, Bluetooth i akumulatora,
 - animowany start, czuwanie, wybudzanie i wyłączanie,
@@ -39,9 +41,11 @@ Projekt rozwija pomysł z repozytorium [ESP32 PC Control Deck](https://github.co
 
 ## Zgodność
 
-Pierwsze publiczne wydanie obsługuje wyłącznie Windows 10 i Windows 11. Otwieranie stron korzysta z `Win + R`, a ekran systemowy wysyła skróty charakterystyczne dla Windows.
+Dostępne są trzy profile klawiatury BLE HID: **Windows 10/11**, **macOS** i **Linux (GNOME/Ubuntu)**. Systemu hosta **nie da się wiarygodnie odczytać z BLE HID**, dlatego po wykryciu nowego powiązania Bluetooth pojawia się ekran z trzema przyciskami. Wybór jest zapisywany w pamięci i **nie pojawia się ponownie przy zwykłym rozłączeniu i ponownym połączeniu z tym samym komputerem**.
 
-Urządzenie działa jako standardowa klawiatura BLE HID. Ten profil nie dostarcza wiarygodnej informacji o systemie operacyjnym komputera, dlatego pierwsze wydanie korzysta z jednego, jednoznacznego zestawu skrótów dla Windows.
+System możesz zmienić w każdej chwili na ekranie **Połączenia** albo w portalu AP (`http://192.168.4.1`). Zmiana systemu nie wymaga ponownej kompilacji ani ponownego parowania.
+
+**Ważne ograniczenia:** profil macOS otwiera strony przez Safari uruchamiane przez Spotlight. Profil Linux zakłada GNOME (np. Ubuntu) oraz dostępność polecenia `xdg-open`, menedżera plików `nautilus` i opcjonalnie `gnome-system-monitor`. Inne środowiska Linux, inne skróty użytkownika lub przestawione skróty Spotlight mogą działać inaczej. Wersje macOS/Linux są nowe i nie były jeszcze zweryfikowane na wszystkich systemach i urządzeniach.
 
 ## Sprzęt użyty w tym projekcie
 
@@ -79,7 +83,7 @@ Układ 2 x 3:
 |---|---|---|
 | Canva | Admin Toolkit | Botland |
 
-Dotknięcie kafelka wysyła `Win + R`, wpisuje adres i naciska Enter. Nazwy oraz adresy można zmienić w portalu WWW lub w `include/UserConfig.h`.
+Dotknięcie kafelka uruchamia systemową metodę otwierania adresu: **Win+R** na Windows, **Spotlight → Safari → Cmd+L** na macOS albo **Alt+F2 → xdg-open** w GNOME. Nazwy i adresy można zmieniać w portalu WWW lub w `include/UserConfig.h`. Adresy muszą zaczynać się od `http://` lub `https://` i używać bezpiecznych znaków ASCII; spacje należy kodować jako `%20`.
 
 ### Multimedia
 
@@ -92,16 +96,18 @@ Dotknięcie kafelka wysyła `Win + R`, wpisuje adres i naciska Enter. Nazwy oraz
 
 Jeżeli podłączono Scroll Unit, obrót zmienia głośność, a kliknięcie steruje Play/Pauza.
 
-### Windows
+### Skróty systemowe
 
-- Menedżer zadań: `Ctrl + Shift + Esc`,
-- blokada komputera: `Win + L`,
-- narzędzie wycinania: `Win + Shift + S`,
-- pokaż pulpit: `Win + D`,
-- Eksplorator plików: `Win + E`,
-- przełącz okno: `Alt + Tab`.
+| Funkcja | Windows | macOS | Linux GNOME |
+|---|---|---|---|
+| Monitor systemu | Ctrl+Shift+Esc | Spotlight → Activity Monitor | Alt+F2 → gnome-system-monitor |
+| Blokada ekranu | Win+L | Ctrl+Cmd+Q | Super+L |
+| Zrzut/wycinek | Win+Shift+S | Shift+Cmd+5 | Print Screen |
+| Pulpit / widok okien | Win+D | Ctrl+↑ (Mission Control) | Super (Activities) |
+| Pliki | Win+E | Option+Cmd+Space (Finder Search) | Alt+F2 → nautilus |
+| Zmiana okna/aplikacji | Alt+Tab | Cmd+Tab | Super+Tab |
 
-Kafelek **Wycinek** uruchamia narzędzie pozwalające zaznaczyć fragment ekranu. Nie wykonuje automatycznie pełnego zrzutu.
+Etykiety na ekranie automatycznie dostosowują się do wybranego profilu. Na macOS funkcja „Pulpit” otwiera **Mission Control**, a w GNOME **Activities**, bo nie istnieje jeden niezawodny skrót „pokaż pulpit” wspólny dla wszystkich konfiguracji.
 
 ### Ustawienia
 
@@ -113,9 +119,9 @@ Kafelek **Wycinek** uruchamia narzędzie pozwalające zaznaczyć fragment ekranu
 ### Połączenia
 
 - status Bluetooth,
+- **wybór Windows / macOS / Linux GNOME bez restartu**,
 - uruchomienie nowego parowania,
-- dane lokalnego portalu,
-- stan Scroll Unit,
+- podstawowy adres lokalnego portalu,
 - wersja firmware.
 
 ## Wgrywanie ze źródeł w Windows (alternatywa dla instalatora WWW)
@@ -143,9 +149,10 @@ Pełna instrukcja: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
 ## Pierwsze parowanie Bluetooth
 
-1. W Windows otwórz **Ustawienia > Bluetooth i urządzenia > Dodaj urządzenie > Bluetooth**.
-2. Wybierz **M5 Control Deck**.
-3. Po połączeniu ikona Bluetooth na pasku urządzenia zmieni kolor na zielony.
+1. W ustawieniach Bluetooth komputera (Windows / macOS / GNOME) znajdź **M5 Control Deck** i rozpocznij parowanie.
+2. Po utworzeniu nowego powiązania na ekranie M5Stack wybierz **Windows**, **macOS** lub **Linux**.
+3. Po wyborze systemu urządzenie zapisze profil skrótów w NVS. Kolejne połączenie z tym samym hostem nie wymaga ponownego wybierania systemu.
+4. Profil możesz później zmienić na ekranie **Połączenia** lub przez AP. Można też wybrać system z portalu w trakcie parowania.
 
 ### Zmiana komputera
 
@@ -170,7 +177,7 @@ Login: admin
 Hasło panelu: admin123
 ```
 
-AP można również włączyć ręcznie na ekranie **Ustawienia**, także podczas połączenia z domowym Wi-Fi. Portal umożliwia zmianę sieci Wi-Fi, jasności, drugiej strefy czasowej, czasu bezczynności, danych AP, danych logowania oraz nazw i adresów sześciu kafelków.
+AP można również włączyć ręcznie na ekranie **Ustawienia**, także podczas połączenia z domowym Wi-Fi. Portal umożliwia zmianę **systemu hosta (Windows / macOS / Linux GNOME)**, sieci Wi-Fi, jasności, drugiej strefy czasowej, czasu bezczynności, danych AP, danych logowania oraz nazw i adresów sześciu kafelków. Zapis przez portal powoduje restart urządzenia.
 
 Po pierwszym uruchomieniu warto zmienić domyślne hasło AP i hasło panelu. Portal działa lokalnie przez HTTP, dlatego po zakończeniu konfiguracji najlepiej wyłączyć punkt AP.
 
@@ -198,10 +205,11 @@ Szczegóły modyfikacji: [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md).
 
 ## Ograniczenia
 
-- Obsługiwane są Windows 10 i Windows 11.
-- Projekt zakłada układ klawiatury **Polski programisty**.
-- Komputer musi być odblokowany, aby `Win + R` mógł otworzyć stronę.
-- BLE HID nie udostępnia CPU, RAM, GPU ani temperatur. Takie dane wymagają osobnego programu działającego w Windows.
+- Windows 10/11 jest sprawdzoną platformą bazową. Profile macOS i Linux GNOME są nowe i mogą wymagać korekty ustawień skrótów oraz testów na konkretnej wersji systemu.
+- Wprowadzanie URL zakłada układ klawiatury zgodny z ASCII, w szczególności **Polski programisty** na Windows; niestandardowe układy mogą inaczej interpretować znaki.
+- Na macOS do otwierania stron używany jest **Safari**; na GNOME wymagane jest `xdg-open` oraz obsługa `Alt+F2`.
+- Komputer powinien być odblokowany, aby zadziałały operacje otwierania adresów i aplikacji.
+- BLE HID nie udostępnia CPU, RAM, GPU ani temperatur. Telemetria wymaga osobnej usługi na komputerze.
 - Urządzenie przechowuje jedno bieżące powiązanie Bluetooth.
 
 ## Struktura repozytorium

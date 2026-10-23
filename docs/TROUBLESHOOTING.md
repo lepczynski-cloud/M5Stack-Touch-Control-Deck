@@ -50,6 +50,28 @@ Aby połączyć się ponownie:
 
 Samo usunięcie powiązania po stronie panelu nie usuwa wpisu zapisanego w Windows.
 
+## Po parowaniu pojawia się wybór systemu
+
+To zamierzone: po wykryciu nowego powiązania BLE wybierz **Windows**, **macOS** lub **Linux GNOME**. Wybór zapisuje się w pamięci i nie powinien powracać po zwykłym reconnect. Profil można zmienić na ekranie **Połączenia** albo przez `http://192.168.4.1` przy włączonym AP.
+
+Jeśli zmieniłeś komputer i nowy system nie został wykryty, użyj **Nowe parowanie Bluetooth**, usuń stary wpis `M5 Control Deck` na poprzednim komputerze i sparuj urządzenie ponownie.
+
+## macOS: skróty lub otwieranie URL nie działają
+
+- Na ekranie Połączenia wybierz **macOS**, nie Windows.
+- Do otwierania adresów firmware korzysta z **Cmd+Space → Safari → Cmd+L**; Spotlight i Safari muszą być dostępne.
+- macOS może mieć inne skróty Spotlight, inne układy klawiatury i ustawienia dostępności. Sprawdź standardowe skróty w Ustawieniach systemowych.
+- **Opcja Pliki otwiera okno wyszukiwania Findera**, a widok Pulpit odpowiada Mission Control.
+- Wsparcie macOS wymaga dodatkowych testów na fizycznym komputerze; biblioteka BLE dla macOS ma ograniczenia zgodności.
+
+## Linux: niektóre kafelki nie działają
+
+- Wybierz profil **Linux GNOME**. Inne środowiska, takie jak KDE, XFCE czy Cinnamon, nie mają gwarantowanych tych samych skrótów.
+- Otwieranie adresów: GNOME `Alt+F2` i polecenie `xdg-open`.
+- Monitor: wymagany `gnome-system-monitor`. Pliki: wymagany `nautilus`.
+- Pulpit wywołuje **Activities**, a nie minimalizowanie wszystkich okien.
+- Sprawdź lokalny układ klawiatury i skonfigurowane skróty.
+
 ## Komputer nie widzi klawiatury Bluetooth
 
 - Otwórz ekran **Połączenia** i wybierz nowe parowanie.
@@ -61,7 +83,8 @@ Samo usunięcie powiązania po stronie panelu nie usuwa wpisu zapisanego w Windo
 
 - Sprawdź, czy ikona Bluetooth jest zielona.
 - Upewnij się, że komputer jest odblokowany.
-- Projekt zakłada układ klawiatury **Polski programisty**.
+- Dla URL wymagany jest zgodny układ klawiatury; oryginalna konfiguracja Windows korzystała z **Polski programisty**. Na macOS i Linux sprawdź mapowanie klawiszy, zwłaszcza znaków `:`, `/`, `?` i `&`.
+- Sprawdź, czy w **Połączeniach** jest wybrany właściwy system.
 - Dla własnych adresów używaj standardowych znaków ASCII.
 
 ## Gest uruchamia kafelek zamiast zmienić ekran
@@ -83,7 +106,7 @@ Zwiększenie minimalnego dystansu gestu utrudnia przypadkowe przewijanie, natomi
 - SDA to GPIO 2, a SCL to GPIO 1.
 - Obrót i kliknięcie wysyłają polecenia dopiero po połączeniu Bluetooth.
 
-Urządzenie może działać bez Scroll Unit. Na ekranie **Połączenia** pojawi się wtedy informacja o braku modułu.
+Urządzenie może działać bez Scroll Unit. Sterowanie multimediami pozostaje dostępne na ekranie dotykowym.
 
 ## Zegar pokazuje `--:--`
 

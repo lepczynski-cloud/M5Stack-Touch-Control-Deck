@@ -170,6 +170,7 @@ void UserInterface::processPowerButton() {
     noteActivity();
     standbyPromptVisible_ = false;
     pairingConfirmationVisible_ = false;
+    if (hostOsPromptVisible_) return; // Wybor hosta ma pierwszenstwo.
     powerMenuVisible_ = !powerMenuVisible_;
     dirty_ = true;
 }
@@ -247,6 +248,11 @@ void UserInterface::processTouch() {
         return;
     }
 
+    if (hostOsPromptVisible_) {
+        if (cleanTap) handleHostOsPromptTap(touchLastX_, touchLastY_);
+        return;
+    }
+
     if (pairingConfirmationVisible_) {
         if (cleanTap) {
             handlePairingConfirmationTap(touchLastX_, touchLastY_);
@@ -270,6 +276,7 @@ void UserInterface::processTouch() {
 }
 
 void UserInterface::processEncoder() {
+    if (hostOsPromptVisible_) return; // Nie wysylamy klawiszy przed wyborem systemu.
     if (!scrollAvailable_) {
         return;
     }
@@ -371,6 +378,32 @@ void UserInterface::updateStatusAndTimers() {
         if (now - lastBatteryRefreshMillis_ >= 10000UL) {
             lastBatteryRefreshMillis_ = now;
             batteryLevel = readBatteryLevel();
+        }
+
+        // NimBLE udostepnia zapisany bond, lecz nie nazwe systemu komputera.
+        // Dla nowego powiazania pokazujemy wybor systemu tylko raz, nie po
+        // kazdym zwyklym rozlaczeniu i ponownym polaczeniu.
+        if (bleConnected) {
+            const String peerId = bleController_.bondedPeerIdentity();
+            if (!peerId.isEmpty()) {
+                if (peerId != configManager_.data().pairedHostId) {
+                    if (!hostOsPromptVisible_ || pendingHostPeerId_ != peerId) {
+                        hostOsPromptVisible_ = true;
+                        pendingHostPeerId_ = peerId;
+                        powerMenuVisible_ = false;
+                        pairingConfirmationVisible_ = false;
+                        standbyPromptVisible_ = false;
+                        if (standby_) wakeFromStandby();
+                        dirty_ = true;
+                    }
+                } else if (hostOsPromptVisible_) {
+                    // Host zostal zatwierdzony z lokalnego portalu WWW.
+                    hostOsPromptVisible_ = false;
+                    pendingHostPeerId_ = "";
+                    bleController_.setHostOS(configManager_.data().hostOs);
+                    dirty_ = true;
+                }
+            }
         }
 
         const bool bleChanged = bleConnected != lastBleConnected_;
@@ -487,7 +520,7 @@ void UserInterface::noteActivity() {
 }
 
 bool UserInterface::overlayVisible() const {
-    return pairingConfirmationVisible_ || powerMenuVisible_ || standbyPromptVisible_;
+    return hostOsPromptVisible_ || pairingConfirmationVisible_ || powerMenuVisible_ || standbyPromptVisible_;
 }
 
 void UserInterface::cancelStandbyPrompt() {
@@ -660,7 +693,7 @@ void UserInterface::handleWindowsTap(int16_t x, int16_t y) {
     }
 
     if (sent) {
-        showToast("Skrot Windows wyslany", 1000);
+        showToast("Skrot wyslany", 1000);
     }
 }
 
@@ -713,8 +746,37 @@ void UserInterface::handleSettingsTap(int16_t x, int16_t y) {
     }
 }
 
+void UserInterface::selectHostOS(HostOS os) {
+    auto& config = configManager_.data();
+    config.hostOs = os;
+    // Osobny wybór podczas parowania oznacza zgode na ten konkretny host.
+    const String peer = !pendingHostPeerId_.isEmpty()
+        ? pendingHostPeerId_ : bleController_.bondedPeerIdentity();
+    if (!peer.isEmpty()) config.pairedHostId = peer;
+    configManager_.save();
+    bleController_.setHostOS(os);
+    hostOsPromptVisible_ = false;
+    pendingHostPeerId_ = "";
+    showToast(String("System: ") + hostOsName(os), 1600);
+    dirty_ = true;
+}
+
+void UserInterface::handleHostOsPromptTap(int16_t x, int16_t y) {
+    if (y < 108 || y > 169) return;
+    if (x >= 10 && x < 107) selectHostOS(HostOS::Windows);
+    else if (x >= 111 && x < 210) selectHostOS(HostOS::MacOS);
+    else if (x >= 214 && x < 310) selectHostOS(HostOS::LinuxGnome);
+}
+
 void UserInterface::handleConnectionsTap(int16_t x, int16_t y) {
-    if (x >= 20 && x <= 300 && y >= 92 && y <= 134) {
+    // Zmiana systemu bez restartu i bez koniecznosci ponownego parowania.
+    if (y >= 99 && y <= 138) {
+        if (x >= 12 && x < 111) selectHostOS(HostOS::Windows);
+        else if (x >= 113 && x < 211) selectHostOS(HostOS::MacOS);
+        else if (x >= 213 && x <= 309) selectHostOS(HostOS::LinuxGnome);
+        return;
+    }
+    if (x >= 18 && x <= 302 && y >= 151 && y <= 186) {
         pairingConfirmationVisible_ = true;
         dirty_ = true;
     }
@@ -732,6 +794,10 @@ void UserInterface::handlePairingConfirmationTap(int16_t x, int16_t y) {
     }
 
     if (x >= 170 && x <= 284) {
+        // Ponowne parowanie, nawet z tym samym hostem, wymaga ponownego
+        // potwierdzenia systemu operacyjnego po ustanowieniu nowego bond.
+        configManager_.data().pairedHostId = "";
+        configManager_.save();
         M5.Display.fillScreen(color(9, 14, 24));
         M5.Display.setTextDatum(middle_center);
         M5.Display.setTextColor(TFT_WHITE);
@@ -798,7 +864,9 @@ void UserInterface::draw() {
         default: drawClockScreen(); break;
     }
 
-    if (powerMenuVisible_) {
+    if (hostOsPromptVisible_) {
+        drawHostOSPrompt();
+    } else if (powerMenuVisible_) {
         drawPowerMenu();
     } else if (standbyPromptVisible_) {
         drawStandbyPrompt();
@@ -837,7 +905,7 @@ void UserInterface::drawCurrentStatusBar() {
         case Screen::Clock: drawStatusBar("Zegar"); break;
         case Screen::Apps: drawStatusBar("Aplikacje"); break;
         case Screen::Media: drawStatusBar("Multimedia"); break;
-        case Screen::Windows: drawStatusBar("Windows"); break;
+        case Screen::Windows: drawStatusBar(hostOsName(configManager_.data().hostOs)); break;
         case Screen::Settings: drawStatusBar("Ustawienia"); break;
         case Screen::Connections: drawStatusBar("Polaczenia"); break;
         default: drawStatusBar("M5 Control Deck"); break;
@@ -1023,7 +1091,7 @@ void UserInterface::drawMediaScreen() {
 void UserInterface::drawWindowsScreen() {
     const uint16_t background = color(9, 14, 24);
     M5.Display.fillScreen(background);
-    drawStatusBar("Windows");
+    drawStatusBar(hostOsName(configManager_.data().hostOs));
 
     static const Icon ICONS[6] = {
         Icon::TaskManager,
@@ -1033,7 +1101,12 @@ void UserInterface::drawWindowsScreen() {
         Icon::Folder,
         Icon::SwitchWindow
     };
-    static const char* LABELS[6] = {"Menedzer", "Zablokuj", "Wycinek", "Pulpit", "Pliki", "Alt + Tab"};
+    static const char* LABELS_WIN[6] = {"Menedzer", "Zablokuj", "Wycinek", "Pulpit", "Pliki", "Alt + Tab"};
+    static const char* LABELS_MAC[6] = {"Monitor", "Zablokuj", "Zrzut", "Mission Ctrl", "Finder", "Cmd + Tab"};
+    static const char* LABELS_GNOME[6] = {"Monitor", "Zablokuj", "Zrzut", "Aktywnosc", "Pliki", "Super+Tab"};
+    const HostOS os = configManager_.data().hostOs;
+    const char* const* labels = os == HostOS::MacOS ? LABELS_MAC :
+        (os == HostOS::LinuxGnome ? LABELS_GNOME : LABELS_WIN);
     static const uint16_t COLORS[6][3] = {
         {42, 130, 218}, {198, 74, 86}, {147, 81, 191},
         {35, 151, 124}, {225, 154, 45}, {55, 111, 168}
@@ -1048,7 +1121,7 @@ void UserInterface::drawWindowsScreen() {
             TILE_WIDTH,
             TILE_HEIGHT,
             ICONS[index],
-            LABELS[index],
+            labels[index],
             color(COLORS[index][0], COLORS[index][1], COLORS[index][2]),
             color(103, 122, 151)
         );
@@ -1082,45 +1155,79 @@ void UserInterface::drawSettingsScreen() {
 void UserInterface::drawConnectionsScreen() {
     const uint16_t background = color(9, 14, 24);
     const uint16_t card = color(23, 32, 51);
+    const uint16_t accent = color(37, 114, 190);
     M5.Display.fillScreen(background);
     drawStatusBar("Polaczenia");
 
-    M5.Display.fillRoundRect(12, 32, 296, 53, 10, card);
+    M5.Display.fillRoundRect(12, 31, 296, 44, 9, card);
     M5.Display.setTextDatum(middle_left);
     M5.Display.setTextFont(2);
     M5.Display.setTextColor(TFT_WHITE, card);
-    M5.Display.drawString("Bluetooth", 24, 48);
+    M5.Display.drawString("Bluetooth", 23, 44);
     M5.Display.setTextColor(bleController_.isConnected() ? color(0, 210, 135) : color(235, 171, 70), card);
-    M5.Display.drawString(bleController_.isConnected() ? "Polaczono z Windows" : "Oczekiwanie na komputer", 24, 68);
+    M5.Display.drawString(bleController_.isConnected() ? "Polaczono" : "Oczekiwanie na komputer", 23, 62);
 
-    M5.Display.fillRoundRect(20, 93, 280, 41, 10, color(37, 114, 190));
     M5.Display.setTextDatum(middle_center);
-    M5.Display.setTextFont(2);
-    M5.Display.setTextColor(TFT_WHITE, color(37, 114, 190));
-    M5.Display.drawString("NOWE PAROWANIE BLUETOOTH", 160, 113);
-
-    M5.Display.fillRoundRect(12, 143, 296, 67, 10, card);
-    M5.Display.setTextDatum(top_left);
     M5.Display.setTextFont(1);
-    M5.Display.setTextColor(TFT_WHITE, card);
-    if (networkPortal_.isApActive()) {
-        M5.Display.drawString("AP: " + networkPortal_.apSsid(), 22, 151);
-        M5.Display.drawString("Adres: " + networkPortal_.apIp(), 22, 166);
-        M5.Display.drawString("Login: " + networkPortal_.webUsername(), 22, 181);
-        M5.Display.setTextColor(color(158, 174, 197), card);
-        M5.Display.drawString("Haslo: sprawdz konfiguracje lub README", 22, 196);
-    } else {
-        M5.Display.drawString("Punkt AP jest wylaczony.", 22, 154);
-        M5.Display.setTextColor(color(158, 174, 197), card);
-        M5.Display.drawString("Wlacz go na ekranie Ustawienia.", 22, 174);
-        M5.Display.drawString("Scroll: " + String(scrollAvailable_ ? "glosnosc i Play/Pauza" : "brak polaczenia"), 22, 194);
+    M5.Display.setTextColor(color(170, 190, 217), background);
+    M5.Display.drawString("SYSTEM KOMPUTERA - WYBIERZ", 160, 87);
+    static const char* OS_LABELS[] = {"Windows", "macOS", "Linux"};
+    for (int i = 0; i < 3; ++i) {
+        const int left = 12 + 101 * i;
+        const bool chosen = static_cast<uint8_t>(configManager_.data().hostOs) == i;
+        const uint16_t fill = chosen ? accent : card;
+        M5.Display.fillRoundRect(left, 99, 96, 39, 8, fill);
+        if (chosen) M5.Display.drawRoundRect(left, 99, 96, 39, 8, color(96, 181, 252));
+        M5.Display.setTextColor(TFT_WHITE, fill);
+        M5.Display.setTextFont(2);
+        M5.Display.drawString(OS_LABELS[i], left + 48, 118);
     }
 
+    M5.Display.fillRoundRect(18, 151, 284, 36, 8, accent);
+    M5.Display.setTextFont(2);
+    M5.Display.setTextColor(TFT_WHITE, accent);
+    M5.Display.drawString("NOWE PAROWANIE BLUETOOTH", 160, 169);
+
+    M5.Display.setTextFont(1);
+    M5.Display.setTextColor(color(172, 191, 217), background);
+    M5.Display.drawString(
+        networkPortal_.isApActive() ? "AP: 192.168.4.1 / admin" : "AP: wlacz w Ustawieniach",
+        160, 200
+    );
     M5.Display.setTextDatum(middle_right);
     M5.Display.setTextColor(color(126, 143, 166), background);
-    M5.Display.drawString(String("v") + UserDefaults::FIRMWARE_VERSION, 310, 214);
-
+    M5.Display.drawString(String("v") + UserDefaults::FIRMWARE_VERSION, 307, 215);
     drawPageIndicator(background);
+}
+
+void UserInterface::drawHostOSPrompt() {
+    const uint16_t background = color(9, 14, 24);
+    const uint16_t card = color(23, 32, 51);
+    M5.Display.fillScreen(background);
+    drawStatusBar("Nowy komputer");
+    M5.Display.setTextDatum(middle_center);
+    M5.Display.setTextFont(2);
+    M5.Display.setTextColor(TFT_WHITE, background);
+    M5.Display.drawString("Wybierz system komputera", 160, 49);
+    M5.Display.setTextFont(1);
+    M5.Display.setTextColor(color(170, 190, 217), background);
+    M5.Display.drawString("Nowe parowanie Bluetooth", 160, 72);
+    M5.Display.drawString("Wybierz zestaw skrotow dla hosta.", 160, 87);
+    static const char* OS_LABELS[] = {"Windows", "macOS", "Linux"};
+    for (int i = 0; i < 3; ++i) {
+        const int left = 10 + i * 102;
+        M5.Display.fillRoundRect(left, 108, 96, 61, 10, card);
+        M5.Display.drawRoundRect(left, 108, 96, 61, 10, color(84, 144, 202));
+        M5.Display.setTextFont(2);
+        M5.Display.setTextColor(TFT_WHITE);
+        M5.Display.drawString(OS_LABELS[i], left + 48, 133);
+        M5.Display.setTextFont(1);
+        M5.Display.drawString(i == 2 ? "GNOME" : "", left + 48, 152);
+    }
+    M5.Display.setTextFont(1);
+    M5.Display.setTextColor(color(155, 175, 201), background);
+    M5.Display.drawString("Mozesz pozniej zmienic w Polaczeniach", 160, 197);
+    M5.Display.drawString("lub w lokalnym panelu WWW.", 160, 210);
 }
 
 void UserInterface::drawPairingConfirmation() {
@@ -1136,7 +1243,7 @@ void UserInterface::drawPairingConfirmation() {
     M5.Display.setTextFont(1);
     M5.Display.setTextColor(color(188, 201, 218), panel);
     M5.Display.drawString("Panel zapisuje tylko jedno powiazanie BLE.", 160, 94);
-    M5.Display.drawString("Usun M5 Control Deck z poprzedniego PC", 160, 109);
+    M5.Display.drawString("Usun M5 Control Deck z poprzedniego hosta", 160, 109);
     M5.Display.drawString("przed ponownym parowaniem.", 160, 122);
 
     M5.Display.fillRoundRect(36, 151, 114, 38, 9, color(61, 72, 90));
@@ -1602,6 +1709,10 @@ void UserInterface::showToast(const String& message, uint32_t durationMs) {
 }
 
 bool UserInterface::requireBluetooth() {
+    if (hostOsPromptVisible_) {
+        showToast("Najpierw wybierz system komputera");
+        return false;
+    }
     if (bleController_.isConnected()) {
         return true;
     }

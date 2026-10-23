@@ -24,6 +24,8 @@ void ConfigManager::begin() {
     config_.brightness = preferences.getUChar("bright", config_.brightness);
     config_.secondTimezoneIndex = preferences.getUChar("tz2", config_.secondTimezoneIndex);
     config_.standbyEnabled = preferences.getBool("stby_en", config_.standbyEnabled);
+    config_.hostOs = static_cast<HostOS>(preferences.getUChar("host_os", static_cast<uint8_t>(config_.hostOs)));
+    config_.pairedHostId = preferences.getString("bt_peer", config_.pairedHostId);
     config_.standbyTimeoutMinutes = preferences.getUShort("stby_min", config_.standbyTimeoutMinutes);
 
     config_.apSsid = preferences.getString("ap_ssid", config_.apSsid);
@@ -57,6 +59,8 @@ bool ConfigManager::save() {
     ok &= preferences.putUChar("bright", config_.brightness) > 0;
     ok &= preferences.putUChar("tz2", config_.secondTimezoneIndex) > 0 || config_.secondTimezoneIndex == 0;
     ok &= preferences.putBool("stby_en", config_.standbyEnabled) > 0;
+    ok &= preferences.putUChar("host_os", static_cast<uint8_t>(config_.hostOs)) > 0;
+    ok &= preferences.putString("bt_peer", config_.pairedHostId) > 0 || config_.pairedHostId.isEmpty();
     ok &= preferences.putUShort("stby_min", config_.standbyTimeoutMinutes) > 0;
 
     ok &= preferences.putString("ap_ssid", config_.apSsid) > 0;
@@ -105,6 +109,8 @@ void ConfigManager::loadDefaults() {
     config_.brightness = UserDefaults::DISPLAY_BRIGHTNESS;
     config_.secondTimezoneIndex = UserDefaults::SECOND_TIMEZONE_INDEX;
     config_.standbyEnabled = UserDefaults::STANDBY_ENABLED;
+    config_.hostOs = static_cast<HostOS>(UserDefaults::HOST_OS);
+    config_.pairedHostId = "";
     config_.standbyTimeoutMinutes = UserDefaults::STANDBY_TIMEOUT_MINUTES;
 
     config_.apSsid = UserDefaults::AP_SSID;
@@ -119,6 +125,10 @@ void ConfigManager::loadDefaults() {
 }
 
 void ConfigManager::sanitize() {
+    if (static_cast<uint8_t>(config_.hostOs) > static_cast<uint8_t>(HostOS::LinuxGnome)) {
+        config_.hostOs = HostOS::Windows;
+    }
+    config_.pairedHostId = limitLength(config_.pairedHostId, 32);
     config_.wifiSsid = limitLength(config_.wifiSsid, 32);
     config_.wifiPassword = limitLength(config_.wifiPassword, 63);
 
