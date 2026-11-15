@@ -15,7 +15,7 @@ Można tam zmienić:
 - login i hasło portalu,
 - jasność ekranu,
 - drugą strefę czasową,
-- domyślny system hosta `HOST_OS` (Windows=0, macOS=1, Linux GNOME=2) i przeglądarkę `MAC_BROWSER` dla macOS,
+- domyślny system hosta `HOST_OS` (Windows=0, macOS=1, Linux GNOME=2), przeglądarkę `MAC_BROWSER` i tryb otwierania URL `MAC_URL_MODE` dla macOS (0 standardowy, 1 natywne Skróty),
 - nazwy i adresy sześciu kafelków,
 - kierunek działania Scroll Unit,
 - czas automatycznego czuwania.
@@ -28,7 +28,7 @@ Domyślne nazwy i adresy znajdują się w tablicach `APP_LABELS` i `APP_URLS` w 
 
 Ikony są przypisane do pozycji kafelków w metodzie `drawAppsScreen()` w `src/UserInterface.cpp`. Ich kształty rysuje metoda `drawIcon()`.
 
-Otwieranie adresów zależy od wybranego systemu: `Win+R` na Windows, Spotlight → wybrana przeglądarka → `Cmd+L` → URL na macOS, `Alt+F2` z `xdg-open` w GNOME. Dopuszczalne są adresy `http://` i `https://` z bezpiecznymi znakami ASCII; spacje i niestandardowe znaki koduj procentowo (np. `%20`).
+Otwieranie adresów zależy od wybranego systemu: `Win+R` na Windows, Spotlight → wybrana przeglądarka → `Cmd+L` → URL na macOS w trybie standardowym, `Ctrl+Option+Cmd+1...6` w opcjonalnym [trybie natywnych Skrótów](MACOS_FAST_SHORTCUTS.md) lub `Alt+F2` z `xdg-open` w GNOME. Dopuszczalne są adresy `http://` i `https://` z bezpiecznymi znakami ASCII; spacje i niestandardowe znaki koduj procentowo (np. `%20`).
 
 ## Zmiana skrótu dla systemu hosta
 

@@ -58,17 +58,17 @@ Jeśli zmieniłeś komputer i nowy system nie został wykryty, użyj **Nowe paro
 
 ## macOS Tahoe: Spotlight nie otwiera się po dotknięciu kafelka
 
-Firmware **v0.2.3 nie wyświetla już na M5Stacku pytania „Czy otwarto Spotlight?”**.
+Firmware **od v0.2.3 nie wyświetla już na M5Stacku pytania „Czy otwarto Spotlight?”**. W v0.2.4 dodano również alternatywny tryb szybkich natywnych Skrótów macOS, który w ogóle nie otwiera Spotlight przy uruchamianiu kafelków.
 
 1. Na klawiaturze MacBooka naciśnij **`⌘ + Spacja`**. Sprawdź, czy Spotlight się otwiera.
 2. Jeśli nie, przejdź do **Ustawienia systemowe → Klawiatura → Skróty klawiszowe → Spotlight** i sprawdź, czy włączono **„Pokaż wyszukiwanie Spotlight”** ze skrótem **`⌘ + Spacja`**.
 3. Jeśli kombinacja działa na MacBooku, ale nie z M5Stacka, sprawdź mapowanie klawisza Command dla zewnętrznej klawiatury Bluetooth i konflikty z innymi launcherami.
 
-Klawiatura BLE HID nie widzi aktywnego okna na Macu. Jeśli Spotlight nie otworzy się prawidłowo, niektóre wpisywane teksty nadal mogą trafić do aktywnej aplikacji. Zmiana w v0.2.3 nie jest automatycznym wykrywaniem fokusu.
+Klawiatura BLE HID nie widzi aktywnego okna na Macu. Jeśli Spotlight nie otworzy się prawidłowo, niektóre wpisywane teksty nadal mogą trafić do aktywnej aplikacji. Oprogramowanie nie wykrywa automatycznie fokusu ani w v0.2.3, ani v0.2.4.
 
 ## macOS: ChatGPT otwiera dokument zamiast strony WWW
 
-Spotlight w macOS Tahoe może ustawić plik o nazwie „ChatGPT” wyżej niż wynik internetowy. Dlatego v0.2.3 **nie zatwierdza już adresu URL jako wyniku wyszukiwania Spotlight**.
+Spotlight w macOS Tahoe może ustawić plik o nazwie „ChatGPT” wyżej niż wynik internetowy. Dlatego od v0.2.3 M5Stack **nie zatwierdza już adresu URL jako wyniku wyszukiwania Spotlight**.
 
 Zamiast tego otwiera wybraną przeglądarkę jako aplikację (w Spotlight używa trybu **Aplikacje / Cmd+1**), a następnie przechodzi do paska adresu kombinacją `Cmd+L`, wpisuje URL i zatwierdza Enter.
 
@@ -79,7 +79,13 @@ Zamiast tego otwiera wybraną przeglądarkę jako aplikację (w Spotlight używa
 
 **Ważne:** urządzenie **nie potrafi automatycznie odczytać domyślnej przeglądarki macOS** przez Bluetooth HID. Najlepiej wybrać w portalu tę samą przeglądarkę, która jest ustawiona jako domyślna w **Ustawienia systemowe → Biurko i Dock**. Zmiana wyboru przeglądarki jest zapisywana w NVS i nie powinna znikać po prawidłowej aktualizacji firmware przez WWW.
 
-Jeśli aplikacja jest uruchamiana bardzo wolno, możesz potrzebować większego opóźnienia `MAC_BROWSER_ACTIVATION_MS` w `src/BleController.cpp`. W tej wersji jest to **2200 ms**. Działanie powinno być potwierdzone na konkretnym Macu: BLE HID nie zgłasza momentu przejęcia fokusu przez przeglądarkę.
+Jeśli przeglądarka przy **zimnym uruchomieniu** przejmuje fokus zbyt późno, zwiększ opóźnienie `MAC_BROWSER_ACTIVATION_MS` w `src/BleController.cpp` (w v0.2.4 domyślnie **1500 ms**). Dodatkowo zmniejszono opóźnienia związane z otwieraniem Spotlight i wpisywaniem URL. Działanie trzeba potwierdzić na konkretnym Macu: BLE HID nie zgłasza momentu przejęcia fokusu przez przeglądarkę. Najszybszą metodą jest [tryb natywnych Skrótów macOS](MACOS_FAST_SHORTCUTS.md), w którym urządzenie wysyła tylko jedną kombinację klawiszy dla każdego kafelka.
+
+## macOS: szybki tryb nie otwiera stron
+
+Najpierw uruchom `Control+Option+Command+1` na fizycznej klawiaturze Maca. Jeśli akcja nie działa, upewnij się, że utworzyłeś odpowiedni skrót w aplikacji Skróty, przypisałeś mu globalną kombinację i że nie jest ona zarezerwowana przez inny program. Po zmianie adresu kafelka w portalu M5Stack zmień również URL w Skrótach. Pełna instrukcja: [MACOS_FAST_SHORTCUTS.md](MACOS_FAST_SHORTCUTS.md).
+
+Jeśli nie chcesz konfigurować Skrótów, ustaw w portalu tryb standardowy, zapisz zmiany i poczekaj na restart urządzenia.
 
 ## macOS: przycisk Pulpit nie pokazuje biurka
 
@@ -93,7 +99,7 @@ Nie każda konfiguracja interpretuje `F11` identycznie. Jeśli macOS lub inna ap
 
 ## macOS: Finder, Monitor aktywności i pozostałe akcje
 
-Zachowano działającą sekwencję uruchamiania Findera i Activity Monitor przez Spotlight oraz skróty `Cmd+Tab`, `Shift+Cmd+5` i `Ctrl+Cmd+Q`. Zmiany dotyczą wyłącznie URL, potwierdzenia Spotlight oraz przycisku Pulpit.
+Zachowano uruchamianie Findera i Activity Monitor przez Spotlight oraz skróty `Cmd+Tab`, `Shift+Cmd+5` i `Ctrl+Cmd+Q`. Tryb szybkich Skrótów dotyczy tylko sześciu kafelków URL, nie pozostałych funkcji systemowych.
 
 ## Instalator WWW resetuje Wi-Fi i konfigurację po aktualizacji
 

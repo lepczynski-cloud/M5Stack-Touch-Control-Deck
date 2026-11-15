@@ -16,11 +16,12 @@ public:
     void setHostOS(HostOS host);
     HostOS hostOS() const;
     void setMacBrowser(MacBrowser browser);
+    void setMacUrlMode(MacUrlMode mode);
     String bondedPeerIdentity() const;
     static bool isSafeBrowserUrl(const String& url);
     // Konfigurowalny zestaw skrotow. Linux oznacza srodowisko GNOME.
 
-    bool openUrl(const String& url);
+    bool openUrl(const String& url, uint8_t tileIndex);
 
     bool mediaPrevious();
     bool mediaPlayPause();
@@ -43,6 +44,7 @@ private:
     uint32_t lastBatteryUpdateMillis_ = 0;
     HostOS hostOs_ = HostOS::Windows;
     MacBrowser macBrowser_ = MacBrowser::Chrome;
+    MacUrlMode macUrlMode_ = MacUrlMode::Browser;
 
     bool runGnomeCommand(const String& command);
     bool openMacApp(const String& appName);

@@ -310,6 +310,14 @@ void NetworkPortal::handleSave() {
         errors += "Wybierz obsługiwaną przeglądarkę macOS.<br>";
     }
 
+    // Nie wlaczamy trybu skrotow bez wyraznego wyboru uzytkownika.
+    const String selectedMacMode = server_.arg("mac_url_mode");
+    if (selectedMacMode == "0" || selectedMacMode == "1") {
+        config.macUrlMode = static_cast<MacUrlMode>(selectedMacMode.toInt());
+    } else {
+        errors += "Wybierz poprawny tryb otwierania stron na macOS.<br>";
+    }
+
     config.standbyEnabled = server_.hasArg("standby_enabled");
     config.standbyTimeoutMinutes = static_cast<uint16_t>(
         constrain(static_cast<int>(server_.arg("standby_minutes").toInt()), 1, 60)
@@ -500,7 +508,14 @@ String NetworkPortal::buildPortalHtml() const {
         html += macBrowserName(browser);
         html += F("</option>");
     }
-    html += F("</select><small>Na macOS 26 Tahoe M5Stack uruchamia wybrana przegladarke przez Spotlight (Aplikacje), a nastepnie wpisuje URL do paska adresu. Nie wybiera plikow z wynikow wyszukiwania. BLE nie potrafi wykryc domyslnej przegladarki; ustaw tutaj te sama, co w macOS. Zmiana wymaga zapisu i restartu urzadzenia.</small></section>");
+    html += F("</select><small>Przegladarka uzywana w trybie standardowym. Bluetooth HID nie zna przegladarki domyslnej. Zmiany wymagaja zapisu i restartu.</small>");
+    html += F("<label for='mac_url_mode'>Otwieranie stron na macOS</label><select id='mac_url_mode' name='mac_url_mode'>");
+    html += F("<option value='0'");
+    if (config.macUrlMode == MacUrlMode::Browser) html += F(" selected");
+    html += F(">Standardowo: Spotlight i przegladarka</option><option value='1'");
+    if (config.macUrlMode == MacUrlMode::Shortcuts) html += F(" selected");
+    html += F(">Szybko: natywne Skroty macOS (1-6)</option></select>");
+    html += F("<small>Tryb szybki wymaga szesciu globalnych skrotow Ctrl+Option+Cmd+1...6 w aplikacji Skroty macOS. Skonfiguruj i sprawdz je przed wlaczeniem trybu. Instrukcja: docs/MACOS_FAST_SHORTCUTS.md w repozytorium. Bez przygotowania skroty nie beda otwierac stron.</small></section>");
 
     html += F("<section class='card'><h2>Sieć i ekran</h2>");
     html += F("<label class='check'><input type='checkbox' name='wifi_enabled' value='1'");

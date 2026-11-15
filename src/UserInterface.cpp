@@ -649,7 +649,7 @@ void UserInterface::handleAppsTap(int16_t x, int16_t y) {
     }
 
     const String url = configManager_.data().apps[index].url;
-    if (bleController_.openUrl(url)) {
+    if (bleController_.openUrl(url, static_cast<uint8_t>(index))) {
         showToast("Otwieram: " + configManager_.data().apps[index].label);
     }
 }

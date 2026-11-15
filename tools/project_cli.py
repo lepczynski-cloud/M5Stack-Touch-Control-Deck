@@ -27,6 +27,7 @@ REQUIRED_FILES = [
     ".gitattributes",
     "docs/CUSTOMIZATION.md",
     "docs/INSTALLATION.md",
+    "docs/MACOS_FAST_SHORTCUTS.md",
     "docs/TROUBLESHOOTING.md",
     "include/AppConfig.h",
     "include/UserConfig.h",
@@ -177,7 +178,6 @@ def validate_project() -> None:
         'AP_ADDRESS(192, 168, 4, 1)',
         '"M5-Control-Deck"',
         '"M5 Control Deck"',
-        'FIRMWARE_VERSION[] = "0.1.0"',
         "openSnippingTool",
         "KEY_MEDIA_PLAY_PAUSE",
         "deleteAllBonds",
@@ -195,6 +195,12 @@ def validate_project() -> None:
         "M5.Display.sleep",
         "STANDBY_TIMEOUT_MINUTES",
     ]
+    # Wersja zmienia sie w kolejnych wydaniach, wiec nie wymagamy starej
+    # wartosci 0.1.0. Akceptujemy tylko poprawny format X.Y.Z.
+    if not re.search(r'FIRMWARE_VERSION\[\]\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"', config):
+        print("BLAD: niepoprawny FIRMWARE_VERSION w UserConfig.h", file=sys.stderr)
+        failed = True
+
     combined = config + "\n" + headers + "\n" + source
     for marker in required_markers:
         if marker not in combined:

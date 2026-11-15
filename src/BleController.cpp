@@ -6,13 +6,16 @@
 #include "UserConfig.h"
 
 namespace {
-constexpr uint16_t MAC_HID_KEY_DELAY_MS = 20;
+// macOS address bar accepts keyboard HID with the same conservative 12 ms
+// inter-key delay as Windows. Delays are explicit for focus changes only.
 constexpr uint16_t DEFAULT_HID_KEY_DELAY_MS = 12;
-constexpr uint32_t MAC_SPOTLIGHT_FOCUS_MS = 650;
-constexpr uint32_t MAC_APP_RESULTS_MS = 1100;
-constexpr uint32_t MAC_BROWSER_RESULTS_MS = 1000;
-constexpr uint32_t MAC_BROWSER_ACTIVATION_MS = 2200;
-constexpr uint32_t MAC_ADDRESS_BAR_FOCUS_MS = 220;
+constexpr uint32_t MAC_SPOTLIGHT_FOCUS_MS = 320;
+constexpr uint32_t MAC_APP_RESULTS_MS = 1100; // unchanged: Finder / Activity Monitor
+constexpr uint32_t MAC_BROWSER_RESULTS_MS = 650;
+// Increase this if the browser cold-starts slowly on your Mac. BLE HID cannot
+// detect the active window, so use native Shortcuts for a robust fast path.
+constexpr uint32_t MAC_BROWSER_ACTIVATION_MS = 1500;
+constexpr uint32_t MAC_ADDRESS_BAR_FOCUS_MS = 130;
 }
 
 BleController::BleController()
@@ -23,7 +26,7 @@ BleController::BleController()
       ) {}
 
 void BleController::begin(uint8_t initialBatteryLevel) {
-    keyboard_.setDelay(hostOs_ == HostOS::MacOS ? MAC_HID_KEY_DELAY_MS : DEFAULT_HID_KEY_DELAY_MS);
+    keyboard_.setDelay(DEFAULT_HID_KEY_DELAY_MS);
     keyboard_.setBatteryLevel(initialBatteryLevel);
     keyboard_.begin();
 }
@@ -42,8 +45,7 @@ bool BleController::isConnected() const {
 
 void BleController::setHostOS(HostOS host) {
     hostOs_ = host;
-    // Nieco wolniejsze wysylanie znakow na macOS pomaga przy zapytaniach Spotlight.
-    keyboard_.setDelay(hostOs_ == HostOS::MacOS ? MAC_HID_KEY_DELAY_MS : DEFAULT_HID_KEY_DELAY_MS);
+    keyboard_.setDelay(DEFAULT_HID_KEY_DELAY_MS);
 }
 
 HostOS BleController::hostOS() const {
@@ -52,6 +54,10 @@ HostOS BleController::hostOS() const {
 
 void BleController::setMacBrowser(MacBrowser browser) {
     macBrowser_ = browser;
+}
+
+void BleController::setMacUrlMode(MacUrlMode mode) {
+    macUrlMode_ = mode;
 }
 
 String BleController::bondedPeerIdentity() const {
@@ -94,17 +100,16 @@ bool BleController::runGnomeCommand(const String& command) {
 bool BleController::openMacLauncherOnly() {
     if (!ready()) return false;
 
-    // Wysylamy rzeczywista sekwencje klawisza i modyfikatora: najpierw
-    // naciskamy Cmd, potem spacje, a nastepnie zwalniamy je osobno.
-    // Skrót moze byc przemapowany w ustawieniach macOS (Spotlight).
+    // Zachowujemy sekwencje osobnego nacisniecia i zwolnienia klawiszy,
+    // sprawdzona na macOS. Skracamy tylko oczekiwania miedzy krokami.
     keyboard_.releaseAll();
-    delay(75);
+    delay(30);
     keyboard_.press(KEY_LEFT_GUI);
-    delay(65);
+    delay(40);
     keyboard_.press(static_cast<uint8_t>(' '));
-    delay(170);
+    delay(110);
     keyboard_.release(static_cast<uint8_t>(' '));
-    delay(65);
+    delay(35);
     keyboard_.release(KEY_LEFT_GUI);
     delay(MAC_SPOTLIGHT_FOCUS_MS);
     return ready();
@@ -130,7 +135,7 @@ bool BleController::openMacBrowser() {
     // macOS Tahoe: Cmd+1 ogranicza wyniki Spotlight do aplikacji.
     // Dzięki temu plik z nazwa ChatGPT nie moze zostac wybrany jako URL.
     if (!chord({KEY_LEFT_GUI, static_cast<uint8_t>('1')})) return false;
-    delay(220);
+    delay(120);
     if (!ready()) return false;
     keyboard_.print(String(macBrowserName(macBrowser_)));
     delay(MAC_BROWSER_RESULTS_MS);
@@ -140,10 +145,18 @@ bool BleController::openMacBrowser() {
     return ready();
 }
 
-bool BleController::openUrl(const String& url) {
+bool BleController::openUrl(const String& url, uint8_t tileIndex) {
     if (!ready() || !isSafeBrowserUrl(url)) return false;
 
     if (hostOs_ == HostOS::MacOS) {
+        if (macUrlMode_ == MacUrlMode::Shortcuts) {
+            // Natywne Skroty macOS z przypisanymi globalnymi hotkeyami.
+            // Nie wpisujemy adresu do aktywnej aplikacji, wiec tryb jest szybki
+            // i nie zalezy od czasu uruchamiania przegladarki. Kafelki 0..5.
+            if (tileIndex >= 6) return false;
+            return chord({KEY_LEFT_CTRL, KEY_LEFT_ALT, KEY_LEFT_GUI,
+                          static_cast<uint8_t>('1' + tileIndex)}, 95);
+        }
         // Nie zatwierdzamy URL jako wyniku wyszukiwania Spotlight: na
         // macOS Tahoe "ChatGPT" moze otworzyc dokument o tej nazwie.
         // Najpierw otwieramy wskazana przez uzytkownika przegladarke

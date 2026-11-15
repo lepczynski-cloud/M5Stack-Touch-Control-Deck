@@ -1,217 +1,168 @@
-/* M5Stack Touch Control Deck - static bilingual project website.
- * Full M5Stack build video: https://www.youtube.com/watch?v=Jz1xCBi-Q1o
- */
-const YOUTUBE_VIDEO_ID = "Jz1xCBi-Q1o";
+/* Static bilingual site. No build framework or analytics. The two ESP Web Tools
+   manifests and update/factory offsets are intentionally kept unchanged. */
+const VIDEO_ID = "Jz1xCBi-Q1o";
 const INSTALL_OPTIONS = [
-  {manifest: "./firmware/manifest-update.json", image: "m5stack-touch-control-deck.update.bin", offset: 65536},
-  {manifest: "./firmware/manifest.json", image: "m5stack-touch-control-deck.factory.bin", offset: 0}
+  { manifest: "./firmware/manifest-update.json", image: "m5stack-touch-control-deck.update.bin", offset: 65536 },
+  { manifest: "./firmware/manifest.json", image: "m5stack-touch-control-deck.factory.bin", offset: 0 }
 ];
-
 const translations = {
   en: {
-    pageTitle: "M5Stack Touch Control Deck | Install from your browser",
-    metaDesc: "Install M5Stack Touch Control Deck firmware in your browser. Open-source wireless controller for Windows, macOS and Linux GNOME, powered by M5Stack CoreS3 SE.",
-    skip: "Skip to content", navFeatures: "Features", navInstall: "Install", navVideo: "Video", navResources: "Resources",
-    eyebrow: "OPEN SOURCE · ESP32-S3 · BLUETOOTH HID", heroLineOne: "Your desktop,", heroLineTwo: "one touch away.",
-    heroLead: "A compact wireless control deck for Windows, macOS and Linux GNOME. Choose your system after pairing, then launch apps, control media and use shortcuts.",
-    chipNoApp: "No companion app", chipNoSolder: "No soldering", chipSource: "Open source", buttonInstall: "Install firmware", buttonCode: "View source code ↗",
-    heroNote: "Made for M5Stack CoreS3 SE · Windows / macOS / Linux GNOME", photoFallback: "See the finished device on GitHub", photoCaption: "REAL BUILD · 3D PRINTED ENCLOSURE",
-    tagWireless: "Wireless connection", tagScreens: "screens", tagCustomizable: "Fully customizable",
-    statOne: "6 touchscreen pages", statTwo: "Bluetooth keyboard", statThree: "No host software", statFour: "MIT licensed",
-    kickerFeatures: "WHAT IT DOES", featuresTitle: "Small device. Useful shortcuts.", featuresIntro: "One screen for the things you reach for every day. Swipe between pages and make it yours.",
-    featAppsTitle: "Your favorite apps", featAppsDesc: "Six editable buttons for websites and everyday tools. Launch a URL with a single touch.",
-    featMediaTitle: "Media & volume", featMediaDesc: "Play, pause, skip or mute. The optional Scroll Unit adds a physical volume knob.",
-    featShortcutsTitle: "Shortcuts for your OS", featShortcutsDesc: "System monitor, screenshots, files, app switching and screen lock with shortcuts chosen for your operating system.",
-    featClocksTitle: "Two time zones", featClocksDesc: "See local time and another city. Synchronize over Wi-Fi and keep time using the RTC.",
-    featBleTitle: "Bluetooth HID", featBleDesc: "Your computer recognizes a standard BLE keyboard. Select the host OS after pairing; no companion app is required.",
-    featConfigTitle: "Local configuration", featConfigDesc: "Change shortcuts profile, app buttons, brightness and time zones through the device’s local configuration portal.",
-    kickerInstall: "WEB FLASHER", installTitle: "From browser to device.", installIntro: "No local compilation for visitors. Just the correct board, a USB data cable and a compatible desktop browser.",
-    step1Title: "Connect your device", step1Desc: "Plug your M5Stack CoreS3 SE into your computer with a USB-C data cable. The battery and Scroll Unit are optional.",
-    step2Title: "Install in the browser", step2Desc: "For an existing deck choose Update; for a new or reset device choose Factory install. Select the USB port and never select Erase device if you want to preserve settings.",
-    step3Title: "Pair and choose your OS", step3Desc: "Pair “M5 Control Deck” over Bluetooth, then select Windows, macOS or Linux GNOME on the touchscreen.",
-    noteTitle: "Before you start", noteText: "For CoreS3 SE only. Choose Update and decline Erase device to keep your NVS settings. Factory install resets them. macOS requires Cmd+Space for Spotlight. Choose the browser (Chrome, Safari etc.) in the device AP portal; no confirmation screen is shown. Show Desktop may require an F11 keyboard shortcut.",
-    installerLabel: "DEVICE INSTALLER", installerDevice: "M5Stack CoreS3 SE", installerSpec: "ESP32-S3 · 16 MB flash · USB-C", statusChecking: "Checking firmware availability…",
-    statusReady: "Firmware ready to install", statusMissing: "Firmware is unavailable in this deployment. Please try again later or see the GitHub installation instructions.",
-    statusUnavailable: "Firmware package unavailable", statusUnsupported: "Browser installation unavailable", fallbackInstall: "Use the Windows upload guide ↗", flashButton: "Install firmware",
-    unsupported: "Your browser does not support this installer. Open this site in a compatible desktop browser such as Chrome or Edge.",
-    updateTitle: "Already installed? Update firmware", updateDesc: "Only the application image is written. To preserve your configuration, NEVER select 'Erase device' in ESP Web Tools. Use the same M5Stack partition layout.", flashUpdateButton: "Update firmware (keep settings)", factoryTitle: "First installation or factory reset", factoryWarning: "Warning: factory installation overwrites the settings area and removes Wi-Fi credentials, customized shortcuts and device settings. Only choose it when you want a reset.", flashFactoryButton: "Factory install (erase settings)",
-    installerFooter: "Flashing runs through USB in your browser. Always review any erase warning before proceeding.",
-    kickerVideo: "BUILD & DEMO", videoTitle: "See how it comes together.", videoIntro: "A closer look at the hardware, 3D-printed case, firmware upload and the finished control deck in action.",
-    videoPlaceholder: "Build video", videoPlaceholderDesc: "The full YouTube video will be embedded here.", videoChannel: "Visit my YouTube channel ↗", videoInside: "IN THE VIDEO",
-    videoSideTitle: "A project you can actually build.", videoBullet1: "Assembling the M5Stack modules without soldering", videoBullet2: "Fitting a 3D-printed desk enclosure",
-    videoBullet3: "Flashing and starting the firmware", videoBullet4: "Using the touchscreen, knob and Bluetooth shortcuts", youtubeChannel: "More projects on YouTube",
-    kickerResources: "GO DEEPER", resourcesTitle: "Build it your way.", resourcesIntro: "Everything you need to understand the project, modify the source code or print the case.",
-    resGithub: "Source code & documentation", resGithubSub: "Open source, ready to customize.", resForbot: "Detailed build article", resForbotSub: "Polish guide. Browser translation works well.",
-    resCase: "3D-printed desk case", resCaseSub: "An optional model by Gigi, not my design.",
-    bottomKicker: "MAKE IT YOURS", bottomTitle: "A small screen with big possibilities.", bottomDesc: "Have an idea for the next feature? The code is open. Contributions and suggestions are welcome.", bottomButton: "Suggest a feature",
-    footerLeft: "An independent open-source DIY project by Wojciech Lepczyński.", footerSupport: "Hardware provided by Botland.", footerNote: "Project source: MIT License. 3D case by its respective author."
+    pageTitle:"M5Stack Touch Control Deck | Build it. Tap it.",metaDesc:"Build and install M5Stack Touch Control Deck: a tiny, wireless Bluetooth controller for Windows, macOS and Linux GNOME. Browser firmware installer included.",
+    skip:"Skip to content",navFeatures:"Features",navDemo:"Demo",navInstall:"Install",eyebrow:"OPEN SOURCE · BLUETOOTH HID · ESP32-S3",heroFirst:"Your desk.",heroSecond:"Your shortcuts.",heroThird:"One tap.",
+    heroLead:"An open-source touchscreen control deck for the everyday things you do on your computer. No companion software, no soldering, just a little piece of hardware that makes your desk more fun.",heroInstall:"Install firmware",heroDemo:"Watch it in action",compat:"Windows · macOS · Linux GNOME",photoFallback:"View the device photo on GitHub",wireless:"Wireless. No app.",actions:"actions",yourWay:"Set them your way",
+    ribbonOne:"6 custom buttons",ribbonTwo:"Media & volume",ribbonThree:"2 time zones",ribbonFour:"Local configuration",featureKicker:"SMALL HARDWARE. BIG CONVENIENCE.",featureTitle:"Everything within reach.",featureIntro:"Six touchscreen pages and a physical knob. Built for the shortcuts you use every day.",
+    featSites:"Launch your sites",featSitesBody:"Six editable tiles for ChatGPT, Claude, Gemini, Canva or your own URLs. Faster macOS shortcuts mode is available.",featMedia:"Control the music",featMediaBody:"Play, pause, switch tracks and mute from the screen. Turn the optional Scroll Unit to control volume.",featSystem:"System shortcuts",featSystemBody:"Lock your computer, capture the screen, open your file manager or switch apps. Choose the right host OS.",featLocal:"Yours to configure",featLocalBody:"Set URLs, time zones and brightness through the local Wi-Fi portal. The device works as a Bluetooth keyboard.",
+    demoKicker:"SEE THE BUILD",demoTitle:"A project you can actually make.",demoIntro:"The real device, the build process and the finished control deck in action.",playVideo:"Play video",demoSideTitle:"Hardware you can put to work today.",demoSideDesc:"M5Stack CoreS3 SE, an optional Scroll Unit and a 3D-printed stand. You can install the firmware straight from this page.",watchYouTube:"Watch on YouTube ↗",readBuild:"Read the build guide ↗",
+    installKicker:"READY TO TRY IT?",installTitle:"From browser to device.",installIntro:"Connect your CoreS3 SE via a USB data cable. No local build or setup required for the web installer.",stepOne:"Connect your M5Stack",stepOneBody:"Use a USB-C cable that supports data, not only charging.",stepTwo:"Choose update or factory install",stepTwoBody:"Update preserves your settings only if you do not choose Erase device. Factory installation resets configuration.",stepThree:"Pair Bluetooth and select your OS",stepThreeBody:"Choose Windows, macOS or Linux GNOME on the device after pairing.",macTipTitle:"On macOS?",macTipText:"For near-instant action triggering, configure native Shortcuts once and enable Fast mode in the device portal.",macTipLink:"Setup guide ↗",
+    panelLabel:"WEB INSTALLER",statusChecking:"Checking firmware…",statusReady:"Firmware is ready",statusUnsupported:"Browser doesn't support Web Serial",statusMissing:"Firmware not available",updateTitle:"Already installed?",updateBody:"Update only the application image. Do not choose Erase device to keep your settings.",updateButton:"Update firmware",unsupported:"Use a compatible desktop browser with Web Serial, such as Chrome or Edge.",factoryTitle:"First install or factory reset",factoryBody:"Factory installation overwrites configuration, including Wi-Fi and customized tiles. Choose it only for a new device or an intentional reset.",factoryButton:"Factory install (erase settings)",firmwareMissing:"Firmware files are not available in this deployment. Check the build or compile from the repository.",sourceInstall:"Source installation guide ↗",installWarning:"Only for CoreS3 SE. Updating keeps NVS only if the partition layout is unchanged and Erase device stays disabled.",
+    resourcesKicker:"GO FURTHER",resourcesTitle:"Build it your way.",resourcesIntro:"All the parts, instructions and code in one place.",resourceCode:"Code & documentation",resourceTutorial:"Step-by-step build",resourceCase:"3D-printed case by Gigi",resourceMore:"More DIY builds",footerNote:"Independent open-source project by Wojciech Lepczyński. Hardware supported by Botland."
   },
   pl: {
-    pageTitle: "M5Stack Touch Control Deck | Wgrywanie firmware przez przeglądarkę",
-    metaDesc: "Wgraj M5Stack Touch Control Deck z przeglądarki. Bezprzewodowy panel dotykowy do Windows, macOS i Linux GNOME na CoreS3 SE.",
-    skip: "Przejdź do treści", navFeatures: "Funkcje", navInstall: "Instalacja", navVideo: "Film", navResources: "Materiały",
-    eyebrow: "OPEN SOURCE · ESP32-S3 · BLUETOOTH HID", heroLineOne: "Twój komputer,", heroLineTwo: "pod jednym dotykiem.",
-    heroLead: "Bezprzewodowy panel do Windows, macOS i Linux GNOME. Wybierz system po sparowaniu, aby używać dopasowanych skrótów, aplikacji i multimediów.",
-    chipNoApp: "Bez aplikacji na PC", chipNoSolder: "Bez lutowania", chipSource: "Otwarty kod", buttonInstall: "Wgraj firmware", buttonCode: "Zobacz kod na GitHubie ↗",
-    heroNote: "Dla M5Stack CoreS3 SE · Windows / macOS / Linux GNOME", photoFallback: "Zobacz urządzenie na GitHubie", photoCaption: "GOTOWY PROJEKT · OBUDOWA Z DRUKU 3D",
-    tagWireless: "Połączenie bezprzewodowe", tagScreens: "ekranów", tagCustomizable: "Możesz je dostosować",
-    statOne: "6 ekranów dotykowych", statTwo: "Klawiatura Bluetooth", statThree: "Bez programu na PC", statFour: "Licencja MIT",
-    kickerFeatures: "CO POTRAFI", featuresTitle: "Mały panel. Przydatne funkcje.", featuresIntro: "Najczęściej używane narzędzia pod ręką. Przesuwaj palcem między ekranami i dostosuj je do siebie.",
-    featAppsTitle: "Ulubione aplikacje", featAppsDesc: "Sześć kafelków z edytowanymi adresami. Otwieraj strony i narzędzia jednym dotknięciem.",
-    featMediaTitle: "Muzyka i głośność", featMediaDesc: "Play, pauza, następny utwór i wyciszanie. Opcjonalny Scroll Unit dodaje fizyczne pokrętło.",
-    featShortcutsTitle: "Skróty dla Twojego systemu", featShortcutsDesc: "Monitor systemu, wycinki ekranu, pliki, przełączanie aplikacji i blokada komputera, z kombinacjami dopasowanymi do systemu.",
-    featClocksTitle: "Dwie strefy czasowe", featClocksDesc: "Godzina lokalna i w drugim mieście. Synchronizacja przez Wi-Fi i praca z zegarem RTC.",
-    featBleTitle: "Bluetooth HID", featBleDesc: "Komputer widzi zwykłą klawiaturę BLE. Po parowaniu wybierasz system. Nie potrzebujesz aplikacji w tle.",
-    featConfigTitle: "Lokalna konfiguracja", featConfigDesc: "Zmieniaj system hosta, kafelki, jasność i strefy czasowe w lokalnym panelu WWW urządzenia.",
-    kickerInstall: "INSTALATOR WWW", installTitle: "Z przeglądarki na urządzenie.", installIntro: "Bez kompilowania po stronie użytkownika. Wystarczy odpowiedni moduł, przewód USB z transmisją danych i zgodna przeglądarka na komputerze.",
-    step1Title: "Podłącz urządzenie", step1Desc: "Podłącz M5Stack CoreS3 SE do komputera przewodem USB-C z transmisją danych. Akumulator i pokrętło są opcjonalne.",
-    step2Title: "Wgraj przez przeglądarkę", step2Desc: "Na używanym panelu wybierz Aktualizuj, a na nowym Instalacja fabryczna. Wskaż port USB i NIE wybieraj Erase device, jeśli chcesz zachować ustawienia.",
-    step3Title: "Sparuj i wybierz system", step3Desc: "Sparuj „M5 Control Deck” przez Bluetooth, a następnie na ekranie wybierz Windows, macOS lub Linux GNOME.",
-    noteTitle: "Zanim zaczniesz", noteText: "Tylko dla CoreS3 SE. Wybierz Aktualizuj i odrzuć Erase device, aby zachować ustawienia NVS. Instalacja fabryczna je resetuje. Na macOS wymagany jest działający skrót Cmd+Spacja dla Spotlight. Przeglądarkę wybierzesz w portalu AP; nie ma dodatkowego pytania na ekranie. Funkcja Pulpit może wymagać przypisania klawisza F11.",
-    installerLabel: "INSTALATOR URZĄDZENIA", installerDevice: "M5Stack CoreS3 SE", installerSpec: "ESP32-S3 · 16 MB flash · USB-C", statusChecking: "Sprawdzam dostępność firmware…",
-    statusReady: "Firmware gotowy do wgrania", statusMissing: "Firmware nie jest dostępny w tym wdrożeniu. Spróbuj ponownie później lub skorzystaj z instrukcji na GitHubie.",
-    statusUnavailable: "Brak gotowego firmware", statusUnsupported: "Przeglądarka nie obsługuje instalatora", fallbackInstall: "Instrukcja wgrywania przez Windows ↗", flashButton: "Wgraj firmware",
-    unsupported: "Twoja przeglądarka nie obsługuje instalatora. Otwórz stronę na komputerze w zgodnej przeglądarce, np. Chrome lub Edge.",
-    updateTitle: "Masz już urządzenie? Aktualizuj firmware", updateDesc: "Wgrywana jest wyłącznie aplikacja. Aby zachować konfigurację, NIE wybieraj opcji 'Erase device' w ESP Web Tools. Układ partycji M5Stack musi pozostać bez zmian.", flashUpdateButton: "Aktualizuj (zachowaj ustawienia)", factoryTitle: "Pierwsza instalacja lub reset", factoryWarning: "Uwaga: instalacja fabryczna nadpisuje obszar ustawień, usuwa dane Wi-Fi, własne skróty i konfigurację. Wybierz ją tylko wtedy, gdy chcesz zacząć od zera.", flashFactoryButton: "Instalacja fabryczna (kasuje ustawienia)",
-    installerFooter: "Wgrywanie odbywa się przez USB w przeglądarce. Sprawdź każdą prośbę o skasowanie pamięci przed potwierdzeniem.",
-    kickerVideo: "BUDOWA I DEMO", videoTitle: "Zobacz projekt w praktyce.", videoIntro: "Montaż modułów, obudowa 3D, wgrywanie kodu i działanie gotowego panelu.",
-    videoPlaceholder: "Film z budowy", videoPlaceholderDesc: "W tym miejscu pojawi się pełny film z YouTube.", videoChannel: "Odwiedź mój kanał YouTube ↗", videoInside: "W FILMIE",
-    videoSideTitle: "Projekt, który możesz odtworzyć.", videoBullet1: "Łączenie modułów M5Stack bez lutowania", videoBullet2: "Montaż obudowy wydrukowanej w 3D",
-    videoBullet3: "Wgrywanie i uruchamianie firmware", videoBullet4: "Sterowanie ekranem, pokrętłem i skrótami Bluetooth", youtubeChannel: "Więcej projektów na YouTube",
-    kickerResources: "DOWIEDZ SIĘ WIĘCEJ", resourcesTitle: "Zbuduj go po swojemu.", resourcesIntro: "Kod, dokumentacja, dokładny poradnik i model obudowy w jednym miejscu.",
-    resGithub: "Kod i dokumentacja", resGithubSub: "Open source, możesz modyfikować.", resForbot: "Szczegółowy poradnik budowy", resForbotSub: "Pełny opis po polsku na Forbocie.",
-    resCase: "Obudowa do druku 3D", resCaseSub: "Opcjonalny model autora Gigi, nie mój projekt.",
-    bottomKicker: "DOSTOSUJ DO SIEBIE", bottomTitle: "Mały ekran, wiele możliwości.", bottomDesc: "Masz pomysł na kolejną funkcję? Kod jest otwarty. Chętnie poznam sugestie i propozycje zmian.", bottomButton: "Zaproponuj funkcję",
-    footerLeft: "Niezależny projekt DIY open source autorstwa Wojciecha Lepczyńskiego.", footerSupport: "Sprzęt dostarczył Botland.", footerNote: "Kod: licencja MIT. Obudowa 3D należy do jej autora."
+    pageTitle:"M5Stack Touch Control Deck | Zbuduj i wgraj z przeglądarki",metaDesc:"M5Stack Touch Control Deck: bezprzewodowy panel Bluetooth do Windows, macOS i Linux GNOME. Wgraj firmware bezpośrednio z przeglądarki.",
+    skip:"Przejdź do treści",navFeatures:"Funkcje",navDemo:"Film",navInstall:"Instalacja",eyebrow:"OPEN SOURCE · BLUETOOTH HID · ESP32-S3",heroFirst:"Twoje biurko.",heroSecond:"Twoje skróty.",heroThird:"Jeden dotyk.",
+    heroLead:"Otwarty projekt dotykowego panelu do codziennych czynności na komputerze. Bez aplikacji w tle i bez lutowania. Niewielkie urządzenie, które ułatwia sterowanie komputerem.",heroInstall:"Wgraj firmware",heroDemo:"Zobacz w akcji",compat:"Windows · macOS · Linux GNOME",photoFallback:"Zobacz zdjęcie na GitHubie",wireless:"Bezprzewodowo. Bez aplikacji.",actions:"akcji",yourWay:"Dostosuj do siebie",
+    ribbonOne:"6 własnych kafelków",ribbonTwo:"Muzyka i głośność",ribbonThree:"2 strefy czasowe",ribbonFour:"Konfiguracja lokalna",featureKicker:"MAŁY SPRZĘT. DUŻE MOŻLIWOŚCI.",featureTitle:"Wszystko pod ręką.",featureIntro:"Sześć ekranów dotykowych i opcjonalne pokrętło. Twoje ulubione skróty zawsze blisko.",
+    featSites:"Otwieraj strony",featSitesBody:"Sześć kafelków z własnymi adresami, np. ChatGPT, Claude, Gemini czy Canva. Na macOS dostępny jest szybszy tryb skrótów.",featMedia:"Steruj multimediami",featMediaBody:"Odtwarzaj, pauzuj, przewijaj i wyciszaj z ekranu. Opcjonalny Scroll Unit pozwala regulować głośność pokrętłem.",featSystem:"Skróty systemowe",featSystemBody:"Blokuj komputer, rób zrzuty ekranu, otwieraj pliki i przełączaj aplikacje. Wybierz odpowiedni system.",featLocal:"Konfiguruj po swojemu",featLocalBody:"Ustawiaj adresy, strefy czasowe i jasność w lokalnym panelu Wi-Fi. Komputer rozpoznaje zwykłą klawiaturę Bluetooth.",
+    demoKicker:"ZOBACZ BUDOWĘ",demoTitle:"Projekt, który możesz odtworzyć.",demoIntro:"Prawdziwe urządzenie, montaż i demonstracja działania.",playVideo:"Odtwórz film",demoSideTitle:"Sprzęt gotowy do codziennej pracy.",demoSideDesc:"M5Stack CoreS3 SE, opcjonalny Scroll Unit i podstawka z drukarki 3D. Firmware możesz wgrać bezpośrednio z tej strony.",watchYouTube:"Zobacz na YouTube ↗",readBuild:"Poradnik na Forbocie ↗",
+    installKicker:"CHCESZ WYPRÓBOWAĆ?",installTitle:"Z przeglądarki na urządzenie.",installIntro:"Podłącz CoreS3 SE kablem USB z transmisją danych. Instalator nie wymaga lokalnej kompilacji.",stepOne:"Podłącz M5Stack",stepOneBody:"Użyj kabla USB-C obsługującego transmisję danych, nie tylko ładowanie.",stepTwo:"Wybierz aktualizację lub instalację fabryczną",stepTwoBody:"Aktualizacja zachowa ustawienia tylko wtedy, gdy nie wybierzesz Erase device. Instalacja fabryczna usuwa konfigurację.",stepThree:"Sparuj Bluetooth i wybierz system",stepThreeBody:"Po sparowaniu wybierz na urządzeniu Windows, macOS albo Linux GNOME.",macTipTitle:"Korzystasz z macOS?",macTipText:"Aby szybko uruchamiać akcje, skonfiguruj raz systemowe Skróty i włącz tryb Szybki w portalu urządzenia.",macTipLink:"Instrukcja konfiguracji ↗",
+    panelLabel:"INSTALATOR WWW",statusChecking:"Sprawdzam firmware…",statusReady:"Firmware gotowy",statusUnsupported:"Przeglądarka nie obsługuje Web Serial",statusMissing:"Brak firmware",updateTitle:"Masz już urządzenie?",updateBody:"Aktualizowana jest tylko aplikacja. Nie wybieraj Erase device, jeśli chcesz zachować ustawienia.",updateButton:"Aktualizuj firmware",unsupported:"Użyj obsługującej Web Serial przeglądarki na komputerze, np. Chrome lub Edge.",factoryTitle:"Pierwsza instalacja lub reset",factoryBody:"Instalacja fabryczna nadpisuje konfigurację, łącznie z Wi-Fi i kafelkami. Użyj jej wyłącznie przy pierwszej instalacji lub celowym resecie.",factoryButton:"Instalacja fabryczna (kasuje ustawienia)",firmwareMissing:"W tym wdrożeniu brakuje firmware. Sprawdź proces budowania albo skompiluj projekt z repozytorium.",sourceInstall:"Instrukcja instalacji ze źródeł ↗",installWarning:"Tylko dla CoreS3 SE. Aktualizacja zachowuje NVS tylko przy tym samym układzie partycji i bez opcji Erase device.",
+    resourcesKicker:"DOWIEDZ SIĘ WIĘCEJ",resourcesTitle:"Zbuduj po swojemu.",resourcesIntro:"Części, dokumentacja i kod w jednym miejscu.",resourceCode:"Kod i dokumentacja",resourceTutorial:"Poradnik krok po kroku",resourceCase:"Obudowa 3D autorstwa Gigi",resourceMore:"Więcej projektów DIY",footerNote:"Niezależny projekt open source Wojciecha Lepczyńskiego. Sprzęt dostarczył Botland."
   }
 };
-
 let currentLang = "en";
 let firmwareState = "checking";
-
+const $ = (id) => document.getElementById(id);
 function requestedLanguage() {
-  const lang = new URLSearchParams(window.location.search).get("lang");
-  if (lang === "pl" || lang === "en") return lang;
+  const fromQuery = new URLSearchParams(location.search).get("lang");
+  if (fromQuery === "pl" || fromQuery === "en") return fromQuery;
   return (navigator.language || "en").toLowerCase().startsWith("pl") ? "pl" : "en";
 }
-
 function translate(lang) {
   currentLang = lang;
-  const dict = translations[lang];
+  const t = translations[lang];
   document.documentElement.lang = lang;
-  document.title = dict.pageTitle;
-  document.querySelector('meta[name="description"]').setAttribute("content", dict.metaDesc);
-  document.querySelectorAll("[data-i18n]").forEach(node => {
-    const value = dict[node.dataset.i18n];
+  document.title = t.pageTitle;
+  document.querySelector('meta[name="description"]').content = t.metaDesc;
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const value = t[node.dataset.i18n];
     if (typeof value === "string") node.textContent = value;
   });
-  document.querySelectorAll(".language button").forEach(button => {
+  document.querySelectorAll(".language-switch button").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
   });
-  renderFirmwareStatus();
+  renderStatus();
 }
-
-function renderFirmwareStatus() {
-  const line = document.getElementById("firmwareStatus");
-  if (!line) return;
+function renderStatus() {
+  const root = $("firmwareStatus");
   const t = translations[currentLang];
-  const dot = line.querySelector(".status-dot");
-  const label = line.querySelector("span:last-child");
-  dot.className = "status-dot";
-  let key = "statusChecking";
-  if (firmwareState === "ready") {key = "statusReady"; dot.classList.add("ready");}
-  if (firmwareState === "missing") {key = "statusUnavailable"; dot.classList.add("missing");}
-  if (firmwareState === "unsupported") {key = "statusUnsupported"; dot.classList.add("missing");}
-  if (firmwareState === "checking") dot.classList.add("pending");
-  label.textContent = t[key];
+  const status = {checking:"statusChecking",ready:"statusReady",missing:"statusMissing",unsupported:"statusUnsupported"}[firmwareState];
+  root.querySelector("span:last-child").textContent = t[status];
+  root.querySelector(".status-dot").className = "status-dot " + (firmwareState === "ready" ? "ready" : firmwareState === "checking" ? "pending" : "missing");
 }
-
 async function checkFirmware() {
-  const wrapper = document.getElementById("installerWrapper");
-  const missing = document.getElementById("firmwareMissing");
   firmwareState = "checking";
-  renderFirmwareStatus();
+  renderStatus();
   try {
-    let publishedVersion = null;
-    for (const option of INSTALL_OPTIONS) {
-      const manifestResponse = await fetch(option.manifest, {cache: "no-store"});
-      if (!manifestResponse.ok) throw new Error("Missing firmware manifest");
+    const checks = await Promise.all(INSTALL_OPTIONS.map(async (item) => {
+      const [manifestResponse, imageResponse] = await Promise.all([
+        fetch(item.manifest, {cache:"no-store"}),
+        fetch(`./firmware/${item.image}`, {method:"HEAD", cache:"no-store"})
+      ]);
+      if (!manifestResponse.ok || !imageResponse.ok) throw new Error("File unavailable");
       const manifest = await manifestResponse.json();
-      if (!/^\d+\.\d+\.\d+$/.test(manifest.version || "")) throw new Error("Invalid version");
-      if (publishedVersion && manifest.version !== publishedVersion) throw new Error("Mismatched installer versions");
-      publishedVersion = manifest.version;
       const build = manifest.builds?.find(b => b.chipFamily === "ESP32-S3");
-      if (!build || build.parts?.length !== 1 || build.parts[0].offset !== option.offset || build.parts[0].path !== option.image || !manifest.new_install_prompt_erase) {
-        throw new Error("Firmware manifest does not match the board");
-      }
-      const response = await fetch(`./firmware/${option.image}`, {method: "HEAD", cache: "no-store"});
-      const contentType = (response.headers.get("content-type") || "").toLowerCase();
-      const size = Number(response.headers.get("content-length") || 0);
-      if (!response.ok || contentType.includes("text/html") || (size > 0 && size < 65536)) throw new Error("Firmware image is missing or invalid");
-    }
-    const versionLabel = document.querySelector(".installer-version");
-    if (versionLabel) versionLabel.textContent = `v${publishedVersion}`;
-    if (!("serial" in navigator)) {
-      firmwareState = "unsupported";
-      wrapper.hidden = false;
-    } else {
-      firmwareState = "ready";
-      wrapper.hidden = false;
-    }
-    missing.hidden = true;
+      const part = build?.parts?.[0];
+      const imageType = (imageResponse.headers.get("content-type") || "").toLowerCase();
+      const imageSize = Number(imageResponse.headers.get("content-length") || "0");
+      if (!/^\d+\.\d+\.\d+$/.test(manifest.version || "") || !manifest.new_install_prompt_erase ||
+          build?.parts?.length !== 1 || part?.path !== item.image || part?.offset !== item.offset ||
+          imageType.includes("text/html") || (imageSize > 0 && imageSize < 65536)) throw new Error("Invalid firmware manifest");
+      return manifest.version;
+    }));
+    if (checks[0] !== checks[1]) throw new Error("Mismatched image versions");
+    const version = $("install").querySelector(".installer-version");
+    version.textContent = `v${checks[0]}`;
+    $("installerWrapper").hidden = false;
+    $("firmwareMissing").hidden = true;
+    firmwareState = "serial" in navigator ? "ready" : "unsupported";
   } catch (_error) {
+    $("installerWrapper").hidden = true;
+    $("firmwareMissing").hidden = false;
     firmwareState = "missing";
-    wrapper.hidden = true;
-    missing.hidden = false;
   }
-  renderFirmwareStatus();
+  renderStatus();
 }
-
-function loadVideo() {
-  if (!/^[\w-]{11}$/.test(YOUTUBE_VIDEO_ID)) return;
-  const frame = document.getElementById("videoFrame");
-  const iframe = document.createElement("iframe");
-  iframe.src = `https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?rel=0`;
-  iframe.title = "M5Stack Touch Control Deck - build and demonstration";
-  iframe.loading = "lazy";
-  iframe.referrerPolicy = "strict-origin-when-cross-origin";
-  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-  iframe.allowFullscreen = true;
-  document.getElementById("videoEmpty").remove();
-  frame.append(iframe);
+function setupVideo() {
+  $("playVideo").addEventListener("click", () => {
+    if (!/^[\w-]{11}$/.test(VIDEO_ID)) return;
+    const frame = document.createElement("iframe");
+    frame.src = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`;
+    frame.title = "M5Stack Touch Control Deck - build and demo";
+    frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+    frame.allowFullscreen = true;
+    $("videoFrame").replaceChildren(frame);
+  }, {once:true});
 }
-
-function setupImageFallback() {
-  const photo = document.getElementById("productPhoto");
-  const fallback = document.getElementById("photoFallback");
-  const useFallbackPhoto = () => {
-    if (!photo.dataset.fallbackAttempted) {
-      photo.dataset.fallbackAttempted = "1";
+function setupPhoto() {
+  const photo = $("productPhoto");
+  const useFallback = () => {
+    if (!photo.dataset.retry) {
+      photo.dataset.retry = "1";
       photo.src = "https://raw.githubusercontent.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/main/images/m5stack-touch-control-deck.jpg";
-      return;
+    } else {
+      photo.hidden = true;
+      $("photoFallback").hidden = false;
     }
-    photo.hidden = true;
-    fallback.hidden = false;
   };
-  photo.addEventListener("error", useFallbackPhoto);
-  if (photo.complete && photo.naturalWidth === 0) useFallbackPhoto();
+  photo.addEventListener("error", useFallback);
+  if (photo.complete && !photo.naturalWidth) useFallback();
 }
-
+function setupMotion() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if ("IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-motion");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((item) => {
+        if (item.isIntersecting) {
+          item.target.classList.add("in-view");
+          observer.unobserve(item.target);
+        }
+      });
+    }, {rootMargin:"0px 0px -40px 0px",threshold:0.07});
+    document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+  }
+  if (!matchMedia("(pointer:fine)").matches) return;
+  const glow = document.querySelector(".cursor-spotlight");
+  let x = -600, y = -600, scheduled = false;
+  addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch") return;
+    x = e.clientX - 220;
+    y = e.clientY - 220;
+    if (!scheduled) {
+      scheduled = true;
+      requestAnimationFrame(() => {
+        glow.style.transform = `translate3d(${x}px,${y}px,0)`;
+        scheduled = false;
+      });
+    }
+  }, {passive:true});
+}
 function init() {
   translate(requestedLanguage());
-  document.querySelectorAll(".language button").forEach(button => {
+  document.querySelectorAll(".language-switch button").forEach((button) => {
     button.addEventListener("click", () => {
-      const url = new URL(window.location.href);
+      const url = new URL(location.href);
       url.searchParams.set("lang", button.dataset.lang);
-      window.history.replaceState(null, "", url);
+      history.replaceState(null, "", url);
       translate(button.dataset.lang);
     });
   });
-  window.addEventListener("popstate", () => translate(requestedLanguage()));
-  setupImageFallback();
-  loadVideo();
+  addEventListener("popstate", () => translate(requestedLanguage()));
+  setupVideo();
+  setupPhoto();
+  setupMotion();
   checkFirmware();
 }
-
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
 else init();

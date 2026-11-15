@@ -1,16 +1,42 @@
-# Strona WWW i instalator firmware / Project website and firmware installer
+# Strona projektu i instalator / Project website and installer
 
-Katalog `web/` zawiera statyczną, dwujęzyczną stronę projektu (PL/EN) oraz manifesty **ESP Web Tools**. **Nie jest potrzebny do kompilacji ani działania urządzenia.** Pliki `.bin` generowane są automatycznie podczas wdrożenia strony z kodu firmware w katalogu głównym repozytorium.
+Strona w `web/` to lekki, statyczny HTML + CSS + JavaScript, bez bundlera i frameworka. Obsługuje dwa języki (PL/EN), podświetlenie pod kursorem, subtelne animacje przy przewijaniu i instalator ESP Web Tools. Na telefonach i przy `prefers-reduced-motion` efekt podświetlenia/animacje są ograniczone. Film YouTube jest ładowany dopiero po kliknięciu. Nie używamy zewnętrznych fontów, bibliotek animacji ani analityki.
 
-Instalator WWW ma dwa tryby:
+The `web/` directory is a lightweight, bilingual static HTML/CSS/JS website. It includes a cursor-following spotlight, subtle scroll animations, accessible reduced-motion support and ESP Web Tools. The YouTube iframe loads only on click. No font CDN, animation framework or analytics are required.
 
-- **Update / Aktualizacja**: wgrywa wyłącznie aplikację do `0x10000` i nie nadpisuje bezpośrednio partycji NVS. Aby zachować ustawienia, **nie wybieraj `Erase device`** w dialogu ESP Web Tools. Układ partycji musi pozostać taki sam.
-- **Factory / Pierwsza instalacja**: zapisuje scalony obraz od `0x0`, nadpisując także obszar ustawień NVS. **Usuwa konfigurację** (hasła Wi-Fi, kafelki, strefy, profil OS). Wybierz tylko podczas pierwszej instalacji lub zamierzonego resetu.
+## Build i publikacja / Build and deployment
 
-ESP Web Tools może zaproponować opcję skasowania całej pamięci nawet w trybie aktualizacji, dlatego zachowanie ustawień nie jest gwarantowane, jeśli użytkownik zatwierdzi `Erase device`. Zalecamy zachowanie kopii własnej konfiguracji.
+**Zachowany dotychczasowy proces automatycznego budowania i publikowania:**
 
-The `web/` folder contains the bilingual static website and ESP Web Tools manifests. **It is not needed to compile or run the device firmware.** The app-only update flashes at `0x10000`, preserving NVS only when **Erase device is NOT selected**, and the partition layout is unchanged. Factory install writes from `0x0` and **resets all settings**. Firmware binaries are built during deployment.
+1. `tools/build_web_firmware.sh` tworzy tymczasowe środowisko Pythona i instaluje przypięte zależności.
+2. Skrypt kopiuje źródłowe `images/m5stack-touch-control-deck.jpg` do `web/assets/` (kopia jest ignorowana w Git), a następnie kompiluje firmware CoreS3 SE.
+3. `tools/package_web_firmware.py` generuje obrazy `.bin` i manifesty na podstawie `include/UserConfig.h`.
+4. Hosting statyczny publikuje katalog `./web`, zgodnie z `wrangler.toml`.
 
-Project website: https://m5stack-touch-control-deck.lepczynski.it/
+Uruchomienie lokalne w repozytorium: `sh tools/build_web_firmware.sh`. Nie należy zastępować tej komendy samą publikacją folderu `web/`, gdyż bez wcześniej wygenerowanych binariów instalator pozostanie nieaktywny. Nie dodawaj zbudowanych firmware `.bin` ani kopii zdjęcia do repozytorium.
 
-The product photograph comes from the repository `images/m5stack-touch-control-deck.jpg` and is copied to site assets during deployment. Deployment configuration in `wrangler.toml` is separate from the device build.
+The existing automated website-build contract is unchanged: run `sh tools/build_web_firmware.sh` before deploying `./web`. The script builds current firmware, copies the project image, then writes the matching firmware images and manifests. Without those generated files the webpage stays readable, but shows the installer as unavailable rather than offering stale firmware.
+
+## Dwa tryby instalacji / Two installation modes
+
+| Opcja / Mode | Plik / Image | Offset | Ustawienia / Settings |
+| --- | --- | --- | --- |
+| **Update / Aktualizacja** | `firmware/m5stack-touch-control-deck.update.bin` | `0x10000` | Zachowane tylko gdy układ partycji się nie zmienił i opcja **Erase device** jest wyłączona. |
+| **Factory / Instalacja fabryczna** | `firmware/m5stack-touch-control-deck.factory.bin` | `0x0` | **Nadpisuje ustawienia**, w tym NVS. |
+
+Manifesty ESP Web Tools: `firmware/manifest-update.json` i `firmware/manifest.json`. Instalator sprawdza zgodność wersji i dostępność obu plików `.bin`. Funkcji **Erase device** nie należy wybierać podczas aktualizacji, jeżeli zależy Ci na zapisanych ustawieniach.
+
+ESP Web Tools may still offer **Erase device** in its dialog; do not select it for an update. Factory installation resets configuration. Requires a desktop Web Serial-capable browser, e.g. Chrome or Edge, and a USB cable that supports data transfer.
+
+## Edycja strony / Customization
+
+- `index.html`: struktura, linki, przyciski instalatora. Zachowaj `esp-web-install-button` i ścieżki do manifestów.
+- `assets/site.css`: kolory, układ, animacje, responsywność, efekt kursora.
+- `assets/site.js`: tłumaczenia PL/EN, odtwarzacz filmu, kontrola dostępności firmware, animacje.
+- `assets/favicon.svg`: ikona strony.
+- `../images/m5stack-touch-control-deck.jpg`: oryginalne zdjęcie publikowane przez istniejący skrypt budowania.
+- `../docs/MACOS_FAST_SHORTCUTS.md`: instrukcja szybkiego otwierania URL na macOS.
+
+**Uwaga:** Samodzielne publikowanie tylko HTML/CSS/JS bez uruchomienia kroku firmware spowoduje wyświetlenie informacji o niedostępnych obrazach. To celowe zabezpieczenie przed użyciem nieaktualnego firmware.
+
+Project site: https://m5stack-touch-control-deck.lepczynski.it/

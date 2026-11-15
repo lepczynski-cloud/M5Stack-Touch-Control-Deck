@@ -3,46 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a1018">
-  <meta name="description" content="Install the M5Stack Touch Control Deck firmware directly from your browser. An open-source wireless touchscreen controller for Windows, macOS and Linux GNOME, powered by M5Stack CoreS3 SE.">
+  <meta name="theme-color" content="#090f18">
+  <meta name="description" content="Build and install M5Stack Touch Control Deck: a tiny, wireless Bluetooth controller for Windows, macOS and Linux GNOME. Browser firmware installer included.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="M5Stack Touch Control Deck | Web installer">
-  <meta property="og:description" content="Build a wireless control deck for Windows, macOS and Linux GNOME. Install firmware from your browser.">
+  <meta property="og:title" content="M5Stack Touch Control Deck | Build it. Tap it.">
+  <meta property="og:description" content="Six customizable buttons, media controls and system shortcuts. Flash your M5Stack CoreS3 SE from the browser.">
   <meta property="og:image" content="https://m5stack-touch-control-deck.lepczynski.it/assets/m5stack-touch-control-deck.jpg">
   <meta property="og:url" content="https://m5stack-touch-control-deck.lepczynski.it/">
   <link rel="canonical" href="https://m5stack-touch-control-deck.lepczynski.it/">
-  <link rel="icon" type="image/x-icon" href="./favicon.ico?v=1">
-  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=1">
-  <title>M5Stack Touch Control Deck | Install from your browser</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="preload" as="image" href="./assets/m5stack-touch-control-deck.jpg" fetchpriority="high">
   <link rel="stylesheet" href="./assets/site.css">
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
   <script defer src="./assets/site.js"></script>
+  <title>M5Stack Touch Control Deck | Build it. Tap it.</title>
 </head>
 <body>
-  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
-  <div class="background-glow" aria-hidden="true"></div>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <div class="cursor-spotlight" aria-hidden="true"></div>
+  <div class="page-aura" aria-hidden="true"></div>
   <header class="site-header">
-    <div class="shell nav-shell">
-      <a class="brand" href="#top" aria-label="M5Stack Touch Control Deck home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span class="brand-name"><strong>M5STACK</strong><small>TOUCH CONTROL DECK</small></span>
+    <div class="wrap header-inner">
+      <a href="#top" class="brand" aria-label="M5Stack Touch Control Deck home">
+        <span class="logo-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span class="brand-type"><strong>CONTROL DECK</strong><small>M5STACK / CORE S3 SE</small></span>
       </a>
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#video" data-i18n="navVideo">Video</a>
+      <nav class="top-links" aria-label="Page navigation">
         <a href="#features" data-i18n="navFeatures">Features</a>
-        <a href="#resources" data-i18n="navResources">Resources</a>
+        <a href="#demo" data-i18n="navDemo">Demo</a>
         <a href="#install" data-i18n="navInstall">Install</a>
       </nav>
-      <div class="nav-actions">
-        <div class="language" role="group" aria-label="Language">
+      <div class="header-actions">
+        <div class="language-switch" role="group" aria-label="Language">
           <button type="button" data-lang="en" aria-pressed="true">EN</button>
           <button type="button" data-lang="pl" aria-pressed="false">PL</button>
         </div>
-        <a class="nav-github" href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5m12 5v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.24 5.07 5.07 0 0 0 18.91.5S17.73.15 15 2.4a13.38 13.38 0 0 0-7 0C5.27.15 4.09.5 4.09.5A5.07 5.07 0 0 0 4 4.24a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 17.63V21.5"/></svg>
+        <a class="header-github" href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.14.68-3.8-1.34-3.8-1.34-.5-1.3-1.25-1.65-1.25-1.65-1.02-.69.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .17 1.75-.78 2.05-1.1-2.52-.29-5.17-1.27-5.17-5.56 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.1-2.99 0 0 .94-.3 3.09 1.16A10.8 10.8 0 0 1 12 6.24c.96 0 1.91.13 2.81.38 2.14-1.46 3.08-1.16 3.08-1.16.6 1.56.22 2.7.11 2.99.73.79 1.16 1.8 1.16 3.03 0 4.3-2.66 5.26-5.2 5.55.4.35.75 1.04.75 2.1v3c0 .3.21.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>
           <span>GitHub</span>
         </a>
       </div>
@@ -50,123 +48,89 @@
   </header>
 
   <main id="main">
-    <section id="top" class="hero shell">
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="live-dot"></span><span data-i18n="eyebrow">OPEN SOURCE · ESP32-S3 · BLUETOOTH HID</span></div>
-        <h1><span data-i18n="heroLineOne">Your desktop,</span><br><span class="gradient-type" data-i18n="heroLineTwo">one touch away.</span></h1>
-        <p class="lead" data-i18n="heroLead">A compact wireless control deck for Windows, macOS and Linux GNOME. Choose your system after pairing, then launch apps, control media and use shortcuts.</p>
-        <ul class="hero-highlights">
-          <li><span class="highlight-check" aria-hidden="true">✓</span><span data-i18n="chipNoApp">No companion app</span></li>
-          <li><span class="highlight-check" aria-hidden="true">✓</span><span data-i18n="chipNoSolder">No soldering</span></li>
-          <li><span class="highlight-check" aria-hidden="true">✓</span><span data-i18n="chipSource">Open source</span></li>
-        </ul>
-        <div class="hero-buttons">
-          <a class="button button-primary" href="#install"><span data-i18n="buttonInstall">Install firmware</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-          <a class="button button-secondary" href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck" target="_blank" rel="noopener noreferrer" data-i18n="buttonCode">View source code ↗</a>
+    <section class="hero wrap" id="top">
+      <div class="hero-content">
+        <div class="eyebrow"><span class="pulse-dot"></span><span data-i18n="eyebrow">OPEN SOURCE · BLUETOOTH HID · ESP32-S3</span></div>
+        <h1><span data-i18n="heroFirst">Your desk.</span><span class="title-accent" data-i18n="heroSecond">Your shortcuts.</span><span data-i18n="heroThird">One tap.</span></h1>
+        <p class="hero-lead" data-i18n="heroLead">An open-source touchscreen control deck for the everyday things you do on your computer. No companion software, no soldering, just a little piece of hardware that makes your desk more fun.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install"><span data-i18n="heroInstall">Install firmware</span><span aria-hidden="true">↗</span></a>
+          <a class="btn btn-outline" href="#demo"><span data-i18n="heroDemo">Watch it in action</span><span aria-hidden="true">▶</span></a>
         </div>
-        <p class="hero-note"><span class="small-dot"></span><span data-i18n="heroNote">Made for M5Stack CoreS3 SE · Windows / macOS / Linux GNOME</span></p>
+        <div class="compat"><span class="compat-avatars"><b>W</b><b>⌘</b><b>⌘</b></span><span data-i18n="compat">Windows · macOS · Linux GNOME</span></div>
       </div>
-      <div class="hero-visual">
-        <div class="visual-halo" aria-hidden="true"></div>
-        <div class="photo-frame">
-          <div class="photo-head"><span class="tiny-indicator"></span><span>DESK SETUP / 001</span><span>CORE S3 SE</span></div>
-          <img id="productPhoto" loading="eager" decoding="async" src="./assets/m5stack-touch-control-deck.jpg" alt="Finished M5Stack Touch Control Deck in a 3D-printed desktop stand">
-          <div class="photo-fallback" id="photoFallback" hidden><span class="fallback-icon">▦</span><span data-i18n="photoFallback">See the finished device on GitHub</span></div>
-          <div class="photo-foot"><span class="photo-marker"></span><span data-i18n="photoCaption">REAL BUILD · 3D PRINTED ENCLOSURE</span><span>01 / 01</span></div>
+      <div class="hero-art" aria-label="Photo of the finished M5Stack Touch Control Deck">
+        <div class="art-orbit art-orbit-one" aria-hidden="true"></div>
+        <div class="art-orbit art-orbit-two" aria-hidden="true"></div>
+        <div class="device-photo">
+          <div class="photo-top"><span class="live-dot"></span><span>THE REAL BUILD</span><span class="frame-signal" aria-hidden="true">▰▰▰</span></div>
+          <img id="productPhoto" src="./assets/m5stack-touch-control-deck.jpg" width="1800" height="811" fetchpriority="high" alt="M5Stack CoreS3 SE touchscreen in its 3D-printed enclosure, with a pink volume knob">
+          <div id="photoFallback" class="photo-fallback" hidden><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/tree/main/images" target="_blank" rel="noopener noreferrer" data-i18n="photoFallback">View the device photo on GitHub</a></div>
+          <div class="photo-caption"><span>CORE S3 SE</span><span>01 / 01</span></div>
         </div>
-        <div class="floating-tag floating-tag-top"><span class="tag-light"></span><div><strong>BLE HID</strong><small data-i18n="tagWireless">Wireless connection</small></div></div>
-        <div class="floating-tag floating-tag-bottom"><span class="tag-light blue"></span><div><strong>6 <span data-i18n="tagScreens">screens</span></strong><small data-i18n="tagCustomizable">Fully customizable</small></div></div>
+        <div class="float-note note-top"><span class="note-icon">⌁</span><span><strong>BLE HID</strong><small data-i18n="wireless">Wireless. No app.</small></span></div>
+        <div class="float-note note-bottom"><span class="note-icon">✦</span><span><strong>6 <span data-i18n="actions">actions</span></strong><small data-i18n="yourWay">Set them your way</small></span></div>
       </div>
     </section>
 
-    <section class="trustbar shell" aria-label="Project highlights"><span data-i18n="statOne">6 touchscreen pages</span><span class="trust-divider"></span><span data-i18n="statTwo">Bluetooth keyboard</span><span class="trust-divider"></span><span data-i18n="statThree">No host software</span><span class="trust-divider"></span><span data-i18n="statFour">MIT licensed</span></section>
+    <div class="ribbon"><div class="wrap ribbon-items"><span data-i18n="ribbonOne">6 custom buttons</span><span class="ribbon-star">✳</span><span data-i18n="ribbonTwo">Media & volume</span><span class="ribbon-star">✳</span><span data-i18n="ribbonThree">2 time zones</span><span class="ribbon-star">✳</span><span data-i18n="ribbonFour">Local configuration</span></div></div>
 
-    <section id="video" class="section shell video-section">
-      <div class="section-heading"><div><span class="section-kicker" data-i18n="kickerVideo">BUILD & DEMO</span><h2 data-i18n="videoTitle">See how it comes together.</h2></div><p data-i18n="videoIntro">A closer look at the hardware, 3D-printed case, firmware upload and the finished control deck in action.</p></div>
-      <div class="video-layout">
-        <div class="video-frame" id="videoFrame"><div class="video-empty" id="videoEmpty"><span class="play-circle"><svg viewBox="0 0 24 24"><path d="m9 6 10 6-10 6z"/></svg></span><strong data-i18n="videoPlaceholder">Build video</strong><span data-i18n="videoPlaceholderDesc">The full YouTube video will be embedded here.</span><a href="https://www.youtube.com/@WojciechLepczynski" target="_blank" rel="noopener noreferrer" data-i18n="videoChannel">Visit my YouTube channel ↗</a></div></div>
-        <div class="video-side"><span class="video-overline" data-i18n="videoInside">IN THE VIDEO</span><h3 data-i18n="videoSideTitle">A project you can actually build.</h3><ul><li data-i18n="videoBullet1">Assembling the M5Stack modules without soldering</li><li data-i18n="videoBullet2">Fitting a 3D-printed desk enclosure</li><li data-i18n="videoBullet3">Flashing and starting the firmware</li><li data-i18n="videoBullet4">Using the touchscreen, knob and Bluetooth shortcuts</li></ul><a class="text-arrow" href="https://www.youtube.com/watch?v=Jz1xCBi-Q1o" target="_blank" rel="noopener noreferrer"><span data-i18n="youtubeChannel">More projects on YouTube</span> ↗</a></div>
+    <section id="features" class="section wrap reveal">
+      <div class="section-head"><div><span class="kicker" data-i18n="featureKicker">SMALL HARDWARE. BIG CONVENIENCE.</span><h2 data-i18n="featureTitle">Everything within reach.</h2></div><p data-i18n="featureIntro">Six touchscreen pages and a physical knob. Built for the shortcuts you use every day.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card"><span class="feature-icon" aria-hidden="true">↗</span><span class="feature-count">01 / 04</span><h3 data-i18n="featSites">Launch your sites</h3><p data-i18n="featSitesBody">Six editable tiles for ChatGPT, Claude, Gemini, Canva or your own URLs. Faster macOS shortcuts mode is available.</p><div class="mini-tags"><span>ChatGPT</span><span>Claude</span><span>Gemini</span></div></article>
+        <article class="feature-card"><span class="feature-icon" aria-hidden="true">♫</span><span class="feature-count">02 / 04</span><h3 data-i18n="featMedia">Control the music</h3><p data-i18n="featMediaBody">Play, pause, switch tracks and mute from the screen. Turn the optional Scroll Unit to control volume.</p><div class="wave-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></article>
+        <article class="feature-card"><span class="feature-icon" aria-hidden="true">⌘</span><span class="feature-count">03 / 04</span><h3 data-i18n="featSystem">System shortcuts</h3><p data-i18n="featSystemBody">Lock your computer, capture the screen, open your file manager or switch apps. Choose the right host OS.</p><div class="mini-keys" aria-hidden="true"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>5</kbd></div></article>
+        <article class="feature-card"><span class="feature-icon" aria-hidden="true">◷</span><span class="feature-count">04 / 04</span><h3 data-i18n="featLocal">Yours to configure</h3><p data-i18n="featLocalBody">Set URLs, time zones and brightness through the local Wi-Fi portal. The device works as a Bluetooth keyboard.</p><div class="timezone"><span>PL <b>12:00</b></span><span>HKT <b>19:00</b></span></div></article>
       </div>
     </section>
 
-    <section id="features" class="section shell">
-      <div class="section-heading"><div><span class="section-kicker" data-i18n="kickerFeatures">WHAT IT DOES</span><h2 data-i18n="featuresTitle">Small device. Useful shortcuts.</h2></div><p data-i18n="featuresIntro">One screen for the things you reach for every day. Swipe between pages and make it yours.</p></div>
-      <div class="feature-list">
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">01</span>
-          <div class="feature-copy"><h3 data-i18n="featAppsTitle">Your favorite apps</h3><p data-i18n="featAppsDesc">Six editable buttons for websites and everyday tools. Launch a URL with a single touch.</p><p class="feature-examples">ChatGPT · Claude · Gemini</p></div>
-        </article>
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">02</span>
-          <div class="feature-copy"><h3 data-i18n="featMediaTitle">Media & volume</h3><p data-i18n="featMediaDesc">Play, pause, skip or mute. The optional Scroll Unit adds a physical volume knob.</p></div>
-        </article>
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">03</span>
-          <div class="feature-copy"><h3 data-i18n="featShortcutsTitle">Shortcuts for your OS</h3><p data-i18n="featShortcutsDesc">System monitor, screenshots, files, app switching and screen lock with OS-specific shortcuts.</p></div>
-        </article>
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">04</span>
-          <div class="feature-copy"><h3 data-i18n="featClocksTitle">Two time zones</h3><p data-i18n="featClocksDesc">See local time and another city. Synchronize over Wi-Fi and keep time using the RTC.</p></div>
-        </article>
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">05</span>
-          <div class="feature-copy"><h3 data-i18n="featBleTitle">Bluetooth HID</h3><p data-i18n="featBleDesc">Your computer recognizes a standard BLE keyboard. Select the OS after pairing, no companion app needed.</p></div>
-        </article>
-        <article class="feature-item">
-          <span class="feature-index" aria-hidden="true">06</span>
-          <div class="feature-copy"><h3 data-i18n="featConfigTitle">Local configuration</h3><p data-i18n="featConfigDesc">Change host OS, buttons, brightness and time zones through the local device portal.</p></div>
-        </article>
+    <section id="demo" class="section wrap demo-section reveal">
+      <div class="section-head"><div><span class="kicker" data-i18n="demoKicker">SEE THE BUILD</span><h2 data-i18n="demoTitle">A project you can actually make.</h2></div><p data-i18n="demoIntro">The real device, the build process and the finished control deck in action.</p></div>
+      <div class="demo-layout">
+        <div class="video-tile" id="videoFrame"><div id="videoCover" class="video-cover"><div class="video-art" aria-hidden="true"><span>CORE S3 SE</span><b>M5<span>STACK</span></b><small>TOUCH CONTROL DECK / BUILD & DEMO</small></div><button type="button" id="playVideo" class="play-video" aria-label="Play M5Stack project video"><span aria-hidden="true">▶</span><span data-i18n="playVideo">Play video</span></button></div></div>
+        <div class="demo-info"><span class="step-kicker">DIY / NO SOLDERING</span><h3 data-i18n="demoSideTitle">Hardware you can put to work today.</h3><p data-i18n="demoSideDesc">M5Stack CoreS3 SE, an optional Scroll Unit and a 3D-printed stand. You can install the firmware straight from this page.</p><div class="demo-links"><a href="https://www.youtube.com/watch?v=Jz1xCBi-Q1o" target="_blank" rel="noopener noreferrer" data-i18n="watchYouTube">Watch on YouTube ↗</a><a href="https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/" target="_blank" rel="noopener noreferrer" data-i18n="readBuild">Read the build guide ↗</a></div></div>
       </div>
     </section>
 
-    <section id="resources" class="section shell resources-section">
-      <div class="section-heading"><div><span class="section-kicker" data-i18n="kickerResources">GO DEEPER</span><h2 data-i18n="resourcesTitle">Build it your way.</h2></div><p data-i18n="resourcesIntro">Everything you need to understand the project, modify the source code or print the case.</p></div>
-      <div class="resource-grid">
-        <a class="resource-card" href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck" target="_blank" rel="noopener noreferrer"><span class="resource-symbol">{ }</span><div><span class="resource-type">GITHUB</span><h3 data-i18n="resGithub">Source code & documentation</h3><p data-i18n="resGithubSub">Open source, ready to customize.</p></div><span class="resource-arrow">↗</span></a>
-        <a class="resource-card" href="https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/" target="_blank" rel="noopener noreferrer"><span class="resource-symbol">Aa</span><div><span class="resource-type">FORBOT · POLSKI</span><h3 data-i18n="resForbot">Detailed build article</h3><p data-i18n="resForbotSub">Polish guide. Browser translation works well.</p></div><span class="resource-arrow">↗</span></a>
-        <a class="resource-card" href="https://makerworld.com/en/models/3128546-m5stack-core-2-case-45deg-angle-w-unit-holder#profileId-3530280" target="_blank" rel="noopener noreferrer"><span class="resource-symbol">3D</span><div><span class="resource-type">MAKERWORLD</span><h3 data-i18n="resCase">3D-printed desk case</h3><p data-i18n="resCaseSub">An optional model by Gigi, not my design.</p></div><span class="resource-arrow">↗</span></a>
-      </div>
-    </section>
-
-    <section id="install" class="section install-section">
-      <div class="shell">
-        <div class="section-heading install-heading"><div><span class="section-kicker" data-i18n="kickerInstall">WEB FLASHER</span><h2 data-i18n="installTitle">From browser to device.</h2></div><p data-i18n="installIntro">No local compilation for visitors. Just the correct board, a USB data cable and a compatible desktop browser.</p></div>
-        <div class="install-layout">
-          <div class="steps">
-            <div class="step"><span class="step-number">01</span><div><h3 data-i18n="step1Title">Connect your device</h3><p data-i18n="step1Desc">Plug your M5Stack CoreS3 SE into your computer with a USB-C data cable. The battery and Scroll Unit are optional.</p></div></div>
-            <div class="step"><span class="step-number">02</span><div><h3 data-i18n="step2Title">Install in the browser</h3><p data-i18n="step2Desc">Choose Update to keep settings or Factory for a new device. Select your USB port.</p></div></div>
-            <div class="step"><span class="step-number">03</span><div><h3 data-i18n="step3Title">Pair and choose your OS</h3><p data-i18n="step3Desc">Pair “M5 Control Deck” over Bluetooth, then choose Windows, macOS or Linux GNOME on the touchscreen.</p></div></div>
-            <div class="note-panel"><span class="note-icon">i</span><div><strong data-i18n="noteTitle">Before you start</strong><p data-i18n="noteText">For CoreS3 SE only. To keep settings, select Firmware update and DO NOT select Erase device in the flashing dialog. Factory install resets settings. macOS needs Spotlight (Cmd+Space); choose the browser in the local AP portal and configure F11 for Show Desktop if necessary.</p></div></div>
-          </div>
-          <div class="installer-card"><div class="installer-top"><div class="installer-label"><span class="led"></span><span data-i18n="installerLabel">DEVICE INSTALLER</span></div><span class="installer-version">v0.2.3</span></div>
-            <div class="device-symbol" aria-hidden="true"><svg viewBox="0 0 120 100"><rect x="18" y="7" width="84" height="84" rx="17"/><rect x="28" y="17" width="64" height="52" rx="8"/><rect x="38" y="28" width="18" height="12" rx="3"/><rect x="62" y="28" width="18" height="12" rx="3"/><path d="M38 48h42M49 80h22"/></svg></div>
-            <h3 data-i18n="installerDevice">M5Stack CoreS3 SE</h3><p class="installer-spec" data-i18n="installerSpec">ESP32-S3 · 16 MB flash · USB-C</p>
-            <div id="firmwareStatus" class="status-line" role="status" aria-live="polite"><span class="status-dot pending"></span><span data-i18n="statusChecking">Checking firmware availability…</span></div>
-            <div id="installerWrapper" hidden>
-              <p class="install-mode-title" data-i18n="updateTitle">Already installed? Update firmware</p>
-              <p class="install-mode-desc" data-i18n="updateDesc">Only the application is flashed. In the installer, DO NOT choose Erase device if you want to keep your saved settings.</p>
-              <esp-web-install-button manifest="./firmware/manifest-update.json">
-                <button slot="activate" type="button" class="button button-primary install-trigger"><span data-i18n="flashUpdateButton">Update firmware (keep settings)</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 19h14"/></svg></button>
-                <div slot="unsupported" class="unsupported"><span data-i18n="unsupported">Your browser does not support this installer. Open this site in a compatible desktop browser such as Chrome or Edge.</span></div>
+    <section id="install" class="section install-section reveal"><div class="wrap">
+      <div class="section-head"><div><span class="kicker" data-i18n="installKicker">READY TO TRY IT?</span><h2 data-i18n="installTitle">From browser to device.</h2></div><p data-i18n="installIntro">Connect your CoreS3 SE via a USB data cable. No local build or setup required for the web installer.</p></div>
+      <div class="install-grid">
+        <div class="install-steps">
+          <div class="step"><span>01</span><div><h3 data-i18n="stepOne">Connect your M5Stack</h3><p data-i18n="stepOneBody">Use a USB-C cable that supports data, not only charging.</p></div></div>
+          <div class="step"><span>02</span><div><h3 data-i18n="stepTwo">Choose update or factory install</h3><p data-i18n="stepTwoBody">Update preserves your settings only if you do not choose Erase device. Factory installation resets configuration.</p></div></div>
+          <div class="step"><span>03</span><div><h3 data-i18n="stepThree">Pair Bluetooth and select your OS</h3><p data-i18n="stepThreeBody">Choose Windows, macOS or Linux GNOME on the device after pairing.</p></div></div>
+          <div class="mac-tip"><span class="tip-spark">⌘</span><div><strong data-i18n="macTipTitle">On macOS?</strong><p data-i18n="macTipText">For near-instant action triggering, configure native Shortcuts once and enable Fast mode in the device portal.</p><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/blob/main/docs/MACOS_FAST_SHORTCUTS.md" target="_blank" rel="noopener noreferrer" data-i18n="macTipLink">Setup guide ↗</a></div></div>
+        </div>
+        <div class="installer-panel">
+          <div class="installer-heading"><span class="panel-label"><span class="live-dot"></span><span data-i18n="panelLabel">WEB INSTALLER</span></span><span class="installer-version">v0.2.4</span></div>
+          <div class="installer-device" aria-hidden="true"><svg viewBox="0 0 90 90" fill="none"><rect x="11" y="12" width="68" height="66" rx="13" stroke="currentColor" stroke-width="2"/><rect x="21" y="21" width="48" height="37" rx="5" stroke="currentColor" stroke-width="2"/><rect x="29" y="29" width="14" height="12" rx="3" fill="currentColor" opacity=".8"/><rect x="47" y="29" width="14" height="12" rx="3" fill="currentColor" opacity=".5"/><circle cx="45" cy="68" r="4" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>M5Stack CoreS3 SE</h3><p class="device-spec">ESP32-S3 · 16 MB FLASH · USB-C</p>
+          <div id="firmwareStatus" class="firmware-status" role="status" aria-live="polite"><span class="status-dot pending"></span><span data-i18n="statusChecking">Checking firmware…</span></div>
+          <div id="installerWrapper" hidden>
+            <p class="mode-title" data-i18n="updateTitle">Already installed?</p>
+            <p class="mode-description" data-i18n="updateBody">Update only the application image. Do not choose Erase device to keep your settings.</p>
+            <esp-web-install-button manifest="./firmware/manifest-update.json">
+              <button slot="activate" class="btn btn-primary btn-full" type="button"><span data-i18n="updateButton">Update firmware</span><span aria-hidden="true">↗</span></button>
+              <span slot="unsupported" class="browser-warning" data-i18n="unsupported">Use a compatible desktop browser with Web Serial, such as Chrome or Edge.</span>
+            </esp-web-install-button>
+            <details class="factory-details"><summary data-i18n="factoryTitle">First install or factory reset</summary><p data-i18n="factoryBody">Factory installation overwrites configuration, including Wi-Fi and customized tiles. Choose it only for a new device or an intentional reset.</p>
+              <esp-web-install-button manifest="./firmware/manifest.json">
+                <button slot="activate" class="btn btn-outline btn-full" type="button" data-i18n="factoryButton">Factory install (erase settings)</button>
+                <span slot="unsupported" class="browser-warning" data-i18n="unsupported">Use a compatible desktop browser with Web Serial, such as Chrome or Edge.</span>
               </esp-web-install-button>
-              <details class="factory-choice">
-                <summary data-i18n="factoryTitle">First installation / reset device</summary>
-                <p data-i18n="factoryWarning">This writes the complete factory image and ERASES saved Wi-Fi, shortcuts and other settings. Use only on a new device or when you intentionally want to reset it.</p>
-                <esp-web-install-button manifest="./firmware/manifest.json">
-                  <button slot="activate" type="button" class="button button-secondary install-trigger"><span data-i18n="flashFactoryButton">Factory install (reset settings)</span></button>
-                  <div slot="unsupported" class="unsupported"><span data-i18n="unsupported">Your browser does not support this installer. Open this site in a compatible desktop browser such as Chrome or Edge.</span></div>
-                </esp-web-install-button>
-              </details>
-            </div>
-            <div id="firmwareMissing" hidden class="firmware-missing"><p data-i18n="statusMissing">Firmware is currently unavailable. The published build may have failed; please try again later or use the source installation guide.</p><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/blob/main/docs/INSTALLATION.md" target="_blank" rel="noopener noreferrer" data-i18n="fallbackInstall">Use the Windows upload guide ↗</a></div>
-            <p class="installer-footer"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></svg><span data-i18n="installerFooter">Installation runs locally over USB. Review any erase warning before proceeding.</span></p>
+            </details>
           </div>
+          <div id="firmwareMissing" hidden class="firmware-missing"><p data-i18n="firmwareMissing">Firmware files are not available in this deployment. Check the build or compile from the repository.</p><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/blob/main/docs/INSTALLATION.md" target="_blank" rel="noopener noreferrer" data-i18n="sourceInstall">Source installation guide ↗</a></div>
+          <p class="installer-warning" data-i18n="installWarning">Only for CoreS3 SE. Updating keeps NVS only if the partition layout is unchanged and Erase device stays disabled.</p>
         </div>
       </div>
-    </section>
+    </div></section>
 
-    <section class="bottom-cta shell"><div><span class="section-kicker" data-i18n="bottomKicker">MAKE IT YOURS</span><h2 data-i18n="bottomTitle">A small screen with big possibilities.</h2><p data-i18n="bottomDesc">Have an idea for the next feature? The code is open. Contributions and suggestions are welcome.</p></div><a class="button button-primary" href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck/issues" target="_blank" rel="noopener noreferrer"><span data-i18n="bottomButton">Suggest a feature</span><span aria-hidden="true">↗</span></a></section>
+    <section id="resources" class="section wrap resources reveal"><div class="section-head"><div><span class="kicker" data-i18n="resourcesKicker">GO FURTHER</span><h2 data-i18n="resourcesTitle">Build it your way.</h2></div><p data-i18n="resourcesIntro">All the parts, instructions and code in one place.</p></div>
+      <div class="resources-list"><a href="https://github.com/lepczynski-cloud/M5Stack-Touch-Control-Deck" target="_blank" rel="noopener noreferrer"><span class="resource-index">01</span><strong data-i18n="resourceCode">Code & documentation</strong><span class="resource-meta">GITHUB</span><span>↗</span></a><a href="https://forbot.pl/forum/topic/26182-m5stack-control-deck-bezprzewodowy-panel-sterowania-komputerem-na-cores3-se-bez-lutowania/" target="_blank" rel="noopener noreferrer"><span class="resource-index">02</span><strong data-i18n="resourceTutorial">Step-by-step build</strong><span class="resource-meta">FORBOT / PL</span><span>↗</span></a><a href="https://makerworld.com/en/models/3128546-m5stack-core-2-case-45deg-angle-w-unit-holder#profileId-3530280" target="_blank" rel="noopener noreferrer"><span class="resource-index">03</span><strong data-i18n="resourceCase">3D-printed case by Gigi</strong><span class="resource-meta">MAKERWORLD</span><span>↗</span></a><a href="https://www.youtube.com/@WojciechLepczynski" target="_blank" rel="noopener noreferrer"><span class="resource-index">04</span><strong data-i18n="resourceMore">More DIY builds</strong><span class="resource-meta">YOUTUBE</span><span>↗</span></a></div>
+    </section>
   </main>
-  <footer class="site-footer"><div class="shell footer-inner"><div><strong>M5STACK TOUCH CONTROL DECK</strong><p data-i18n="footerLeft">An independent open-source DIY project by Wojciech Lepczyński.</p></div><div class="footer-right"><span data-i18n="footerSupport">Hardware provided by Botland.</span><span data-i18n="footerNote">Project source: MIT License. 3D case by its respective author.</span></div></div></footer>
+  <footer class="site-footer"><div class="wrap footer-inner"><span><strong>M5STACK TOUCH CONTROL DECK</strong><small data-i18n="footerNote">Independent open-source project by Wojciech Lepczyński. Hardware supported by Botland.</small></span><span class="footer-side">MIT LICENSE <span aria-hidden="true">✳</span> 2026</span></div></footer>
 </body>
 </html>

@@ -39,6 +39,9 @@ inline constexpr uint8_t HOST_OS = 0;  // 0 Windows, 1 macOS, 2 Linux GNOME
 // macOS: przegladarka do otwierania URL. 0 Chrome, 1 Safari,
 // 2 Firefox, 3 Brave, 4 Edge. Mozna zmienic przez portal AP.
 inline constexpr uint8_t MAC_BROWSER = 0;
+// 0: uruchamiaj przegladarke przez Spotlight; 1: 6 natywnych skrotow macOS.
+// Tryb 1 wymaga konfiguracji opisanej w docs/MACOS_FAST_SHORTCUTS.md.
+inline constexpr uint8_t MAC_URL_MODE = 0;
 
 // Domyslna jasnosc ekranu w zakresie 20-255.
 inline constexpr uint8_t DISPLAY_BRIGHTNESS = 150;
@@ -91,7 +94,7 @@ inline constexpr uint32_t AP_IDLE_TIMEOUT_MS = 10UL * 60UL * 1000UL;
 // Czas oczekiwania na polaczenie z zapisanym Wi-Fi.
 inline constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS = 15UL * 1000UL;
 
-inline constexpr char FIRMWARE_VERSION[] = "0.2.3";
+inline constexpr char FIRMWARE_VERSION[] = "0.2.4";
 inline constexpr char PROJECT_NAME[] = "M5Stack Touch Control Deck";
 
 static_assert(sizeof(AP_PASSWORD) - 1 >= 8, "Domyslne haslo AP musi miec co najmniej 8 znakow.");

@@ -11,6 +11,10 @@ enum class HostOS : uint8_t { Windows = 0, MacOS = 1, LinuxGnome = 2 };
 // Wybrana przeglądarka uruchamiana jest jawnie przez Spotlight (Aplikacje).
 enum class MacBrowser : uint8_t { Chrome = 0, Safari = 1, Firefox = 2, Brave = 3, Edge = 4 };
 
+// Default mode works without Mac setup. Native Shortcuts mode uses six keyboard
+// shortcuts configured in macOS and never types a URL into another application.
+enum class MacUrlMode : uint8_t { Browser = 0, Shortcuts = 1 };
+
 inline const char* macBrowserName(MacBrowser browser) {
     switch (browser) {
         case MacBrowser::Safari: return "Safari";
@@ -46,6 +50,7 @@ struct DeviceConfig {
     String pairedHostId;
     // Wybierana w portalu AP przegladarka macOS (domyslnie Chrome).
     MacBrowser macBrowser = MacBrowser::Chrome;
+    MacUrlMode macUrlMode = MacUrlMode::Browser;
     bool standbyEnabled = true;
     uint16_t standbyTimeoutMinutes = 5;
 
